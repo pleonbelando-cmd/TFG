@@ -216,6 +216,7 @@ CHAPTERS = [
     ("capitulo_06_panel.md",         "Capitulo 06 Panel Data.docx"),
     ("capitulo_07_ml.md",            "Capitulo 07 ML.docx"),
     ("capitulo_08_discusion.md",     "Capitulo 08 Discusion.docx"),
+    ("capitulo_09_conclusiones.md",  "Capitulo 09 Conclusiones.docx"),
 ]
 
 
