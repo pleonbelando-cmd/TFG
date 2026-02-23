@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(head:*)",
+      "WebSearch",
+      "WebFetch(domain:www.nber.org)",
+      "WebFetch(domain:www.chicagofed.org)",
+      "Bash(pandoc:*)",
+      "Bash(python3:*)",
+      "Bash(tail:*)",
+      "Bash(ls:*)"
+    ]
+  }
+}

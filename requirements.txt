@@ -1,0 +1,33 @@
+# Gold Price Dynamics TFG — Python dependencies
+# Install: pip install -r requirements.txt
+
+# Data retrieval
+fredapi>=0.5.1
+yfinance>=0.2.31
+pytrends>=4.9.2
+
+# Core scientific stack
+pandas>=2.1.0
+numpy>=1.24.0
+matplotlib>=3.8.0
+seaborn>=0.13.0
+statsmodels>=0.14.0
+scipy>=1.11.0
+
+# Machine Learning (Capítulo 6)
+xgboost>=2.0.0
+scikit-learn>=1.3.0
+shap>=0.43.0
+torch>=2.0.0          # CPU build OK; instalar con: pip install torch --index-url https://download.pytorch.org/whl/cpu
+arch>=6.0.0           # modelos GARCH (Capítulo 5)
+
+# Utilities
+python-dotenv>=1.0.0
+openpyxl>=3.1.0
+pyarrow>=14.0.0
+tqdm>=4.66.0
+python-docx>=1.1.0
+
+# Jupyter
+jupyter>=1.0.0
+nbformat>=5.9.0
