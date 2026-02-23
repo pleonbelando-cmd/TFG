@@ -8,9 +8,7 @@
       "Bash(pandoc:*)",
       "Bash(python3:*)",
       "Bash(tail:*)",
-      "Bash(ls:*)",
-      "Bash(cd:*)",
-      "Bash(cd /c/TFG && git branch -M main && git pull origin main --allow-unrelated-histories 2>&1)"
+      "Bash(ls:*)"
     ]
   }
 }
