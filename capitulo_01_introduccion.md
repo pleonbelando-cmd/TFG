@@ -36,17 +36,19 @@ Esta pregunta integra los modelos XGBoost, Random Forest y LSTM, comparados cont
 
 ## 1.4 Contribución del trabajo
 
-Este trabajo realiza tres contribuciones originales respecto a los TFGs convencionales sobre mercados financieros:
+Este trabajo realiza cuatro contribuciones originales respecto a los TFGs convencionales sobre mercados financieros:
 
-En primer lugar, adopta un **enfoque de doble metodología**: combina econometría clásica (VAR, GARCH, cointegración) con machine learning moderno (XGBoost, LSTM, SHAP), algo que la literatura académica de pregrado raramente hace. La comparación sistemática entre ambos enfoques, con las mismas variables y el mismo periodo muestral, es en sí misma una contribución metodológica.
+En primer lugar, estructura el análisis en **tres pilares metodológicos complementarios**, siguiendo el arco del temario de Econometría III: (i) el análisis VAR/VECM como núcleo econométrico, heredero directo de los Modelos de Ecuaciones Simultáneas y orientado a cuantificar relaciones de largo plazo y dinámica de impulso-respuesta; (ii) un análisis de panel cross-country que compara el comportamiento del oro en cuatro economías avanzadas, aplicando modelos de efectos fijos y efectos aleatorios con contraste de Hausman; y (iii) modelos de machine learning (XGBoost, Random Forest y LSTM) como extensión predictiva complementaria a la econometría clásica.
 
 En segundo lugar, incorpora el análisis de **ruptura estructural** de forma explícita. La mayoría de los trabajos sobre el oro estiman un modelo único para todo el periodo. Este trabajo testará si las relaciones estimadas son estables antes y después de los grandes episodios de crisis, utilizando tests de Chow y análisis CUSUM.
 
 En tercer lugar, aplica **SHAP values** para hacer interpretable la predicción del modelo de machine learning, conectando el resultado cuantitativo con la narrativa económica. Esta técnica, habitual en la literatura de finanzas cuantitativas, es prácticamente inexistente en trabajos académicos de pregrado de economía o administración de empresas en España.
 
+En cuarto lugar, la **dimensión comparativa internacional** del análisis de panel aporta evidencia sobre si el oro como activo de refugio e inflación es un fenómeno universal o específico de la economía estadounidense, respondiendo así a una pregunta con implicaciones directas para la diversificación de carteras y las decisiones de reservas soberanas.
+
 ## 1.5 Estructura del trabajo
 
-El trabajo se organiza en ocho capítulos adicionales, más una sección de referencias y un anexo técnico:
+El trabajo se organiza en nueve capítulos, más una sección de referencias y un anexo técnico:
 
 El **Capítulo 2** desarrolla el marco teórico. Se revisa la literatura académica sobre el oro como activo financiero, estableciendo la distinción entre *hedge*, *safe haven* y activo especulativo, y se sintetizan los hallazgos empíricos de los trabajos fundacionales.
 
@@ -54,13 +56,15 @@ El **Capítulo 3** identifica y justifica teóricamente las variables que entrar
 
 El **Capítulo 4** describe las fuentes de datos, el proceso de construcción del pipeline y el análisis exploratorio. Se presentan las estadísticas descriptivas, la evolución temporal de cada variable y su correlación con el precio del oro en distintos regímenes de mercado.
 
-El **Capítulo 5** presenta el análisis econométrico: tests de raíz unitaria y cointegración, modelo VAR con funciones de impulso-respuesta y descomposición de varianza, y modelo GARCH para la volatilidad condicional.
+El **Capítulo 5** presenta el análisis econométrico: la motivación del modelo VAR desde el marco de los Modelos de Ecuaciones Simultáneas, los tests de raíz unitaria y cointegración, el modelo VECM con funciones de impulso-respuesta y descomposición de varianza, la estabilidad estructural, y un análisis complementario de volatilidad condicional mediante GJR-GARCH.
 
-El **Capítulo 6** presenta los modelos de machine learning: XGBoost, Random Forest y LSTM, con validación temporal walk-forward y comparación de métricas de predicción.
+El **Capítulo 6** amplía la perspectiva con un análisis de datos de panel. Utilizando una muestra de cuatro economías avanzadas (EE.UU., Eurozona, Reino Unido y Japón), se estiman modelos de efectos fijos y efectos aleatorios para contrastar si el papel del oro como refugio e instrumento de cobertura inflacionaria es un fenómeno universal o específico de la economía estadounidense.
 
-El **Capítulo 7** integra los resultados de ambas aproximaciones, responde a las tres preguntas de investigación y discute las implicaciones económicas.
+El **Capítulo 7** presenta los modelos de machine learning: XGBoost, Random Forest y LSTM, con validación temporal walk-forward, comparación de métricas de predicción y análisis SHAP de importancia de variables.
 
-El **Capítulo 8** presenta las conclusiones, las limitaciones del trabajo y las líneas de investigación futura.
+El **Capítulo 8** integra los resultados de los tres pilares metodológicos, responde a las preguntas de investigación y discute las implicaciones económicas.
+
+El **Capítulo 9** presenta las conclusiones, las limitaciones del trabajo y las líneas de investigación futura.
 
 El **Anexo técnico** incluye el código Python documentado que reproduce todos los análisis del trabajo.
 

@@ -106,7 +106,9 @@ El precio del oro en el mercado libre es el resultado de la interacción de tres
 
 La interacción entre estas tres fuerzas —y la variabilidad de su peso relativo a lo largo del tiempo y entre regímenes de mercado— es lo que hace que el oro sea un activo difícil de modelar con una única ecuación y fácil de malinterpretar con narrativas simplificadas.
 
-Los capítulos siguientes operacionalizan este marco: el Capítulo 3 justifica la selección de las variables que representan cada una de estas fuerzas; el Capítulo 4 construye el dataset; los Capítulos 5 y 6 estiman los modelos; y el Capítulo 7 responde a las preguntas de investigación a la luz de la evidencia obtenida.
+**Una nota sobre la estrategia econométrica.** La complejidad de estas interacciones tiene una consecuencia metodológica directa: la estimación por mínimos cuadrados ordinarios (MCO) ecuación por ecuación sería inadecuada, porque las variables explicativas del oro —el dólar, los tipos de interés reales, el VIX, el S&P 500— no son genuinamente exógenas. El precio del oro también las afecta a ellas, al menos en parte. Estamos, en rigor, ante un sistema de ecuaciones simultáneas en el que la dirección de causalidad fluye en múltiples sentidos. Los Modelos de Ecuaciones Simultáneas (MES) de la econometría clásica formalizan precisamente este problema, y los modelos VAR (*Vector Autoregression*) constituyen su solución más extendida en la práctica: al no imponer restricciones de identificación a priori y tratar todas las variables simétricamente como endógenas, el VAR evita los sesgos de simultaneidad que contaminarían a MCO. El Capítulo 5 desarrolla esta motivación en detalle.
+
+Los capítulos siguientes operacionalizan este marco: el Capítulo 3 justifica la selección de las variables que representan cada una de estas fuerzas; el Capítulo 4 construye el dataset; los Capítulos 5, 6 y 7 estiman los modelos con distintas aproximaciones metodológicas; y el Capítulo 8 responde a las preguntas de investigación a la luz de la evidencia obtenida.
 
 ---
 

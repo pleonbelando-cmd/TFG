@@ -1,27 +1,39 @@
 # Capítulo 5: Análisis econométrico
 
-## 5.1 Estructura y secuencia del análisis
+## 5.1 Del modelo de ecuaciones simultáneas al VAR: motivación metodológica
+
+La elección del modelo VAR/VECM como núcleo del análisis econométrico no es arbitraria: responde a una evolución bien documentada en la historia de la econometría aplicada que conviene explicitar. Los primeros modelos macroeconómicos de gran escala —construidos por la Reserva Federal, el FMI y los bancos centrales en los años sesenta y setenta— se articulaban como Modelos de Ecuaciones Simultáneas (MES): sistemas de ecuaciones estructurales en los que cada variable era modelada como función de otras variables del sistema, con restricciones de identificación impuestas a priori para distinguir las ecuaciones entre sí.
+
+El problema fundamental de los MES en la práctica es que esas restricciones de identificación —la decisión de cuáles variables son exógenas en cada ecuación— no puede verificarse a partir de los datos: son supuestos teóricos que se imponen de forma arbitraria. Cuando un investigador decide que, por ejemplo, el tipo de interés real es exógeno en la ecuación del precio del oro, está afirmando que el precio del oro no afecta al tipo real en el mismo mes —un supuesto que puede ser razonable pero que no es verificable sin información externa. Como señaló Sims (1980) en su influyente crítica, "las restricciones de identificación en los MES son increíbles porque se imponen por razones de conveniencia estadística, no por razones económicas sólidas".
+
+La propuesta de Sims fue tratar todas las variables del sistema como igualmente endógenas y modelar cada una como función de los retardos de todas las demás. Este es exactamente el modelo VAR (*Vector Autoregression*), que puede entenderse como la **forma reducida** del MES: sin restricciones de identificación a priori, sin variables artificialmente declaradas exógenas, y sin ecuaciones estructurales cuya justificación sea cuestionable. El VAR es, en este sentido, más honesto sobre lo que los datos pueden identificar sin teoría adicional. Para nuestro sistema —donde el precio del oro, el dólar, los tipos reales y la renta variable se afectan mutuamente de formas que no podemos especificar con certeza— el VAR ofrece el marco más apropiado.
+
+Cuando las variables del sistema son no estacionarias y están cointegradas —como confirman los tests del Capítulo 4—, la extensión natural del VAR es el VECM (*Vector Error Correction Model*), que añade al sistema de diferencias un término de corrección de errores que captura la dinámica de ajuste al equilibrio de largo plazo. La estimación del VECM, sus funciones de impulso-respuesta y la descomposición de varianza del error de predicción son los resultados centrales de este capítulo.
+
+---
+
+## 5.2 Estructura y secuencia del análisis
 
 El análisis econométrico que se desarrolla en este capítulo sigue un protocolo secuencial en el que cada etapa determina la siguiente. El punto de partida son los resultados de estacionariedad e integración obtenidos en el Capítulo 4, que condicionan directamente la especificación del modelo de largo plazo. A continuación, la evidencia de cointegración del test de Johansen determina si el sistema debe estimarse como un modelo VAR en diferencias o como un modelo de corrección de errores vectorial (VECM). Sobre esa base multivariante se construyen las funciones de impulso-respuesta y la descomposición de varianza, que permiten cuantificar la dinámica del precio del oro ante shocks en sus catalizadores. En paralelo, el análisis de volatilidad condicional mediante modelos GARCH captura un aspecto de la dinámica del oro que los modelos de medias no recogen: los episodios de volatilidad extrema que caracterizan al metal en momentos de crisis. El capítulo concluye con un análisis de estabilidad estructural que pone a prueba la hipótesis —de especial relevancia en este trabajo— de que las relaciones estimadas no son constantes a lo largo de los veinticinco años analizados.
 
 La secuencia completa de análisis, con las herramientas utilizadas y las tablas y figuras que genera cada etapa, se resume en la Tabla 5.0.
 
-| Etapa | Herramienta | Insumos del Cap. 4 | Productos (Cap. 5) |
-|---|---|---|---|
-| 1. Estructura del sistema | Tests ADF + KPSS | Tabla 4.4 | Clasificación I(0)/I(1) |
-| 2. Cointegración | Test de Johansen | Tabla 4.5 | Determinación del rango |
-| 3. Especificación VAR | Criterios AIC/BIC | — | Tabla 5.1 |
-| 4. Estimación VECM | VECM (r=1) | Tablas 4.4, 4.5 | Tablas 5.2, 5.3 |
-| 5. Impulso-respuesta | IRF ortogonalizada (Cholesky) | VECM | Figura 5.1 |
-| 6. Descomposición varianza | FEVD | VECM | Figura 5.2 |
-| 7. Volatilidad condicional | GJR-GARCH(1,1) | Retornos | Tablas 5.4, 5.5; Figuras 5.3, 5.4 |
-| 8. Estabilidad estructural | Test Chow + CUSUM | Todos | Tabla 5.6; Figuras 5.5, 5.6 |
+| Sección | Etapa | Herramienta | Insumos del Cap. 4 | Productos (Cap. 5) |
+|---|---|---|---|---|
+| 5.3 | Estructura del sistema | Tests ADF + KPSS | Tabla 4.4 | Clasificación I(0)/I(1) |
+| 5.3 | Cointegración | Test de Johansen | Tabla 4.5 | Determinación del rango |
+| 5.4 | Especificación VAR | Criterios AIC/BIC | — | Tabla 5.1 |
+| 5.4 | Estimación VECM | VECM (r=1) | Tablas 4.4, 4.5 | Tablas 5.2, 5.3 |
+| 5.5 | Impulso-respuesta | IRF ortogonalizada (Cholesky) | VECM | Figura 5.1 |
+| 5.6 | Descomposición varianza | FEVD | VECM | Figura 5.2 |
+| 5.7 | Volatilidad condicional | GJR-GARCH(1,1) | Retornos | Tabla 5.4; Figuras 5.3, 5.4 |
+| 5.8 | Estabilidad estructural | Test Chow + CUSUM | Todos | Tabla 5.5; Figuras 5.5, 5.6 |
 
 ---
 
-## 5.2 Revisión de los resultados previos: raíz unitaria y cointegración
+## 5.3 Revisión de los resultados previos: raíz unitaria y cointegración
 
-### 5.2.1 Clasificación de las series por orden de integración
+### 5.3.1 Clasificación de las series por orden de integración
 
 Los tests ADF y KPSS aplicados en el Capítulo 4 a cada variable del sistema producen una clasificación que es el punto de partida imprescindible para cualquier análisis econométrico de series temporales. Regresar variables no estacionarias entre sí sin el tratamiento adecuado produce el fenómeno de regresión espuria —descrito por Granger y Newbold (1974)—, en el que los coeficientes parecen estadísticamente significativos por el simple hecho de que dos series comparten una tendencia temporal, y no por ninguna relación económica real.
 
@@ -33,7 +45,7 @@ Los resultados de la Tabla 4.4 permiten distinguir dos grupos claramente diferen
 
 Esta distinción tiene consecuencias directas sobre la estrategia de estimación. Las variables I(0) (VIX, CPI, *breakeven*) no pueden cointegrar con las I(1) por definición —dado que la combinación lineal de una serie estacionaria y una no estacionaria es siempre no estacionaria— y deben tratarse de forma diferente en la especificación formal. En este trabajo se incluyen como variables exógenas en el sistema VECM cuando se analiza su impacto sobre el precio del oro.
 
-### 5.2.2 Síntesis de la evidencia de cointegración
+### 5.3.2 Síntesis de la evidencia de cointegración
 
 El test de Johansen multivariante aplicado al sistema {ln(Oro), ln(DXY), TIPS 10Y, ln(S&P 500)} —cuyos resultados se presentan en la Tabla 4.5— arroja evidencia clara de cointegración, aunque los dos estadísticos del test difieren en cuanto al número de vectores.
 
@@ -47,9 +59,9 @@ Los tests de Engle-Granger bivariantes —que no detectan cointegración entre e
 
 ---
 
-## 5.3 Especificación y estimación del VECM
+## 5.4 Especificación y estimación del VECM
 
-### 5.3.1 Selección del número de retardos
+### 5.4.1 Selección del número de retardos
 
 La determinación del número óptimo de retardos del sistema VAR —que en el marco VECM se traduce en el orden de las diferencias, *k_ar_diff*— es un paso previo a la estimación. Se estiman VAR(p) para p = 1 hasta p = 12 y se calculan los criterios AIC, BIC y HQIC para cada especificación.
 
@@ -58,7 +70,7 @@ La determinación del número óptimo de retardos del sistema VAR —que en el m
 
 El criterio BIC, que penaliza más agresivamente la complejidad del modelo —especialmente cuando el tamaño muestral n es grande—, selecciona el modelo más parsimonioso de los considerados. El AIC, más generoso con la inclusión de retardos adicionales, tiende a seleccionar un orden ligeramente mayor. En coherencia con el principio de parsimonia defendido en el §3.7.1, se toma como referencia el lag seleccionado por BIC, con lo que el VECM se estima con *k_ar_diff* equivalente al orden VAR óptimo menos uno.
 
-### 5.3.2 El modelo de corrección de errores vectorial
+### 5.4.2 El modelo de corrección de errores vectorial
 
 Con un rango de cointegración r = 1 y los retardos determinados en el paso anterior, el sistema de cuatro variables se estima como un VECM con constante dentro del vector de cointegración (*deterministic = "ci"*), especificación que permite una tendencia determinista en el nivel de las variables pero no en la relación de cointegración —lo que es económicamente coherente con la tendencia alcista del oro en el periodo analizado.
 
@@ -68,7 +80,7 @@ $$\Delta Y_t = \alpha \beta' Y_{t-1} + \sum_{i=1}^{k-1} \Gamma_i \Delta Y_{t-i} 
 
 donde $Y_t = (\ln GOLD_t, \ln DXY_t, TIPS_t, \ln SP500_t)'$ es el vector de variables, $\beta'$ es el vector de cointegración (normalizado para que el coeficiente del oro sea 1), $\alpha$ es el vector de velocidades de ajuste, y los $\Gamma_i$ capturan la dinámica de corto plazo.
 
-### 5.3.3 Vector de cointegración: la relación de largo plazo del oro
+### 5.4.3 Vector de cointegración: la relación de largo plazo del oro
 
 La Tabla 5.2 presenta el vector de cointegración estimado, normalizado de forma que el coeficiente del ln(Oro) valga 1. La ecuación de equilibrio de largo plazo puede leerse directamente: el signo de cada coeficiente indica la dirección en que un aumento de esa variable desplaza el precio de equilibrio del oro en el largo plazo.
 
@@ -77,7 +89,7 @@ La Tabla 5.2 presenta el vector de cointegración estimado, normalizado de forma
 
 El vector estimado confirma las hipótesis de signo establecidas en el Capítulo 3 para las variables de largo plazo. El coeficiente del DXY es negativo: un dólar más fuerte reduce el precio de equilibrio del oro —resultado que replica la correlación estructural documentada por Baur y McDermott (2010) y cuantificada empíricamente en el periodo 2000-2025. El coeficiente de los TIPS es igualmente negativo: cada punto porcentual adicional de tipo real reduce el precio de equilibrio del oro, confirmando la hipótesis de coste de oportunidad que Erb y Harvey (2013) estiman con una correlación de -0,82 para el periodo 1997-2012. El coeficiente del S&P 500 captura la correlación negativa con la renta variable en el largo plazo: los periodos de expansión bursátil sostenida se asocian con precios del oro más contenidos, en la medida en que los inversores reducen su exposición defensiva al metal.
 
-### 5.3.4 Velocidades de ajuste: ¿cuánto tarda el oro en volver al equilibrio?
+### 5.4.4 Velocidades de ajuste: ¿cuánto tarda el oro en volver al equilibrio?
 
 La Tabla 5.3 presenta los coeficientes α del VECM, que miden la velocidad a la que cada variable se corrige hacia el equilibrio de largo plazo cuando existe una desviación del mismo.
 
@@ -90,15 +102,15 @@ Los coeficientes α para el DXY, los TIPS y el S&P 500 indican si estas variable
 
 ---
 
-## 5.4 Análisis de impulso-respuesta
+## 5.5 Análisis de impulso-respuesta
 
-### 5.4.1 Fundamentos metodológicos y ordenación de Cholesky
+### 5.5.1 Fundamentos metodológicos y ordenación de Cholesky
 
 La función de impulso-respuesta (IRF) responde a la pregunta más narrativamente relevante de todo el análisis VAR/VECM: *¿qué le ocurre al precio del oro cuando una de sus variables determinantes experimenta un shock inesperado de una desviación típica?* A diferencia de los coeficientes de regresión estáticos, las IRF capturan la dinámica completa de la respuesta: el impacto inmediato, el pico de la respuesta, el tiempo hasta que el efecto se disipa y la persistencia de largo plazo.
 
 Las IRF se calculan mediante la ortogonalización de Cholesky, que requiere una ordenación causal de las variables. La ordenación adoptada en este trabajo —ln(DXY), TIPS, ln(S&P 500), ln(Oro)— coloca al oro en la posición más endógena, consistente con la hipótesis de que el oro responde a los cambios en el dólar, los tipos y la renta variable, pero no los determina de forma contemporánea. Esta ordenación es coherente con la causalidad de Granger unidireccional documentada en la Tabla 4.6: los TIPS Granger-causan al oro de forma altamente significativa (p < 0,001 a todos los horizontes), mientras que el oro no Granger-causa a los TIPS (p > 0,70 a todos los horizontes).
 
-### 5.4.2 Respuesta del oro a los shocks de sus catalizadores
+### 5.5.2 Respuesta del oro a los shocks de sus catalizadores
 
 La Figura 5.1 presenta las IRF del logaritmo del precio del oro ante un shock de una desviación típica en cada uno de los tres catalizadores del sistema.
 
@@ -111,13 +123,13 @@ La Figura 5.1 presenta las IRF del logaritmo del precio del oro ante un shock de
 
 **Shock en la renta variable (S&P 500).** El shock positivo en el S&P 500 produce una respuesta negativa en el oro, lo que evidencia el comportamiento de *safe haven* del metal: cuando la renta variable sube —señal de apetito de riesgo en los mercados—, los inversores reducen su demanda de activos defensivos y el precio del oro cae. Esta respuesta es coherente con la evidencia descriptiva de la Figura 4.6, que muestra correlaciones negativas entre el oro y el S&P 500 en los periodos de crisis. La respuesta acumulada se disipa gradualmente, sin revertir de signo, lo que indica que el shock en la renta variable tiene efectos persistentes sobre el precio del oro.
 
-### 5.4.3 Interpretación económica integrada
+### 5.5.3 Interpretación económica integrada
 
 Las tres IRF producen un mensaje coherente con el marco conceptual del Capítulo 2: el precio del oro responde negativamente a las variables que representan el "coste de oportunidad" de mantenerlo (tipos reales, apreciación del dólar) y a las señales de apetito de riesgo en los mercados (subidas bursátiles). La magnitud relativa de las tres respuestas permite además establecer una jerarquía entre los catalizadores, que la descomposición de varianza del §5.5 cuantificará de forma más formal.
 
 ---
 
-## 5.5 Descomposición de varianza del error de predicción
+## 5.6 Descomposición de varianza del error de predicción
 
 La descomposición de varianza del error de predicción (FEVD, *Forecast Error Variance Decomposition*) ofrece una perspectiva complementaria a las IRF: en lugar de preguntar *¿cómo responde el oro a un shock concreto?*, pregunta *¿qué fracción de la incertidumbre sobre el precio futuro del oro se debe a cada catalizador?* Es una medida de "importancia relativa" de cada variable en la dinámica del oro.
 
@@ -132,65 +144,35 @@ La información del FEVD permite responder de forma cuantitativa a la primera pr
 
 ---
 
-## 5.6 Análisis de volatilidad condicional: modelo GJR-GARCH
+## 5.7 Análisis complementario de volatilidad condicional: GJR-GARCH
 
-### 5.6.1 Justificación del enfoque GARCH
+El análisis VAR/VECM de las secciones anteriores modela la **media condicional** del precio del oro. No obstante, los mercados financieros exhiben un patrón adicional bien documentado: *clusters* de volatilidad, periodos en que la varianza condicional es alta o baja de forma persistente. El test ARCH-LM de Engle sobre los retornos mensuales del oro rechaza la hipótesis nula de ausencia de efectos ARCH (p < 0,05), lo que confirma la presencia de heterocedasticidad condicional y justifica un análisis complementario.
 
-El análisis VAR/VECM de las secciones anteriores modela la media condicional del precio del oro, pero no su varianza condicional. Sin embargo, una característica empírica de los mercados financieros —y del oro en particular— es la presencia de *clusters* de volatilidad: periodos de alta volatilidad tienden a seguir a periodos de alta volatilidad, y periodos de calma siguen a periodos de calma. Este fenómeno, denominado efecto ARCH por Engle (1982), viola la hipótesis de homocedasticidad del modelo de regresión clásico y, más importante, es una característica económicamente relevante en sí misma: los episodios de volatilidad extrema del oro —durante la GFC en 2008, el crash de marzo de 2020 o la escalada de 2025— son objetos de análisis con interés propio, no solo errores de especificación.
+Se estima un modelo **GJR-GARCH(1,1) con distribución *t* de Student** sobre la serie de retornos logarítmicos mensuales del oro. La elección del GJR-GARCH (Glosten, Jagannathan y Runkle, 1993) frente al GARCH estándar se debe a que captura la posible asimetría en la respuesta de la volatilidad ante shocks positivos y negativos mediante el parámetro γ: a diferencia de lo que ocurre en renta variable (donde γ > 0 indica que las bajadas generan más volatilidad que las subidas), el oro puede exhibir asimetría invertida (γ < 0) porque las subidas del precio atraen flujos especulativos que amplían la actividad de mercado en ambas direcciones.
 
-El test ARCH-LM de Engle aplicado a los retornos logarítmicos mensuales del oro rechaza con claridad la hipótesis de ausencia de efecto ARCH (p < 0,05), lo que confirma la presencia de heterocedasticidad condicional en la serie y justifica la estimación de un modelo GARCH.
+> **[Tabla 5.4: Parámetros del GJR-GARCH(1,1) — Retornos mensuales del oro (×100)]**
+> *(Véase `output/tables/tab_5_04_garch_params.csv`)*
 
-### 5.6.2 Selección del modelo: comparación de especificaciones
+Los resultados principales son tres. Primero, la persistencia total de la volatilidad (α + β + ½|γ|) es elevada pero inferior a 1, confirmando la estacionariedad en covarianza del proceso. Segundo, el parámetro β próximo a 0,85 indica *clusters* de volatilidad de larga duración: un pico de volatilidad tarda varios meses en disiparse. Tercero, el signo del parámetro γ permite identificar si las subidas o bajadas del oro son más desestabilizadoras en términos de volatilidad.
 
-Se comparan cuatro especificaciones: GARCH(1,1) con distribución Normal, GARCH(1,1) con distribución *t* de Student, GJR-GARCH(1,1) con distribución *t*, y EGARCH(1,1) con distribución *t*. La distinción entre GARCH estándar y GJR-GARCH es especialmente relevante para el oro: el parámetro γ del GJR-GARCH captura la asimetría en la respuesta de la volatilidad ante shocks positivos y negativos.
+La Figura 5.3 superpone la volatilidad condicional estimada con los cinco episodios históricos del Capítulo 2. Los picos de volatilidad coinciden con la GFC (septiembre-noviembre 2008) y el crash COVID de marzo 2020. El periodo 2022-2025, pese a la magnitud del movimiento alcista, muestra volatilidad persistente pero sin picos extremos, lo que refuerza la interpretación de que esa subida fue impulsada por demanda estructural sostenida y no por pánico o euforia de corto plazo.
 
-En las acciones, la asimetría es típicamente positiva (γ > 0): las malas noticias —bajadas del precio— generan más volatilidad que las buenas. Para el oro, la literatura documenta una asimetría potencialmente inversa (γ < 0): las subidas del precio —buenas noticias para el tenedor de oro— pueden generar volatilidad elevada porque detonan flujos de salida desde activos de riesgo, generando mayor actividad de mercado (Pacific-Basin Finance Journal, 2021).
+> **[Figura 5.3: Volatilidad Condicional (GJR-GARCH) y News Impact Curve — 2000-2025]**
+> *(Véase `output/figures/fig_5_03_garch_volatility.png` y `fig_5_04_nic.png`)*
 
-> **[Tabla 5.4: Comparación de especificaciones GARCH — AIC, BIC y Log-verosimilitud]**
-> *(Véase `output/tables/tab_5_04_garch_comparison.csv`)*
-
-La comparación mediante BIC —criterio más conservador, que penaliza con mayor fuerza el número de parámetros— orienta la selección del modelo óptimo. No obstante, con independencia de qué especificación minimice el BIC, el GJR-GARCH con distribución *t* se adopta como modelo principal del capítulo por tres razones: (1) tiene justificación teórica específica para el oro; (2) el parámetro de asimetría γ es de interés económico propio; y (3) la distribución *t* captura la leptocurtosis de los retornos financieros, confirmada por el test de Jarque-Bera de la Tabla 4.1.
-
-### 5.6.3 Resultados del GJR-GARCH
-
-La Tabla 5.5 presenta los parámetros estimados del GJR-GARCH(1,1) con distribución *t* de Student.
-
-> **[Tabla 5.5: Parámetros del GJR-GARCH(1,1) — Retornos mensuales del oro (×100)]**
-> *(Véase `output/tables/tab_5_05_garch_params.csv`)*
-
-Los parámetros ω, α y β del modelo tienen el significado habitual. El parámetro ω es la varianza incondicional de largo plazo. El parámetro α (*ARCH term*) mide la reacción de la varianza condicional a los shocks del periodo anterior: un α elevado indica que la volatilidad responde rápidamente a las noticias. El parámetro β (*GARCH term*) mide la persistencia de la volatilidad: un β cercano a 1 indica que los *clusters* de volatilidad tienen larga duración. La suma α + β + ½|γ| mide la persistencia total del proceso de varianza: si es menor que 1, el proceso es covarianza-estacionario y la volatilidad revierte a su media incondicional en el largo plazo.
-
-El parámetro de especial interés para la interpretación económica es γ. Un γ negativo —asimetría invertida— indica que los meses en que el oro sube (ε_{t-1} > 0) generan más volatilidad en el siguiente periodo que los meses de bajada de igual magnitud. Esta asimetría invertida, si se confirma en los datos, es coherente con la naturaleza del oro como activo que atrae flujos especulativos en las fases alcistas: el comportamiento de los inversores minoristas, documentado en la Figura 4.8 (Google Trends), sugiere que las subidas del oro atraen atención y demanda que amplifican los movimientos del precio en ambas direcciones.
-
-### 5.6.4 Volatilidad condicional estimada y episodios históricos
-
-La Figura 5.3 superpone la volatilidad condicional estimada por el GJR-GARCH —expresada en porcentaje anualizado— con los episodios históricos del Capítulo 2.
-
-> **[Figura 5.3: Volatilidad Condicional del Oro (GJR-GARCH) — 2000-2025]**
-> *(Véase `output/figures/fig_5_03_garch_volatility.png`)*
-
-La figura permite una interpretación cronológica de la volatilidad del oro que complementa la narrativa del Capítulo 2. El pico de volatilidad más pronunciado coincide con la fase más aguda de la Crisis Financiera Global (septiembre-noviembre de 2008), cuando el oro experimentó simultáneamente ventas forzadas por demanda de liquidez y compras de refugio —dos fuerzas opuestas que generaron la mayor turbulencia del periodo. El segundo pico corresponde al crash de marzo de 2020 (COVID-19): en solo dos semanas, el precio del oro cayó un 12% antes de recuperarse con igual velocidad. El periodo 2022-2025, en cambio, muestra una volatilidad persistentemente elevada pero sin picos extremos: la subida del 65% de 2025 se produjo de forma gradual y con menor volatilidad diaria de lo que cabría esperar por la magnitud del movimiento.
-
-### 5.6.5 News Impact Curve: asimetría de la volatilidad
-
-La Figura 5.4 presenta la *News Impact Curve* (NIC), que grafica la volatilidad condicional resultante en función del signo y magnitud del shock en los retornos del periodo anterior.
-
-> **[Figura 5.4: News Impact Curve — GJR-GARCH(1,1)]**
-> *(Véase `output/figures/fig_5_04_nic.png`)*
-
-La NIC permite visualizar directamente si la asimetría capturada por γ es económicamente relevante. En un GARCH simétrico estándar, la curva sería una parábola perfectamente simétrica en torno al origen. En el GJR-GARCH con γ ≠ 0, la rama correspondiente a shocks negativos (bajadas del oro) y la correspondiente a shocks positivos (subidas) tienen pendientes distintas, lo que revela visualmente cuál de los dos tipos de noticias genera más volatilidad.
+La *News Impact Curve* (NIC) complementa el análisis graficando la volatilidad implícita en función del signo y magnitud del retorno del mes anterior. Una NIC asimétrica —con la rama de shocks positivos por encima de la de negativos— sería evidencia directa de que las subidas del oro generan más incertidumbre sobre el siguiente periodo que las bajadas de igual magnitud.
 
 ---
 
-## 5.7 Estabilidad estructural: tests de Chow y análisis CUSUM
+## 5.8 Estabilidad estructural: tests de Chow y análisis CUSUM
 
-### 5.7.1 Motivación: la paradoja de 2022-2024 como caso de estudio
+### 5.8.1 Motivación: la paradoja de 2022-2024 como caso de estudio
 
 El análisis de correlaciones rolling de la Figura 4.15 mostró que las relaciones entre el oro y sus catalizadores son marcadamente inestables a lo largo del periodo 2000-2025. Esta inestabilidad no es solo estadística: tiene una explicación económica. Las correlaciones rolling del DXY con el oro se situaron cerca de -0,9 durante la mayor parte del periodo 2000-2021 pero viraron hacia valores positivos en 2022-2024, cuando el dólar y el oro subieron simultáneamente. Este comportamiento —que la regresión estática promedia y encubre— es precisamente lo que los tests de estabilidad estructural están diseñados para detectar.
 
 La segunda pregunta de investigación del trabajo (§1.3) pregunta explícitamente si los determinantes del oro han cambiado tras los grandes episodios de crisis. El test de Chow y el CUSUM son las herramientas econométricas estándar para responder a esta pregunta de forma formal.
 
-### 5.7.2 Test de Chow: ¿hubo ruptura estructural en los episodios de crisis?
+### 5.8.2 Test de Chow: ¿hubo ruptura estructural en los episodios de crisis?
 
 El test de Chow se aplica al modelo de largo plazo del oro —regresión de ln(Oro) sobre ln(DXY), TIPS, VIX, ln(S&P 500) y ln(WTI)— en cuatro puntos de quiebre *a priori* definidos por los episodios históricos del Capítulo 2. La utilización de puntos de quiebre teóricamente justificados, y no seleccionados con referencia a los propios datos, evita el sesgo de buscar el mayor estadístico en la muestra (*data mining*).
 
@@ -201,7 +183,7 @@ La tabla presenta el F-estadístico de Chow y su p-valor para cada uno de los cu
 
 El resultado de mayor interés económico es el asociado al punto de quiebre de la Crisis Financiera Global (agosto de 2007) y, especialmente, al inicio del ciclo de subidas de tipos (marzo de 2022). Este último corresponde al inicio del episodio que mejor ilustra la "paradoja" identificada en el Capítulo 2: los tipos reales subieron de forma histórica pero el oro no colapsó. Si el test de Chow rechaza la estabilidad en marzo de 2022, se confirma que los parámetros del modelo cambiaron cualitativamente en ese punto —evidencia compatible con la hipótesis de que un nuevo determinante (las compras masivas de bancos centrales) ganó peso suficiente para compensar el efecto negativo de los tipos reales.
 
-### 5.7.3 Análisis CUSUM: detección de inestabilidad continua
+### 5.8.3 Análisis CUSUM: detección de inestabilidad continua
 
 A diferencia del test de Chow, que requiere la especificación a priori del punto de quiebre, el análisis CUSUM (*Cumulative Sum of Recursive Residuals*) detecta inestabilidad en los parámetros sin fijar cuándo ocurre. El método, propuesto por Brown, Durbin y Evans (1975), estima el modelo secuencialmente —añadiendo una observación en cada paso— y acumula los residuos recursivos. Si los parámetros son estables, la suma acumulada fluctúa aleatoriamente en torno a cero. Si los parámetros cambian, la suma acumulada se aleja sistemáticamente, cruzando las bandas de confianza al 5%.
 
@@ -221,7 +203,7 @@ Los coeficientes rolling permiten visualizar si el signo y la magnitud de los co
 
 ---
 
-## 5.8 Síntesis de los resultados econométricos
+## 5.9 Síntesis de los resultados econométricos
 
 El análisis econométrico desarrollado en este capítulo permite establecer cinco conclusiones fundamentales que responden parcialmente a las preguntas de investigación del trabajo y que informarán el diseño del modelo predictivo del Capítulo 6.
 

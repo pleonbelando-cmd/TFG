@@ -165,6 +165,108 @@ def download_google_trends() -> pd.DataFrame | None:
         return None
 
 
+# ── Panel data (Cap. 6) ───────────────────────────────────────────────────────
+# Códigos FRED para las 4 economías del análisis de panel
+PANEL_FRED_SERIES = {
+    # Inflación (IPC, variación anual)
+    "cpi_us":    "CPIAUCSL",          # EE.UU.
+    "cpi_ea":    "CP0000EZ19M086NEST",# Eurozona (HICP)
+    "cpi_uk":    "GBRCPIALLMINMEI",   # Reino Unido
+    "cpi_jp":    "JPNCPIALLMINMEI",   # Japón
+    # Tipo de interés nominal a 10 años
+    "y10_us":    "DGS10",             # EE.UU. (bono Tesoro 10Y nominal)
+    "y10_ea":    "IRLTLT01EZM156N",   # Eurozona (OAT 10Y, OCDE)
+    "y10_uk":    "IRLTLT01GBM156N",   # Reino Unido (Gilt 10Y, OCDE)
+    "y10_jp":    "IRLTLT01JPM156N",   # Japón (JGB 10Y, OCDE)
+    # Tipo de cambio (vs USD)
+    "fx_eurusd": "DEXUSEU",           # EUR/USD (USD por EUR)
+    "fx_gbpusd": "DEXUSUK",           # GBP/USD (USD por GBP)
+    "fx_usdjpy": "DEXJPUS",           # USD/JPY (JPY por USD) — invertir para precio oro en JPY
+}
+
+# Tickers Yahoo para índices bursátiles locales
+PANEL_YAHOO_TICKERS = {
+    "eq_us": "^GSPC",       # S&P 500
+    "eq_ea": "^STOXX50E",   # EuroStoxx 50
+    "eq_uk": "^FTSE",       # FTSE 100
+    "eq_jp": "^N225",       # Nikkei 225
+    "gold_usd": "GC=F",     # Oro spot (USD/oz, futuros continuos)
+}
+
+
+def download_panel_data() -> dict:
+    """
+    Descarga datos para el análisis de panel cross-country (Cap. 6).
+
+    Economías: EE.UU., Eurozona, Reino Unido, Japón.
+    Frecuencia: mensual (se resampleará a trimestral en el notebook).
+    Periodo: START_DATE — END_DATE (configurado en config.py).
+
+    Devuelve un dict con DataFrames: 'fred' y 'yahoo'.
+    Guarda CSVs en data/raw/panel_*.csv.
+    """
+    from fredapi import Fred
+
+    DATA_RAW.mkdir(parents=True, exist_ok=True)
+    results = {}
+
+    # ── FRED ──
+    api_key = os.getenv("FRED_API_KEY")
+    if not api_key:
+        raise EnvironmentError(
+            "FRED_API_KEY no encontrada. Crea un archivo .env con tu clave."
+        )
+    fred = Fred(api_key=api_key)
+    fred_panel = {}
+
+    for name, code in PANEL_FRED_SERIES.items():
+        try:
+            logger.info(f"Panel FRED: {name} ({code})")
+            s = fred.get_series(code, START_DATE, END_DATE)
+            s.name = name
+            s.index.name = "date"
+            filepath = DATA_RAW / f"panel_fred_{name}.csv"
+            s.to_csv(filepath, header=True)
+            fred_panel[name] = s
+            logger.info(f"  → {len(s)} obs. → {filepath.name}")
+        except Exception as e:
+            logger.error(f"Error descargando panel {name} ({code}): {e}")
+
+    results["fred"] = fred_panel
+
+    # ── Yahoo Finance ──
+    import yfinance as yf
+
+    yahoo_panel = {}
+    for name, ticker in PANEL_YAHOO_TICKERS.items():
+        try:
+            logger.info(f"Panel Yahoo: {name} ({ticker})")
+            df = yf.download(
+                ticker,
+                start=START_DATE,
+                end=END_DATE,
+                auto_adjust=True,
+                progress=False,
+            )
+            if df.empty:
+                logger.warning(f"  → Sin datos para {ticker}")
+                continue
+            if isinstance(df.columns, pd.MultiIndex):
+                df.columns = df.columns.get_level_values(0)
+            df.index.name = "date"
+            filepath = DATA_RAW / f"panel_yahoo_{name}.csv"
+            df.to_csv(filepath)
+            yahoo_panel[name] = df
+            logger.info(f"  → {len(df)} obs. → {filepath.name}")
+        except Exception as e:
+            logger.error(f"Error descargando panel {name} ({ticker}): {e}")
+
+    results["yahoo"] = yahoo_panel
+
+    logger.info("Descarga de datos de panel completa.")
+    return results
+
+
 # ── Orquestador ──────────────────────────────────────────────────────────────
 def download_all() -> dict:
     """Descarga todas las fuentes de datos y guarda en data/raw/."""
@@ -174,6 +276,7 @@ def download_all() -> dict:
     results["fred"] = download_fred_series()
     results["yahoo"] = download_yahoo_series()
     results["google_trends"] = download_google_trends()
+    results["panel"] = download_panel_data()
 
     logger.info("Descarga completa. Archivos en data/raw/:")
     for f in sorted(DATA_RAW.glob("*.csv")):
