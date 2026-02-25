@@ -1,23 +1,21 @@
 """
 create_tfg_oficial.py
 
-Genera TFG_Oficial.docx con formato normativo UMU 2025-2026:
-  - Times New Roman 12pt, interlineado 1.5, justificado
-  - Margenes: 3cm izq/der, 2.5cm sup/inf, A4
+Genera TFG_Oficial.docx (~40 paginas) con formato normativo UMU 2025-2026.
+Contenido: version condensada de los 9 capitulos (misma fuente que TFG_Completo).
+Formato:
+  - Times New Roman 12pt  |  Margenes 3cm x 2.5cm (A4)
+  - Interlineado 1.5 (texto) / sencillo (tablas, refs)
+  - Justificado
   - H1: 14pt NEGRITA MAYUSCULAS negro
   - H2: 14pt NEGRITA negro
   - H3: 14pt CURSIVA negro
-  - Tablas / pies de figura: 10pt, interlineado sencillo
-  - Numero de pagina: pie de pagina centrado
-  - Citas: APA 7a (Autor, anno) -- ya estan en los .md
-  - Referencias: orden alfabetico, formato APA 7a
+  - Num. pagina: pie centrado
+  - Citas: APA 7a inline  |  Refs: alfabetico APA 7a, sangria francesa
 
-Estructura del documento:
-  Portada -> Pagina en blanco -> Indice -> Resumen ->
-  Cap 1-9 -> Referencias -> Summary (ingles)
-
-Fuente de contenido: capitulo_0X_*.md (raiz del proyecto)
-Figuras: output/figures_completo/fig_0X_*.png
+Estructura:
+  Portada -> Pag. en blanco -> Indice -> Resumen ->
+  Caps 1-9 -> Referencias -> Summary (ingles)
 
 Uso:
   python -X utf8 create_tfg_oficial.py
@@ -39,76 +37,22 @@ from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
 
 PROJECT_ROOT = Path(__file__).parent
-FIGS_DIR = PROJECT_ROOT / "output" / "figures_completo"
+FIGS_DIR     = PROJECT_ROOT / "output" / "figures_completo"
 
-MD_FILES = {
-    1: PROJECT_ROOT / "capitulo_01_introduccion.md",
-    2: PROJECT_ROOT / "capitulo_02_marco_teorico.md",
-    3: PROJECT_ROOT / "capitulo_03_catalizadores.md",
-    4: PROJECT_ROOT / "capitulo_04_datos_eda.md",
-    5: PROJECT_ROOT / "capitulo_05_econometria.md",
-    6: PROJECT_ROOT / "capitulo_06_panel.md",
-    7: PROJECT_ROOT / "capitulo_07_ml.md",
-    8: PROJECT_ROOT / "capitulo_08_discusion.md",
-    9: PROJECT_ROOT / "capitulo_09_conclusiones.md",
-}
-
-# Figuras a insertar al final de cada capitulo
-CHAPTER_END_FIGS = {
-    4: [
-        (
-            "fig_01_gold_historia.png",
-            "Figura 4.1. Precio mensual del oro (USD/oz), enero 2000 - diciembre 2025. "
-            "Las zonas sombreadas identifican los cinco episodios: GFC 2008, "
-            "maximos post-QE 2011, COVID-19 2020, ciclo de tipos 2022 y rally 2025. "
-            "Fuente: Yahoo Finance (GC=F).",
-        ),
-        (
-            "fig_02_determinantes.png",
-            "Figura 4.2. Evolucion mensual del precio del oro (USD/oz) y sus principales "
-            "determinantes: DXY, tipo nominal del Tesoro a 10Y (%) y VIX. "
-            "Las zonas sombreadas identifican los episodios de crisis. Fuente: Yahoo Finance.",
-        ),
-        (
-            "fig_03_correlaciones_rolling.png",
-            "Figura 4.3. Correlaciones moviles (ventana 36 meses) entre el retorno mensual "
-            "del oro y sus catalizadores principales. La linea discontinua marca el cero. "
-            "Fuente: elaboracion propia sobre datos de Yahoo Finance.",
-        ),
-        (
-            "fig_04_scatter.png",
-            "Figura 4.4. Relacion entre el precio del oro (USD/oz) y dos determinantes: "
-            "DXY (izquierda) y tipo nominal del Tesoro a 10Y (derecha). "
-            "Escala de color: anno (morado: 2000; amarillo: 2025). "
-            "La linea discontinua es la tendencia lineal. Fuente: elaboracion propia.",
-        ),
-    ],
-    7: [
-        (
-            "fig_06_ml_resultados.png",
-            "Figura 7.1. Comparativa de modelos predictivos: RMSE (izquierda) y precision "
-            "direccional DA (derecha), periodo walk-forward (oct. 2016 - oct. 2025). "
-            "La linea discontinua marca el benchmark naive. Fuente: elaboracion propia.",
-        ),
-        (
-            "fig_05_shap.png",
-            "Figura 7.2. Top 8 variables por importancia SHAP (valor medio |phi|) "
-            "en el modelo XGBoost, periodo de test (oct. 2016 - oct. 2025). "
-            "Fuente: elaboracion propia.",
-        ),
-    ],
-}
+FIG1 = FIGS_DIR / "fig_01_gold_historia.png"
+FIG2 = FIGS_DIR / "fig_02_determinantes.png"
+FIG3 = FIGS_DIR / "fig_03_correlaciones_rolling.png"
+FIG4 = FIGS_DIR / "fig_04_scatter.png"
+FIG5 = FIGS_DIR / "fig_05_shap.png"
+FIG6 = FIGS_DIR / "fig_06_ml_resultados.png"
 
 
 # =====================================================================
-# 1. CREACION DEL DOCUMENTO CON ESTILOS OFICIALES
+# 1. DOCUMENTO Y ESTILOS
 # =====================================================================
 
 def create_document() -> Document:
-    """Documento Word con estilos normativos UMU."""
     doc = Document()
-
-    # Margenes A4: 3cm izq/der, 2.5cm sup/inf
     for section in doc.sections:
         section.page_width    = Cm(21.0)
         section.page_height   = Cm(29.7)
@@ -117,7 +61,6 @@ def create_document() -> Document:
         section.top_margin    = Cm(2.5)
         section.bottom_margin = Cm(2.5)
 
-    # Normal: Times New Roman 12pt, 1.5, justificado, 6pt after
     normal = doc.styles["Normal"]
     normal.font.name = "Times New Roman"
     normal.font.size = Pt(12)
@@ -126,37 +69,31 @@ def create_document() -> Document:
     normal.paragraph_format.space_after       = Pt(6)
     normal.paragraph_format.space_before      = Pt(0)
 
-    # Headings
-    _cfg_heading(doc, "Heading 1", size=14, bold=True,  italic=False,
-                 caps=True,  space_before=24, space_after=12)
-    _cfg_heading(doc, "Heading 2", size=14, bold=True,  italic=False,
-                 caps=False, space_before=12, space_after=6)
-    _cfg_heading(doc, "Heading 3", size=14, bold=False, italic=True,
-                 caps=False, space_before=6,  space_after=6)
-
+    _cfg_h(doc, "Heading 1", 14, True,  False, True,  24, 12)
+    _cfg_h(doc, "Heading 2", 14, True,  False, False, 12, 6)
+    _cfg_h(doc, "Heading 3", 14, False, True,  False, 6,  6)
     return doc
 
 
-def _cfg_heading(doc, name, size, bold, italic, caps, space_before, space_after):
-    sty = doc.styles[name]
-    sty.font.name      = "Times New Roman"
-    sty.font.size      = Pt(size)
-    sty.font.bold      = bold
-    sty.font.italic    = italic
-    sty.font.all_caps  = caps
-    sty.font.color.rgb = RGBColor(0, 0, 0)
-    sty.paragraph_format.space_before      = Pt(space_before)
-    sty.paragraph_format.space_after       = Pt(space_after)
-    sty.paragraph_format.alignment         = WD_ALIGN_PARAGRAPH.LEFT
-    sty.paragraph_format.line_spacing_rule = WD_LINE_SPACING.ONE_POINT_FIVE
+def _cfg_h(doc, name, sz, bold, italic, caps, sb, sa):
+    s = doc.styles[name]
+    s.font.name      = "Times New Roman"
+    s.font.size      = Pt(sz)
+    s.font.bold      = bold
+    s.font.italic    = italic
+    s.font.all_caps  = caps
+    s.font.color.rgb = RGBColor(0, 0, 0)
+    s.paragraph_format.space_before      = Pt(sb)
+    s.paragraph_format.space_after       = Pt(sa)
+    s.paragraph_format.alignment         = WD_ALIGN_PARAGRAPH.LEFT
+    s.paragraph_format.line_spacing_rule = WD_LINE_SPACING.ONE_POINT_FIVE
 
 
 # =====================================================================
-# 2. HELPERS DE FORMATO
+# 2. HELPERS
 # =====================================================================
 
 def _tnr(run, size=12, bold=False, italic=False):
-    """Fuerza Times New Roman en un run (sobrescribe temas Word)."""
     run.font.name   = "Times New Roman"
     run.font.size   = Pt(size)
     run.font.bold   = bold
@@ -169,25 +106,18 @@ def _tnr(run, size=12, bold=False, italic=False):
     rPr.insert(0, rf)
 
 
-def _inline(para, text: str, base: int = 12):
-    """Anade runs con soporte **negrita** e *cursiva* al parrafo."""
-    # Limpiar superindices [n] de citas numeradas del script anterior
-    text = re.sub(r"\[\d+(?:,\s*\d+)*\]", "", text)
+def _inline(para, text: str, size: int = 12):
     tokens = re.split(r"(\*\*[^*]+\*\*|\*[^*]+\*)", text)
     for tok in tokens:
         if tok.startswith("**") and tok.endswith("**") and len(tok) > 4:
-            r = para.add_run(tok[2:-2])
-            _tnr(r, size=base, bold=True)
+            r = para.add_run(tok[2:-2]); _tnr(r, size, bold=True)
         elif tok.startswith("*") and tok.endswith("*") and len(tok) > 2:
-            r = para.add_run(tok[1:-1])
-            _tnr(r, size=base, italic=True)
+            r = para.add_run(tok[1:-1]); _tnr(r, size, italic=True)
         else:
-            r = para.add_run(tok)
-            _tnr(r, size=base)
+            r = para.add_run(tok); _tnr(r, size)
 
 
 def P(doc, text: str):
-    """Parrafo Normal con markdown inline."""
     para = doc.add_paragraph(style="Normal")
     _inline(para, text)
     return para
@@ -196,416 +126,829 @@ def P(doc, text: str):
 def H1(doc, text: str):
     return doc.add_heading(text, level=1)
 
-
 def H2(doc, text: str):
     return doc.add_heading(text, level=2)
-
 
 def H3(doc, text: str):
     return doc.add_heading(text, level=3)
 
 
 def CAPTION(doc, text: str):
-    """Pie de figura: 10pt cursiva centrado."""
     para = doc.add_paragraph()
     para.alignment = WD_ALIGN_PARAGRAPH.CENTER
     para.paragraph_format.space_before = Pt(2)
-    para.paragraph_format.space_after  = Pt(12)
+    para.paragraph_format.space_after  = Pt(10)
     r = para.add_run(text)
     _tnr(r, size=10, italic=True)
 
 
-def INSERT_FIG(doc, fig_name: str, caption: str, width_cm: float = 14.0):
-    """Inserta figura PNG con pie."""
-    path = FIGS_DIR / fig_name
+def INSERT_FIG(doc, path: Path, caption: str, width_cm: float = 14.0):
     if not path.exists():
-        P(doc, f"[Figura no disponible: {fig_name}]")
+        P(doc, f"[Figura no disponible: {path.name}]")
         return
     para = doc.add_paragraph()
     para.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    para.paragraph_format.space_before = Pt(8)
-    r = para.add_run()
-    r.add_picture(str(path), width=Cm(width_cm))
+    para.paragraph_format.space_before = Pt(6)
+    para.add_run().add_picture(str(path), width=Cm(width_cm))
     CAPTION(doc, caption)
 
 
 def TABLE(doc, headers: list, rows: list):
-    """Tabla Word: cabecera negrita 10pt, datos 10pt, interlineado sencillo."""
     ncols = len(headers)
     tbl   = doc.add_table(rows=1 + len(rows), cols=ncols)
     tbl.style = "Table Grid"
-    # Cabecera
     for i, h in enumerate(headers):
         cell = tbl.rows[0].cells[i]
         cell.text = ""
         para = cell.paragraphs[0]
         para.alignment = WD_ALIGN_PARAGRAPH.CENTER
         para.paragraph_format.line_spacing_rule = WD_LINE_SPACING.SINGLE
-        r = para.add_run(h)
-        _tnr(r, size=10, bold=True)
-    # Datos
+        r = para.add_run(h); _tnr(r, 10, bold=True)
     for ri, row in enumerate(rows):
         for ci, val in enumerate(row[:ncols]):
             cell = tbl.rows[ri + 1].cells[ci]
             cell.text = ""
             para = cell.paragraphs[0]
             para.paragraph_format.line_spacing_rule = WD_LINE_SPACING.SINGLE
-            r = para.add_run(str(val))
-            _tnr(r, size=10)
+            r = para.add_run(str(val)); _tnr(r, 10)
     doc.add_paragraph()
 
 
 def PAGE_BREAK(doc):
     from docx.enum.text import WD_BREAK
-    para = doc.add_paragraph()
-    para.add_run().add_break(WD_BREAK.PAGE)
+    doc.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
 
 
 # =====================================================================
-# 3. NUMERO DE PAGINA Y TABLA DE CONTENIDOS
+# 3. NUMERO DE PAGINA Y TOC
 # =====================================================================
 
 def add_page_numbers(doc):
-    """Numero de pagina centrado en el pie de todas las secciones."""
     for section in doc.sections:
         footer = section.footer
-        if footer.paragraphs:
-            para = footer.paragraphs[0]
-            para.clear()
-        else:
-            para = footer.add_paragraph()
+        para   = footer.paragraphs[0] if footer.paragraphs else footer.add_paragraph()
+        para.clear()
         para.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        r = para.add_run()
-        _tnr(r, size=10)
-        fld_begin = OxmlElement("w:fldChar")
-        fld_begin.set(qn("w:fldCharType"), "begin")
-        instr     = OxmlElement("w:instrText")
-        instr.set(qn("xml:space"), "preserve")
-        instr.text = " PAGE "
-        fld_end   = OxmlElement("w:fldChar")
-        fld_end.set(qn("w:fldCharType"), "end")
-        r._r.append(fld_begin)
-        r._r.append(instr)
-        r._r.append(fld_end)
+        r = para.add_run(); _tnr(r, 10)
+        for tag, attrs, text in [
+            ("w:fldChar",   {"w:fldCharType": "begin"}, None),
+            ("w:instrText", {"xml:space": "preserve"},  " PAGE "),
+            ("w:fldChar",   {"w:fldCharType": "end"},   None),
+        ]:
+            el = OxmlElement(tag)
+            for k, v in attrs.items():
+                el.set(qn(k), v)
+            if text:
+                el.text = text
+            r._r.append(el)
 
 
 def add_toc(doc):
-    """Campo TOC actualizable con Ctrl+A > F9 en Word."""
     H1(doc, "INDICE")
     para = doc.add_paragraph(style="Normal")
-    r = para.add_run()
-    _tnr(r, size=12)
-    fld_begin = OxmlElement("w:fldChar")
-    fld_begin.set(qn("w:fldCharType"), "begin")
-    instr = OxmlElement("w:instrText")
-    instr.set(qn("xml:space"), "preserve")
-    instr.text = ' TOC \\o "1-3" \\h \\z \\u '
-    fld_sep = OxmlElement("w:fldChar")
-    fld_sep.set(qn("w:fldCharType"), "separate")
-    placeholder = OxmlElement("w:r")
-    pt = OxmlElement("w:t")
-    pt.text = "[Pulse Ctrl+A y luego F9 en Word para actualizar el indice]"
-    placeholder.append(pt)
-    fld_end = OxmlElement("w:fldChar")
-    fld_end.set(qn("w:fldCharType"), "end")
-    r._r.append(fld_begin)
-    r._r.append(instr)
-    r._r.append(fld_sep)
-    r._r.append(placeholder)
-    r._r.append(fld_end)
+
+    r1 = para.add_run(); _tnr(r1, 12)
+    fld = OxmlElement("w:fldChar"); fld.set(qn("w:fldCharType"), "begin")
+    r1._r.append(fld)
+
+    r2 = para.add_run(); _tnr(r2, 12)
+    ins = OxmlElement("w:instrText"); ins.set(qn("xml:space"), "preserve")
+    ins.text = ' TOC \\o "1-3" \\h \\z \\u '
+    r2._r.append(ins)
+
+    r3 = para.add_run(); _tnr(r3, 12)
+    sep = OxmlElement("w:fldChar"); sep.set(qn("w:fldCharType"), "separate")
+    r3._r.append(sep)
+
+    r4 = para.add_run("[Haz clic aqui y pulsa F9 para generar el indice]")
+    _tnr(r4, 12, italic=True)
+
+    r5 = para.add_run(); _tnr(r5, 12)
+    end = OxmlElement("w:fldChar"); end.set(qn("w:fldCharType"), "end")
+    r5._r.append(end)
+
     doc.add_paragraph()
 
 
 # =====================================================================
-# 4. PARSER DE MARKDOWN
-# =====================================================================
-
-def parse_md_chapter(doc, md_path: Path, chapter_num: int = 0):
-    """Lee un .md y lo vuelca al documento con formato oficial."""
-    text  = md_path.read_text(encoding="utf-8")
-    lines = text.splitlines()
-
-    buffer     = []   # Lineas del parrafo actual
-    tbl_rows   = []
-    in_table   = False
-    in_code    = False
-
-    # Patron para detectar referencias inline a figuras/tablas del pipeline
-    FIG_REF_RE = re.compile(
-        r"^\*?\[?\*?\*?(Figura|Tabla|Figure|Table)\s+\d+\.\d+", re.IGNORECASE
-    )
-
-    def flush_para():
-        nonlocal buffer
-        txt = " ".join(buffer).strip()
-        txt = re.sub(r"\s+", " ", txt).strip()
-        buffer.clear()
-        if not txt:
-            return
-        # Saltar lineas que solo son referencias a figuras del pipeline
-        if FIG_REF_RE.match(txt.lstrip("*[")):
-            return
-        P(doc, txt)
-
-    def flush_table():
-        nonlocal tbl_rows, in_table
-        if tbl_rows and len(tbl_rows) >= 2:
-            hdr  = tbl_rows[0]
-            data = [r for r in tbl_rows[1:]
-                    if not all(re.match(r"^[-: ]+$", c) for c in r)]
-            if data:
-                TABLE(doc, hdr, data)
-        tbl_rows.clear()
-        in_table = False
-
-    i = 0
-    while i < len(lines):
-        raw      = lines[i]
-        stripped = raw.rstrip()
-
-        # Bloques de codigo (saltar)
-        if stripped.lstrip().startswith("```"):
-            in_code = not in_code
-            i += 1
-            continue
-        if in_code:
-            i += 1
-            continue
-
-        # Headings
-        if stripped.startswith("### "):
-            flush_para()
-            if in_table: flush_table()
-            heading_txt = stripped[4:].strip()
-            # Saltar subseccion "Referencias de este capitulo"
-            if "Referencias" in heading_txt and "capitulo" in heading_txt.lower():
-                # Saltar hasta el siguiente heading de nivel >= 2
-                i += 1
-                while i < len(lines):
-                    l = lines[i].strip()
-                    if l.startswith("## ") or l.startswith("# "):
-                        break
-                    i += 1
-                continue
-            H3(doc, heading_txt)
-            i += 1
-            continue
-
-        if stripped.startswith("## "):
-            flush_para()
-            if in_table: flush_table()
-            heading_txt = stripped[3:].strip()
-            # Saltar seccion "Referencias de este capitulo"
-            if "Referencias" in heading_txt:
-                i += 1
-                while i < len(lines):
-                    l = lines[i].strip()
-                    if l.startswith("## ") or l.startswith("# "):
-                        break
-                    i += 1
-                continue
-            H2(doc, heading_txt)
-            i += 1
-            continue
-
-        if stripped.startswith("# "):
-            flush_para()
-            if in_table: flush_table()
-            H1(doc, stripped[2:].strip())
-            i += 1
-            continue
-
-        # Tablas Markdown
-        if stripped.startswith("|"):
-            flush_para()
-            if re.match(r"^\|\s*[-:| ]+\s*\|", stripped):
-                i += 1
-                continue
-            cells = [c.strip() for c in stripped.split("|")]
-            cells = [c for c in cells if c != ""]
-            if cells:
-                in_table = True
-                tbl_rows.append(cells)
-            i += 1
-            continue
-        else:
-            if in_table:
-                flush_table()
-
-        # Regla horizontal
-        if stripped.strip() in ("---", "***", "___"):
-            flush_para()
-            i += 1
-            continue
-
-        # Blockquotes
-        if stripped.startswith("> "):
-            flush_para()
-            content = stripped[2:].strip()
-            # Saltar si referencia a Tabla/Figura del pipeline o "Vease output/"
-            if (FIG_REF_RE.match(content.lstrip("*[")) or
-                    "Vease" in content or "output/" in content or
-                    "Nota metodologica" in content):
-                i += 1
-                continue
-            # Nota aclaratoria -> cursiva indentada
-            note = re.sub(r"^\*+|\*+$", "", content.strip()).strip()
-            if note:
-                note_para = doc.add_paragraph(style="Normal")
-                note_para.paragraph_format.left_indent = Cm(1.0)
-                note_para.paragraph_format.space_after = Pt(4)
-                r = note_para.add_run(note)
-                _tnr(r, size=11, italic=True)
-            i += 1
-            continue
-
-        # Ecuaciones $$
-        if stripped.strip().startswith("$$"):
-            flush_para()
-            inner = stripped.strip()[2:]
-            if inner == "":
-                # Bloque multilinea $$\n...\n$$
-                eq_lines = []
-                i += 1
-                while i < len(lines) and lines[i].strip() != "$$":
-                    eq_lines.append(lines[i].strip())
-                    i += 1
-                i += 1
-                eq_text = " ".join(eq_lines)
-            else:
-                eq_text = inner[:-2] if inner.endswith("$$") else inner
-                i += 1
-            if eq_text.strip():
-                eq_para = doc.add_paragraph(style="Normal")
-                eq_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
-                eq_para.paragraph_format.space_before = Pt(4)
-                eq_para.paragraph_format.space_after  = Pt(4)
-                r = eq_para.add_run(eq_text.strip())
-                _tnr(r, size=12, italic=True)
-            continue
-
-        # Linea vacia -> rompe parrafo
-        if stripped.strip() == "":
-            flush_para()
-            i += 1
-            continue
-
-        # Linea normal -> acumula
-        buffer.append(stripped.strip())
-        i += 1
-
-    # Fin del archivo
-    flush_para()
-    if in_table:
-        flush_table()
-
-    # Insertar figuras al final del capitulo
-    if chapter_num in CHAPTER_END_FIGS:
-        for fig_name, caption in CHAPTER_END_FIGS[chapter_num]:
-            INSERT_FIG(doc, fig_name, caption, width_cm=14.0)
-
-
-# =====================================================================
-# 5. PORTADA
+# 4. PORTADA
 # =====================================================================
 
 def write_portada(doc):
-    """Portada UMU -- Arial como fallback de IBM Plex Sans."""
     FONT = "Arial"
 
-    def pline(text, size, bold=False, italic=False,
-              space_before=0, space_after=12):
+    def pline(text, size, bold=False, sb=0, sa=12):
         para = doc.add_paragraph()
         para.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        para.paragraph_format.space_before = Pt(space_before)
-        para.paragraph_format.space_after  = Pt(space_after)
+        para.paragraph_format.space_before = Pt(sb)
+        para.paragraph_format.space_after  = Pt(sa)
         r = para.add_run(text)
-        r.font.name   = FONT
-        r.font.size   = Pt(size)
-        r.font.bold   = bold
-        r.font.italic = italic
-        return para
+        r.font.name = FONT; r.font.size = Pt(size); r.font.bold = bold
 
     for _ in range(4):
-        blank = doc.add_paragraph()
-        blank.paragraph_format.space_after = Pt(0)
+        blank = doc.add_paragraph(); blank.paragraph_format.space_after = Pt(0)
 
-    pline("MEMORIA DEL TRABAJO FIN DE GRADO",
-          size=13, bold=True, space_after=36)
-    pline("Dinamica del precio del oro (2000-2025):",
-          size=16, bold=True, space_after=6)
-    pline("un analisis econometrico y de machine learning",
-          size=15, bold=True, space_after=48)
-    pline("Jose Leon Belando",                   size=12, space_after=8)
-    pline("Grado en Economia",                    size=12, space_after=8)
-    pline("Curso academico 2025-2026",            size=12, space_after=8)
-    pline("Directora: Inmaculada Diaz Sanchez",  size=12, space_after=8)
-    pline("Universidad de Murcia",               size=12, space_after=0)
+    pline("MEMORIA DEL TRABAJO FIN DE GRADO",    13, bold=True, sa=36)
+    pline("Dinamica del precio del oro (2000-2025):", 16, bold=True, sa=6)
+    pline("un analisis econometrico y de machine learning", 15, bold=True, sa=48)
+    pline("Jose Leon Belando",                   12, sa=8)
+    pline("Grado en Economia",                    12, sa=8)
+    pline("Curso academico 2025-2026",            12, sa=8)
+    pline("Directora: Inmaculada Diaz Sanchez",  12, sa=8)
+    pline("Universidad de Murcia",               12, sa=0)
 
-    PAGE_BREAK(doc)   # final de portada
-    PAGE_BREAK(doc)   # pagina en blanco
-
-
-# =====================================================================
-# 6. RESUMEN (espanol, max ~300 palabras)
-# =====================================================================
-
-RESUMEN_PARRAFOS = [
-    (
-        "Este Trabajo de Fin de Grado analiza la dinamica del precio del oro durante "
-        "el periodo 2000-2025 mediante un enfoque metodologico integrado que combina "
-        "econometria de series temporales, analisis de datos de panel y modelos de "
-        "machine learning."
-    ),
-    (
-        "El trabajo se estructura en torno a tres preguntas de investigacion: "
-        "(i) que variables macroeconomicas y financieras determinan el precio del "
-        "oro y cual es su importancia relativa en distintos horizontes temporales; "
-        "(ii) si esas relaciones han sido estables o han cambiado tras los episodios "
-        "de crisis del periodo analizado; y (iii) si el machine learning puede mejorar "
-        "la prediccion a corto plazo respecto a los modelos econometricos clasicos."
-    ),
-    (
-        "La metodologia descansa en tres pilares. El primero es un modelo de "
-        "correccion de errores vectorial (VECM) complementado con un modelo GJR-GARCH "
-        "para la volatilidad condicional y tests de estabilidad estructural (Chow y "
-        "CUSUM). El segundo es un modelo de datos de panel con efectos fijos aplicado "
-        "a cuatro economias avanzadas (EE.UU., Eurozona, Japon y Reino Unido) con "
-        "errores estandar de Driscoll-Kraay. El tercero son modelos de machine "
-        "learning (XGBoost, Random Forest y LSTM) evaluados con validacion "
-        "walk-forward y analisis SHAP de interpretabilidad."
-    ),
-    (
-        "Los resultados principales son cuatro. Primero, los tipos de interes reales "
-        "son el determinante estructural mas importante del precio del oro a largo "
-        "plazo (segundo rango SHAP: |phi| = 0,617; coeficiente VECM negativo "
-        "significativo en las cuatro economias). Segundo, la inflacion pasada "
-        "reciente es el predictor mas potente en el horizonte mensual (primer rango "
-        "SHAP: |phi| = 0,954). Tercero, el test de Hausman rechaza efectos aleatorios "
-        "(p < 0,01), confirmando que los efectos fijos capturan heterogeneidad "
-        "no observada estable entre paises. Cuarto, la red LSTM alcanza una precision "
-        "direccional del 61,5%, superando al benchmark naive en 5,6 puntos "
-        "porcentuales. La paradoja de 2022-2024 -- oro historicamente alto "
-        "coexistiendo con tipos reales historicamente altos -- se explica por la "
-        "demanda estructural de bancos centrales emergentes en el contexto del proceso "
-        "de de-dolarizacion."
-    ),
-    (
-        "Palabras clave: oro, VECM, cointegracion, datos de panel, machine learning, "
-        "SHAP, de-dolarizacion."
-    ),
-]
-
-
-def write_resumen(doc):
-    H1(doc, "RESUMEN")
-    for blk in RESUMEN_PARRAFOS:
-        P(doc, blk)
+    PAGE_BREAK(doc)
     PAGE_BREAK(doc)
 
 
 # =====================================================================
-# 7. REFERENCIAS BIBLIOGRAFICAS (APA 7a, orden alfabetico)
+# 5. RESUMEN
+# =====================================================================
+
+def write_resumen(doc):
+    H1(doc, "RESUMEN")
+    P(doc, "Este Trabajo de Fin de Grado analiza la dinamica del precio del oro durante "
+           "el periodo 2000-2025 mediante un enfoque metodologico integrado que combina "
+           "econometria de series temporales, analisis de datos de panel y modelos de "
+           "machine learning.")
+    P(doc, "El trabajo se estructura en torno a tres preguntas de investigacion: (i) que "
+           "variables macroeconomicas y financieras determinan el precio del oro y cual es "
+           "su importancia relativa en distintos horizontes; (ii) si esas relaciones han "
+           "sido estables o han cambiado tras los episodios de crisis; y (iii) si el "
+           "machine learning puede mejorar la prediccion respecto a los modelos "
+           "econometricos clasicos.")
+    P(doc, "La metodologia descansa en tres pilares: (1) un modelo de correccion de errores "
+           "vectorial (VECM) con GJR-GARCH y tests de estabilidad estructural (Chow, CUSUM); "
+           "(2) un modelo de datos de panel con efectos fijos aplicado a cuatro economias "
+           "avanzadas con errores de Driscoll-Kraay; y (3) modelos de machine learning "
+           "(XGBoost, Random Forest y LSTM) evaluados con validacion walk-forward y analisis "
+           "SHAP de interpretabilidad.")
+    P(doc, "Los resultados principales son: los tipos de interes reales son el determinante "
+           "estructural dominante (SHAP |phi| = 0,617; coeficiente VECM -0,68; significativo "
+           "en las cuatro economias del panel); la inflacion pasada reciente es el predictor "
+           "mas potente a corto plazo (SHAP |phi| = 0,954); el test de Hausman confirma "
+           "efectos fijos; y la LSTM alcanza una precision direccional del 61,5%, superando "
+           "al benchmark naive en 5,6 puntos porcentuales. La paradoja de 2022-2024 se "
+           "explica por la demanda estructural de bancos centrales emergentes en el proceso "
+           "de de-dolarizacion.")
+    P(doc, "Palabras clave: oro, VECM, cointegracion, datos de panel, machine learning, "
+           "SHAP, de-dolarizacion.")
+    PAGE_BREAK(doc)
+
+
+# =====================================================================
+# 6. CAPITULOS 1-9 (contenido condensado)
+# =====================================================================
+
+def cap1(doc):
+    H1(doc, "Capitulo 1: Introduccion y motivacion")
+
+    H2(doc, "1.1 El oro en el siglo XXI")
+    P(doc, "El 15 de agosto de 1971, el presidente Nixon anuncio la suspension de la "
+           "convertibilidad del dolar en oro, poniendo fin al sistema de Bretton Woods. "
+           "Ese dia, la onza troy se cotizaba a 35 dolares. En 2025, el precio supero "
+           "los 4.500 dolares — mas de ciento treinta veces el nivel de 1971 en terminos "
+           "nominales — estableciendo 53 nuevos maximos historicos a lo largo del anno. "
+           "Este activo singular, que no genera flujos de caja ni paga dividendos, "
+           "concentra algunos de los episodios macroeconomicos mas extraordinarios de "
+           "la historia reciente y su comportamiento desafia las categorias convencionales "
+           "de la teoria financiera.")
+    P(doc, "El periodo 2000-2025 engloba cinco episodios de mercado excepcionales: la "
+           "Crisis Financiera Global de 2008, los maximos historicos post-QE de 2011, "
+           "la pandemia de COVID-19 en 2020, el ciclo de subidas de tipos mas agresivo "
+           "en cuatro decadas (2022-2024), y la espectacular subida de 2025 impulsada "
+           "por la guerra arancelaria de la administracion Trump y la aceleracion del "
+           "proceso de de-dolarizacion global. En cada episodio, el oro se comporto de "
+           "forma diferente, lo que lo convierte en un laboratorio ideal para aplicar "
+           "herramientas econometricas y de machine learning.")
+
+    H2(doc, "1.2 Motivacion academica y practica")
+    P(doc, "La motivacion es doble. Academicamente, la literatura ha experimentado una "
+           "expansion significativa desde 2008. Baur y Lucey (2010) y Baur y McDermott "
+           "(2010) establecieron las definiciones formales de *hedge* y *safe haven*. "
+           "Erb y Harvey (2013) cuestionaron empiricamente la idea de que el oro sea un "
+           "buen protector contra la inflacion a horizontes practicos. O'Connor, Lucey, "
+           "Batten y Baur (2015) sistematizaron toda la economia financiera del oro. Sin "
+           "embargo, la aplicacion sistematica de machine learning interpretable — en "
+           "particular SHAP values — para identificar que variables dominan en distintos "
+           "regimenes es todavia un area incipiente. Practicamente, los bancos centrales "
+           "han comprado oro a un ritmo sin precedentes desde 2022 (mas de 1.000 toneladas "
+           "netas anuales segun el World Gold Council, 2023, 2024), con implicaciones de "
+           "largo alcance para el sistema financiero internacional.")
+
+    H2(doc, "1.3 Preguntas de investigacion")
+    P(doc, "**Pregunta 1:** ?Que variables macroeconomicas y financieras determinan el "
+           "precio del oro en el periodo 2000-2025, y cual es su importancia relativa en "
+           "el largo y el corto plazo?")
+    P(doc, "**Pregunta 2:** ?Han cambiado los determinantes del oro tras los grandes "
+           "episodios de crisis? ?Puede identificarse un cambio estructural formal en las "
+           "relaciones econometricas en torno a episodios como la GFC, el COVID-19 o el "
+           "ciclo de subidas de tipos de 2022?")
+    P(doc, "**Pregunta 3:** ?Puede el machine learning mejorar la prediccion del precio "
+           "del oro respecto a los modelos econometricos clasicos, y que informacion aporta "
+           "sobre el peso relativo de cada variable en distintos regimenes de mercado?")
+
+    H2(doc, "1.4 Contribucion del trabajo y estructura")
+    P(doc, "Este trabajo realiza cuatro contribuciones originales: (i) estructura el "
+           "analisis en tres pilares metodologicos complementarios — VAR/VECM, panel "
+           "cross-country con efectos fijos/aleatorios y contraste de Hausman, y modelos "
+           "de machine learning con SHAP; (ii) incorpora el analisis de ruptura estructural "
+           "mediante tests de Chow y CUSUM; (iii) aplica SHAP values para hacer interpretable "
+           "la prediccion del ML; y (iv) aporta evidencia comparativa internacional sobre si "
+           "el rol del oro como refugio es un fenomeno universal o especifico de EE.UU. El "
+           "trabajo se organiza en nueve capitulos: marco teorico (Cap. 2), catalizadores "
+           "(Cap. 3), datos y EDA (Cap. 4), VECM/GARCH (Cap. 5), panel (Cap. 6), ML (Cap. 7), "
+           "discusion integrada (Cap. 8) y conclusiones (Cap. 9).")
+
+
+def cap2(doc):
+    H1(doc, "Capitulo 2: Marco teorico")
+
+    H2(doc, "2.1 El oro como activo financiero singular")
+    P(doc, "El oro ocupa una posicion unica en la taxonomia de los activos financieros. "
+           "No genera flujos de caja, no paga dividendos ni cupones y no tiene valor de "
+           "uso mayoritario en sentido productivo. Y sin embargo, millones de inversores, "
+           "bancos centrales y gobiernos lo acumulan como reserva de valor. La demanda de "
+           "oro se articula en cuatro segmentos: joyeria (el mayor, con China e India como "
+           "protagonistas), inversion (ETFs, lingotes, monedas — el mas sensible a variables "
+           "financieras), bancos centrales (factor dominante desde 2022), e industrial "
+           "y tecnologica (estable e insensible al precio a corto plazo).")
+
+    H2(doc, "2.2 Hedge, safe haven y activo especulativo")
+    P(doc, "La distincion conceptual central es la que establecieron Baur y Lucey (2010) "
+           "entre *hedge* y *safe haven*. Un activo es un **hedge** si su correlacion con "
+           "otro activo es, en promedio, negativa o nula a lo largo del tiempo. Es un "
+           "**safe haven** si esa correlacion es negativa condicionalmente a que los "
+           "mercados esten en panico. Baur y McDermott (2010) documentaron que el oro fue "
+           "un safe haven durante la GFC para los mercados de EE.UU. y Europa, pero no "
+           "para los mercados BRIC. Esta asimetria geografica es uno de los resultados que "
+           "este trabajo pone a prueba con datos actualizados hasta 2025.")
+    P(doc, "Erb y Harvey (2013) cuestionaron la idea de que el oro sea un buen **hedge "
+           "contra la inflacion** a horizontes practicos. La correlacion entre el precio "
+           "real del oro y la inflacion acumulada es alta unicamente a horizontes de "
+           "decadas; a horizontes de 1-10 anos, la correlacion es baja e inestable.")
+
+    H2(doc, "2.3 Literatura empirica sobre determinantes del precio del oro")
+    P(doc, "La literatura empirica puede organizarse en tres generaciones. La **primera** "
+           "(1980-2000) utilizaba modelos de regresion estaticos para establecer "
+           "correlaciones. La **segunda** (2000-2015), impulsada por la GFC, incorporo "
+           "cointegración, VECM y GARCH. El Chicago Fed Letter (2021) es uno de los "
+           "estudios mas completos, documentando la primacia de los tipos reales sobre el "
+           "dolar y la inflacion. La **tercera** (desde 2018) incorpora machine learning "
+           "— gradient boosting, redes neuronales, SHAP — encontrando mejoras modestas "
+           "pero consistentes respecto al benchmark econometrico (Liang et al., 2023; "
+           "Plakandaras et al., 2022).")
+
+    H2(doc, "2.4 Del MES al VAR: motivacion metodologica")
+    P(doc, "La eleccion del VAR/VECM responde a la critica de Sims (1980) a los Modelos "
+           "de Ecuaciones Simultaneas: las restricciones de identificacion son 'increibles' "
+           "porque se imponen por conveniencia estadistica, no por razones economicas "
+           "solidas. El VAR trata todas las variables del sistema como igualmente endogenas "
+           "— la forma reducida sin restricciones arbitrarias. Para el sistema de este "
+           "trabajo — donde el oro, el dolar, los tipos reales y la renta variable se "
+           "afectan mutuamente — el VAR es el marco mas honesto. Cuando las variables son "
+           "no estacionarias y estan cointegradas, la extension natural es el **VECM**, "
+           "que distingue relaciones de largo plazo (cointegracion) de dinamicas de ajuste "
+           "de corto plazo.")
+
+
+def cap3(doc):
+    H1(doc, "Capitulo 3: Catalizadores del precio del oro")
+
+    H2(doc, "3.1 Tipos de interes reales: el determinante dominante")
+    P(doc, "Los **tipos de interes reales** son el determinante macroeconomico mas robusto. "
+           "El mecanismo es el **coste de oportunidad**: el oro no paga cupon ni dividendo; "
+           "mantenerlo implica renunciar al rendimiento de un bono de igual plazo y riesgo. "
+           "Cuando el tipo real sube, el coste de oportunidad aumenta y el precio tiende a "
+           "bajar. La medida estandar es el rendimiento de los TIPS a 10 anos. La correlacion "
+           "documentada por Erb y Harvey (2013) entre el TIPS y el precio real del oro fue "
+           "de -0,82 para 1997-2012, uno de los coeficientes mas altos y estables de la "
+           "literatura. La formalizacion teorica de Barsky y Summers (1988) establece que "
+           "el precio de equilibrio del oro es funcion decreciente del tipo real.")
+
+    H2(doc, "3.2 El indice del dolar (DXY)")
+    P(doc, "Al cotizar globalmente en dolares, el precio del oro para un inversor en otra "
+           "moneda sube automaticamente cuando el dolar se deprecia. La correlacion historica "
+           "entre el DXY y el oro es fuertemente negativa (proxima a -0,6 en gran parte del "
+           "periodo). Sin embargo, esta relacion mostro una ruptura notable en 2022-2024, "
+           "cuando dolar y oro subieron en paralelo — el dolar impulsado por el ciclo de "
+           "tipos y el oro por la demanda de bancos centrales emergentes. Este episodio es "
+           "el que los tests de estabilidad del Capitulo 5 formalizan.")
+
+    H2(doc, "3.3 Inflacion y expectativas inflacionarias")
+    P(doc, "La **inflacion** actua como catalizador de la demanda de oro como cobertura. "
+           "En periodos de alta inflacion esperada, los inversores aumentan su exposicion "
+           "a activos reales. La medida mas directa de expectativas inflacionarias es el "
+           "breakeven de inflacion a 10 anos. Como senalaron Erb y Harvey (2013), la "
+           "inflacion explica bien los grandes movimientos del oro a decadas de distancia "
+           "pero no los movimientos de un ano para otro.")
+
+    H2(doc, "3.4 Volatilidad financiera global (VIX)")
+    P(doc, "El **VIX** activa el canal de *safe haven*: cuando los mercados entran en panico, "
+           "los inversores se refugian en oro. La relacion es positiva: picos del VIX "
+           "superiores a 30-40 corresponden historicamente al inicio de movimientos alcistas "
+           "del oro. Baur y McDermott (2010) cuantificaron este efecto distinguiendo entre "
+           "el rol de hedge (muestra completa) y el de safe haven (quintiles de peores "
+           "retornos bursatiles).")
+
+    H2(doc, "3.5 Endogeneidad y motivacion del VAR")
+    P(doc, "Los tipos reales pueden verse influidos por las expectativas de inflacion que el "
+           "propio oro senaliza; el DXY responde a flujos de capital que tambien mueven el "
+           "oro; el VIX es a la vez causa y consecuencia de los movimientos del metal. "
+           "Estimar por MCO la regresion de ln(Oro) sobre TIPS, DXY, S&P 500 y VIX "
+           "produciria estimadores sesgados. El VAR, al modelar el sistema completo sin "
+           "restricciones de exogeneidad a priori, es la especificacion mas conservadora "
+           "y metodologicamente honesta.")
+
+
+def cap4(doc):
+    H1(doc, "Capitulo 4: Datos y analisis exploratorio")
+
+    H2(doc, "4.1 Fuentes de datos y construccion de la muestra")
+    P(doc, "El analisis cubre el periodo **enero 2000 - diciembre 2025** con **frecuencia "
+           "mensual**, generando 312 observaciones. La frecuencia mensual responde a que "
+           "los determinantes macroeconomicos del oro operan a velocidades mas lentas que "
+           "los flujos especulativos, y la mayoria de fuentes institucionales publican sus "
+           "datos mensualmente.")
+    TABLE(doc,
+          ["Variable", "Simbolo", "Fuente", "Codigo", "Frecuencia"],
+          [
+              ["Precio del oro",          "XAU/USD",  "Yahoo Finance", "GC=F",       "Diaria->mensual"],
+              ["Indice del dolar",         "DXY",      "Yahoo Finance", "DX-Y.NYB",   "Diaria->mensual"],
+              ["Tipo real TIPS 10Y",       "TIPS",     "FRED",          "DFII10",      "Diaria->mensual"],
+              ["Inflacion IPC EE.UU.",     "CPI",      "FRED",          "CPIAUCSL",    "Mensual"],
+              ["Breakeven inflacion 10Y",  "BEI",      "FRED",          "T10YIE",      "Diaria->mensual"],
+              ["Volatilidad implicita",    "VIX",      "Yahoo Finance", "^VIX",        "Diaria->mensual"],
+              ["Indice S&P 500",           "SP500",    "Yahoo Finance", "^GSPC",       "Diaria->mensual"],
+              ["Petroleo WTI",             "WTI",      "Yahoo Finance", "CL=F",        "Diaria->mensual"],
+              ["Tipo nominal Tesoro 10Y",  "TNX",      "Yahoo Finance", "^TNX",        "Diaria->mensual"],
+          ]
+    )
+
+    H2(doc, "4.2 Evolucion historica del oro y episodios de crisis")
+    P(doc, "La Figura 4.1 presenta la evolucion del precio del oro desde enero de 2000 "
+           "hasta diciembre de 2025. Tres periodos se distinguen con claridad: el primer "
+           "ciclo alcista (2000-2012) desde 280 hasta 1.895 USD/oz impulsado por la "
+           "debilidad del dolar y el QE post-GFC; el periodo de consolidacion (2012-2019) "
+           "con correccion hasta 1.050 USD/oz y recuperacion moderada; y el segundo ciclo "
+           "alcista (2020-2025) que encadena el COVID-19 (2.075 USD/oz en agosto 2020) y "
+           "el rally de 2022-2025 hasta 4.549 USD/oz.")
+    INSERT_FIG(doc, FIG1,
+               "Figura 4.1. Precio mensual del oro (USD/oz), enero 2000 - diciembre 2025. "
+               "Las zonas sombreadas identifican los cinco episodios: GFC 2008 (rojo), "
+               "maximos post-QE 2011 (naranja), COVID-19 2020 (morado), ciclo de tipos "
+               "2022 (marron) y rally 2025 (rosa). Fuente: Yahoo Finance (GC=F).",
+               width_cm=14.5)
+
+    H2(doc, "4.3 Series temporales de los determinantes")
+    P(doc, "La Figura 4.2 muestra la evolucion simultanea del oro y sus determinantes "
+           "principales. Cuatro patrones destacan: la correlacion negativa historica entre "
+           "oro y DXY (visible en 2001-2007 y 2020-2021); el tipo nominal reflejando el "
+           "ciclo de politica monetaria (minimos de 2012 y 2020-2021 coinciden con subidas "
+           "del oro); los picos del VIX en GFC 2008 y COVID 2020 coincidiendo con el inicio "
+           "de movimientos alcistas; y la divergencia de 2022-2024 donde tipos y DXY "
+           "altos coexisten con un oro tambien en subida.")
+    INSERT_FIG(doc, FIG2,
+               "Figura 4.2. Evolucion mensual del precio del oro y sus determinantes "
+               "principales (DXY, tipo nominal Tesoro 10Y, VIX). Las zonas sombreadas "
+               "identifican los episodios de crisis. Fuente: Yahoo Finance.",
+               width_cm=14.5)
+
+    H2(doc, "4.4 Correlaciones moviles: inestabilidad como norma")
+    P(doc, "La Figura 4.3 presenta las correlaciones moviles de 36 meses entre el "
+           "retorno del oro y sus catalizadores. La **correlacion oro-DXY** oscila entre "
+           "-0,75 y +0,15 a lo largo del periodo: persistentemente negativa en 2002-2013 "
+           "y 2016-2020, pero positiva en 2022-2023 (paradoja). La **correlacion oro-VIX** "
+           "es positiva y alcanza su maximo en los episodios de crisis, confirmando el "
+           "rol de safe haven. Esta inestabilidad temporal es uno de los hallazgos "
+           "transversales del trabajo.")
+    INSERT_FIG(doc, FIG3,
+               "Figura 4.3. Correlaciones moviles (ventana 36 meses) entre el retorno "
+               "mensual del oro y sus catalizadores. La linea discontinua marca el cero. "
+               "Fuente: elaboracion propia sobre datos de Yahoo Finance.",
+               width_cm=14.5)
+
+    H2(doc, "4.5 Relaciones de dispersion")
+    P(doc, "La Figura 4.4 presenta los graficos de dispersion entre el precio del oro y "
+           "sus dos determinantes mas importantes: DXY y tipo nominal a 10 anos. La "
+           "pendiente negativa es visible en ambos paneles, aunque con dispersion creciente "
+           "en los anos recientes (colores amarillos) — consecuencia de la ruptura "
+           "estructural que el Capitulo 5 formaliza.")
+    INSERT_FIG(doc, FIG4,
+               "Figura 4.4. Relacion entre el precio del oro (USD/oz) y sus dos "
+               "determinantes principales: DXY (izquierda) y tipo nominal 10Y (derecha). "
+               "Escala de color: anno de observacion (morado: 2000; amarillo: 2025). "
+               "La linea discontinua es la tendencia lineal. Fuente: elaboracion propia.",
+               width_cm=14.0)
+
+
+def cap5(doc):
+    H1(doc, "Capitulo 5: Analisis econometrico VAR/VECM")
+
+    H2(doc, "5.1 Del MES al VAR: motivacion metodologica")
+    P(doc, "La eleccion del VECM como nucleo del analisis responde a la evolucion descrita "
+           "en los capitulos anteriores. El VAR propuesto por Sims (1980) trata todas las "
+           "variables del sistema como igualmente endogenas. Cuando las variables son no "
+           "estacionarias y cointegradas, la extension natural es el **VECM**, que distingue "
+           "las relaciones de largo plazo (vector de cointegracion) de las dinamicas de "
+           "ajuste de corto plazo (coeficientes Gamma). Esta distincion es central para "
+           "entender el comportamiento del oro.")
+
+    H2(doc, "5.2 Tests de raiz unitaria")
+    P(doc, "Se aplican sistematicamente el test **ADF** (H0: raiz unitaria) y el "
+           "**KPSS** (H0: estacionariedad). Se clasifica como I(1) si ADF no rechaza "
+           "H0 y KPSS rechaza H0.")
+    TABLE(doc,
+          ["Variable", "ADF p-valor", "KPSS estadist.", "Decision", "ADF en Delta (p-valor)"],
+          [
+              ["ln(Oro)",     "0,998",   "0,812**",  "I(1)", "< 0,001"],
+              ["ln(DXY)",    "0,693",   "0,634**",  "I(1)", "< 0,001"],
+              ["TIPS 10Y",   "0,333",   "0,721**",  "I(1)", "< 0,001"],
+              ["ln(S&P 500)","1,000",   "0,903**",  "I(1)", "< 0,001"],
+              ["IPC (YoY)",  "0,036*",  "0,220",    "I(0)", "--"],
+              ["Breakeven",  "0,002**", "0,183",    "I(0)", "--"],
+              ["VIX",        "0,0002**","0,101",    "I(0)", "--"],
+          ]
+    )
+    P(doc, "Nota: * p < 0,05; ** p < 0,01. V.C. KPSS al 5% = 0,463.")
+    P(doc, "El precio del oro, DXY, TIPS y S&P 500 son **I(1)**. El IPC interanual, el "
+           "breakeven y el VIX son I(0) y se tratan como variables exogenas.")
+
+    H2(doc, "5.3 Test de cointegracion de Johansen")
+    P(doc, "Con las cuatro variables I(1), se aplica el test de Johansen (1991) al "
+           "sistema {ln(Oro), ln(DXY), TIPS, ln(S&P 500)}.")
+    TABLE(doc,
+          ["Hipotesis nula", "Estadist. traza", "V.C. 5%", "Estadist. max. autovalor", "V.C. 5%", "Decision"],
+          [
+              ["r <= 0", "141,67", "69,82", "82,89", "33,88", "Rechazar (ambos)"],
+              ["r <= 1", "58,78",  "47,85", "31,24", "27,58", "Traza rechaza; Max.AV. no"],
+              ["r <= 2", "27,54",  "29,80", "18,13", "21,13", "No rechazar (ambos)"],
+              ["r <= 3", "9,41",   "15,49", "9,41",  "14,26", "No rechazar (ambos)"],
+          ]
+    )
+    P(doc, "Se adopta **r = 1**: existe un unico vector de cointegracion. Hay una "
+           "relacion de equilibrio de largo plazo entre el precio del oro, el dolar, "
+           "los tipos reales y la renta variable, de la que se desvian temporalmente "
+           "pero a la que tienden a retornar.")
+
+    H2(doc, "5.4 Especificacion y estimacion del VECM")
+    P(doc, "Con r = 1 y k = 2 retardos (criterio BIC), el sistema se estima como "
+           "VECM con constante dentro del vector de cointegracion:")
+    P(doc, "DeltaY_t = alpha * beta' * Y_{t-1} + Gamma_1 * DeltaY_{t-1} + epsilon_t")
+    TABLE(doc,
+          ["Variable en beta'", "Coeficiente", "Error estandar", "t-estadistico", "Signo esperado"],
+          [
+              ["ln(DXY)",     "-1,24", "0,18", "-6,89", "Negativo [OK]"],
+              ["TIPS 10Y",    "-0,68", "0,09", "-7,56", "Negativo [OK]"],
+              ["ln(S&P 500)", "-0,31", "0,07", "-4,43", "Negativo [OK]"],
+              ["Constante",   "+8,12", "0,42", "+19,33","Positiva [OK]"],
+          ]
+    )
+    P(doc, "El coeficiente de los TIPS (-0,68) cuantifica el mecanismo de coste de "
+           "oportunidad: cada punto porcentual adicional de tipo real reduce el precio "
+           "de equilibrio del oro en un 0,68%. El coeficiente de velocidad de ajuste "
+           "del oro es alpha_oro = -0,083, implicando una **semivida del desequilibrio** "
+           "de aproximadamente 8 meses. DXY y TIPS son debilmente exogenos: son ellos "
+           "los que impulsan al oro hacia el equilibrio.")
+
+    H2(doc, "5.5 Causalidad de Granger y funciones de impulso-respuesta")
+    P(doc, "El test de causalidad de Granger confirma la jerarquia de determinantes: "
+           "los TIPS Granger-causan al oro (p < 0,001 a todos los horizontes 1-12 meses), "
+           "el DXY tambien (p < 0,01), y el S&P 500 de forma mas marginal (p < 0,05 a 6 "
+           "meses). El oro no Granger-causa a los TIPS (p > 0,70). Las funciones de "
+           "impulso-respuesta muestran que un shock de 1sigma en los TIPS produce una "
+           "caida del oro de -3,2% acumulado a 24 meses. La descomposicion de varianza "
+           "(FEVD) a 12 meses: 28% de la varianza del oro a los TIPS, 19% al DXY, 12% "
+           "al S&P 500, 41% a la propia inercia del oro.")
+
+    H2(doc, "5.6 Analisis de volatilidad: GJR-GARCH(1,1)")
+    P(doc, "El test ARCH-LM rechaza ausencia de heterocedasticidad condicional (p < 0,05), "
+           "justificando un modelo **GJR-GARCH(1,1)** que captura la asimetria en la "
+           "respuesta de la volatilidad.")
+    TABLE(doc,
+          ["Parametro", "Estimacion", "Error est.", "p-valor", "Interpretacion"],
+          [
+              ["omega (constante)",  "0,241",  "0,098", "0,014",  "Volatilidad base"],
+              ["alpha (ARCH)",       "0,089",  "0,031", "0,004",  "Impacto shocks pasados"],
+              ["beta (GARCH)",       "0,847",  "0,044", "< 0,001","Persistencia volatilidad"],
+              ["gamma (asimetria)",  "-0,042", "0,028", "0,133",  "No significativo"],
+              ["nu (grados lib.)",   "5,81",   "1,24",  "< 0,001","Colas pesadas (t-Student)"],
+          ]
+    )
+    P(doc, "El parametro beta (0,847) indica clusters de volatilidad de larga duracion. "
+           "El gamma no es significativo (p = 0,133): para el oro, subidas y bajadas "
+           "generan incrementos similares de volatilidad.")
+
+    H2(doc, "5.7 Estabilidad estructural: Chow y CUSUM")
+    TABLE(doc,
+          ["Punto de quiebre", "Episodio", "F-estadistico", "p-valor", "Decision"],
+          [
+              ["Agosto 2007",    "Inicio crisis subprime",         "3,21", "0,008",  "Rechazo al 1%"],
+              ["Septiembre 2011","Maximos post-QE",                "2,14", "0,063",  "No rechazo al 5%"],
+              ["Marzo 2020",     "Inicio pandemia COVID-19",       "2,87", "0,019",  "Rechazo al 5%"],
+              ["Marzo 2022",     "Inicio ciclo subidas tipos Fed", "4,53", "< 0,001","Rechazo al 0,1%"],
+          ]
+    )
+    P(doc, "El mayor F-estadistico se obtiene en **marzo de 2022** (F = 4,53, p < 0,001). "
+           "El analisis CUSUM sale de las bandas de confianza al 5% durante 2022-2024. "
+           "Los coeficientes rolling del TIPS muestran que su efecto negativo sobre el "
+           "oro se atuo de -0,68 a -0,25 en ese periodo: la firma econometrica de la "
+           "paradoja que el Capitulo 8 analiza en profundidad.")
+
+
+def cap6(doc):
+    H1(doc, "Capitulo 6: Analisis de panel cross-country")
+
+    H2(doc, "6.1 Motivacion")
+    P(doc, "Los capitulos precedentes analizan el oro desde la perspectiva del mercado "
+           "estadounidense. Baur y McDermott (2010) documentaron que el oro fue safe "
+           "haven durante la GFC para mercados europeos y anglosajones pero no para los "
+           "BRIC. Si el comportamiento del oro varia segun la economia, los modelos solo "
+           "con datos de EE.UU. pueden generalizar incorrectamente. Este capitulo aplica "
+           "un analisis de **datos de panel estatico** con efectos fijos, efectos "
+           "aleatorios y contraste de Hausman a cuatro economias avanzadas.")
+
+    H2(doc, "6.2 Muestra, variables y especificacion")
+    P(doc, "El panel comprende N = 4 economias, T = 96 trimestres y N*T = 384 "
+           "observaciones. La variable dependiente es el retorno trimestral del oro en "
+           "**moneda local**. El modelo especificado es:")
+    P(doc, "r_gold_it = beta_0 + beta_1*pi_it + beta_2*r_it + beta_3*VIX_t + "
+           "beta_4*eq_it + eta_i + epsilon_it")
+    TABLE(doc,
+          ["Economia", "Moneda", "Indice bursatil", "Inflacion", "Tipo real 10Y"],
+          [
+              ["EE.UU.",    "USD", "S&P 500",         "CPI (FRED)",    "TIPS (FRED)"],
+              ["Eurozona",  "EUR", "EuroStoxx 50",    "HICP (Eurostat)","OAT real (BCE)"],
+              ["R. Unido",  "GBP", "FTSE 100",        "CPI (ONS)",      "Gilt real (BoE)"],
+              ["Japon",     "JPY", "Nikkei 225",      "CPI (BoJ)",      "JGB real (BoJ)"],
+          ]
+    )
+
+    H2(doc, "6.3 Efectos fijos vs. efectos aleatorios")
+    TABLE(doc,
+          ["Variable", "EF coef.", "EF E.E.", "EA coef.", "EA E.E.", "Signo esperado"],
+          [
+              ["Inflacion local (pi_it)",    "+0,42", "0,18", "+0,38", "0,15", "Positivo [OK]"],
+              ["Tipo real local (r_it)",      "-0,61", "0,14", "-0,47", "0,12", "Negativo [OK]"],
+              ["VIX (variable global)",      "+0,08", "0,02", "+0,07", "0,02", "Positivo [OK]"],
+              ["Retorno renta var. (eq_it)", "-0,19", "0,06", "-0,17", "0,05", "Negativo [OK]"],
+          ]
+    )
+
+    H2(doc, "6.4 Test de Hausman")
+    P(doc, "El contraste de Hausman (1978) proporciona la prueba formal entre EF y EA. "
+           "H0: EA consistente y eficiente (eta_i no correlacionado con regresores).")
+    TABLE(doc,
+          ["Estadistico H", "Grados de libertad", "p-valor", "Decision"],
+          [["12,74", "4", "0,013", "Rechazo H0 al 5% -> Efectos Fijos preferido"]]
+    )
+    P(doc, "Los efectos individuales eta_i incluyen factores como la cultura de inversion "
+           "en oro o el historial de inflacion del banco central, correlacionados con las "
+           "variables explicativas, lo que viola el supuesto del estimador EA.")
+
+    H2(doc, "6.5 Resultados e interpretacion cross-country")
+    P(doc, "Los resultados del modelo de EF con errores de **Driscoll-Kraay** confirman "
+           "la universalidad de los mecanismos del Capitulo 5. El **coeficiente de "
+           "inflacion** (beta_1 = +0,42, p < 0,05) es positivo y significativo en las "
+           "cuatro economias. El **coeficiente del tipo real** (beta_2 = -0,61, p < 0,001) "
+           "es el mas robusto: el mecanismo de coste de oportunidad opera universalmente, "
+           "incluyendo Japon con tipos nominales proximos a cero durante decadas. El "
+           "**coeficiente del VIX** (beta_3 = +0,08, p < 0,001) confirma la funcion de "
+           "safe haven global. Los efectos fijos estimados revelan heterogeneidad: Japon "
+           "presenta el mayor efecto fijo positivo (+2,1 pp trimestral), consistente con "
+           "la demanda cultural e historica del metal en esa economia.")
+
+
+def cap7(doc):
+    H1(doc, "Capitulo 7: Extension predictiva con Machine Learning")
+
+    P(doc, "*Nota metodologica: este capitulo implementa modelos de ML como extension "
+           "complementaria. Las tecnicas — gradient boosting, random forests y LSTM — "
+           "van mas alla del temario de Econometria III, pero se incluyen porque aportan "
+           "una perspectiva predictiva que contrasta con la econometria clasica.*")
+
+    H2(doc, "7.1 Datos y diseno de la evaluacion")
+    P(doc, "La matriz de caracteristicas se construye sobre las 312 observaciones "
+           "mensuales con 35 variables: retornos logaritmicos (DXY, WTI, S&P 500), "
+           "niveles (TIPS, VIX, CPI, Breakeven), retardos 1-3 de cada variable, "
+           "momentum del oro (medias moviles 3 y 6 meses, volatilidad realizada 3 "
+           "meses) y una dummy de regimen de crisis.")
+    TABLE(doc,
+          ["Concepto", "Valor"],
+          [
+              ["Periodo total efectivo",           "Abril 2003 - Octubre 2025"],
+              ["Muestra entrenamiento inicial",     "162 obs. (Abril 2003 - Sept. 2016)"],
+              ["Muestra de test (walk-forward)",    "109 obs. (Oct. 2016 - Oct. 2025)"],
+              ["Variable objetivo",                "Retorno logaritmico mensual oro (pp)"],
+              ["Numero de caracteristicas (p)",    "35"],
+          ]
+    )
+
+    H2(doc, "7.2 Validacion walk-forward")
+    P(doc, "La validacion cruzada estandar introduce *look-ahead bias* en series "
+           "temporales. La **validacion walk-forward con ventana expandible** lo evita: "
+           "el modelo se entrena en [1, t-1] y predice t; luego amplia el entrenamiento "
+           "a [1, t] y predice t+1, sin usar nunca informacion posterior al instante "
+           "de prediccion (Lopez de Prado, 2018).")
+
+    H2(doc, "7.3 Los tres modelos")
+    P(doc, "**XGBoost** construye arboles de decision secuencialmente; configuracion "
+           "conservadora (profundidad maxima 3, tasa de aprendizaje 0,05, regularizacion "
+           "L1 y L2). **Random Forest** construye 300 arboles en paralelo; la "
+           "decorrelacion entre arboles reduce la varianza (Breiman, 2001). **LSTM** "
+           "procesa secuencias temporales de 6 meses con compuertas internas; arquitectura "
+           "simple (32 unidades, 1 capa) con early stopping (Hochreiter y Schmidhuber, 1997).")
+
+    H2(doc, "7.4 Resultados comparativos")
+    TABLE(doc,
+          ["Modelo", "RMSE (pp)", "MAE (pp)", "MAPE (%)", "DA (%)", "DA vs. Naive"],
+          [
+              ["Naive (random walk)",  "5,054", "4,043", "244,9", "55,9%", "--"],
+              ["XGBoost",              "4,340", "3,476", "308,0", "52,3%", "-3,6 pp"],
+              ["Random Forest",        "3,882", "3,181", "226,5", "58,7%", "+2,8 pp"],
+              ["LSTM (mejor modelo)",  "3,815", "3,142", "278,8", "61,5%", "+5,6 pp"],
+          ]
+    )
+    INSERT_FIG(doc, FIG6,
+               "Figura 7.1. Comparativa de modelos predictivos: RMSE (izquierda) y "
+               "precision direccional DA (derecha). Periodo de test: oct. 2016 - oct. "
+               "2025 (109 meses). La linea discontinua marca el benchmark naive. "
+               "Fuente: elaboracion propia.",
+               width_cm=13.5)
+    P(doc, "Tres conclusiones destacan. **Primera**: la LSTM obtiene el mejor rendimiento "
+           "en RMSE (-24,5% vs. naive) y DA (+5,6 pp), gracias a su capacidad de capturar "
+           "dependencias temporales. **Segunda**: el Random Forest supera al XGBoost en "
+           "todas las metricas — resultado frecuente en series financieras cortas donde "
+           "el bagging es mas robusto. **Tercera**: el XGBoost tiene DA inferior al naive "
+           "(52,3% vs. 55,9%), introduciendo ruido en la direccion del movimiento.")
+
+    H2(doc, "7.5 Interpretabilidad: analisis SHAP")
+    P(doc, "Los valores **SHAP** descomponen cada prediccion del XGBoost en la "
+           "contribucion marginal de cada variable (Lundberg y Lee, 2017). La Figura 7.2 "
+           "presenta el ranking de las 8 variables mas influyentes.")
+    TABLE(doc,
+          ["Rango", "Variable", "SHAP |phi medio|", "Interpretacion"],
+          [
+              ["1", "CPI YoY (t-1)",    "0,954", "Inflacion pasada: predictor mas potente a 1 mes"],
+              ["2", "TIPS 10Y (t-2)",   "0,617", "Tipos reales retardados (consistente con Granger)"],
+              ["3", "Ret. oro (t-1)",   "0,526", "Momentum de 1 mes del oro"],
+              ["4", "Breakeven (t-3)",  "0,485", "Expectativas inflacionarias anticipadas 3 meses"],
+              ["5", "WTI (t-2)",        "0,423", "Petroleo como proxy de presiones inflacionarias"],
+              ["6", "S&P 500 (t-1)",    "0,397", "Sustitucion renta variable-oro rezagada"],
+              ["7", "Vol3 oro",         "0,379", "Volatilidad realizada reciente del oro"],
+              ["8", "DXY (t-3)",        "0,329", "Inercia del ciclo del dolar"],
+          ]
+    )
+    INSERT_FIG(doc, FIG5,
+               "Figura 7.2. Importancia media SHAP (|phi medio|) de las 8 variables mas "
+               "influyentes en el XGBoost. Periodo de test: oct. 2016 - oct. 2025. "
+               "Fuente: elaboracion propia.",
+               width_cm=12.5)
+    P(doc, "Los signos SHAP son coherentes con la econometria: inflacion alta -> SHAP "
+           "positivo; tipos reales altos -> SHAP negativo; S&P 500 alto -> SHAP negativo. "
+           "Esta convergencia entre el VECM y el analisis SHAP es el hallazgo "
+           "metodologicamente mas valioso del trabajo.")
+
+
+def cap8(doc):
+    H1(doc, "Capitulo 8: Discusion integrada")
+
+    H2(doc, "8.1 Convergencia metodologica")
+    P(doc, "Los tres capitulos analiticos — VECM, panel y ML — se disenaron para "
+           "responder las mismas preguntas desde angulos complementarios. La convergencia "
+           "de tres enfoques independientes en conclusiones similares es el hallazgo mas "
+           "robusto.")
+    TABLE(doc,
+          ["Variable", "VECM (FEVD 12m)", "Panel EF (Hausman->EF)", "SHAP XGBoost"],
+          [
+              ["Tipos reales",   "#1 -- 28% varianza",   "beta_2=-0,61, p<0,001", "#2 -- |phi|=0,617"],
+              ["Inflacion",      "Exogena I(0)",          "beta_1=+0,42, p<0,05",  "#1 -- |phi|=0,954"],
+              ["DXY (dolar)",   "#2 -- 19% varianza",    "-- (var. USD comun)",    "#8 -- |phi|=0,329"],
+              ["VIX",           "Exogena",               "beta_3=+0,08, p<0,001", "Top-10"],
+              ["S&P 500",       "#3 -- 12% varianza",    "beta_4=-0,19, p<0,01",  "#6 -- |phi|=0,397"],
+          ]
+    )
+    P(doc, "Cuatro conclusiones son especialmente robustas. **Primera**: la relacion "
+           "negativa entre tipos reales y precio del oro es consistente en las tres "
+           "aproximaciones. **Segunda**: la inflacion domina el corto plazo (primera "
+           "posicion SHAP) pero no es la variable de cointegracion de largo plazo. "
+           "**Tercera**: el safe haven es universal (VIX positivo y significativo en "
+           "el panel cross-country). **Cuarta**: la inestabilidad estructural es una "
+           "caracteristica permanente del activo.")
+
+    H2(doc, "8.2 Respuesta a las preguntas de investigacion")
+    P(doc, "**Pregunta 1 -- Determinantes:** Los tipos de interes reales y el DXY son "
+           "los determinantes estructurales dominantes en el largo plazo, con la inflacion "
+           "como principal predictor de corto plazo. El mecanismo de coste de oportunidad "
+           "(coeficiente TIPS = -0,68 en el VECM; beta_2 = -0,61 en el panel) opera "
+           "universalmente y la jerarquia es robusta a la metodologia.")
+    P(doc, "**Pregunta 2 -- Estabilidad:** Las relaciones no son constantes. Los tests "
+           "de Chow rechazan la estabilidad con el mayor F en marzo de 2022 (F = 4,53, "
+           "p < 0,001). La inestabilidad tiene una explicacion: la demanda de bancos "
+           "centrales emergentes en el proceso de de-dolarizacion introdujo un flujo "
+           "inelastico a los tipos reales, debilitando temporalmente la relacion historica.")
+    P(doc, "**Pregunta 3 -- ML vs. VECM:** La LSTM mejora la prediccion (+5,6 pp de DA "
+           "vs. naive). El ML complementa la econometria sin sustituirla: el VECM "
+           "cuantifica mecanismos de transmision; el LSTM optimiza senales tacticas. "
+           "El SHAP valida la especificacion econometrica.")
+
+    H2(doc, "8.3 La paradoja de 2022-2024")
+    P(doc, "En 2022-2024, los tipos reales pasaron de -1% a +2% (el ciclo mas agresivo "
+           "desde 1980) pero el oro marco nuevos maximos. Los tres pilares ofrecen piezas "
+           "complementarias: el VECM diagnostica la ruptura (Chow y CUSUM); el panel "
+           "identifica la heterogeneidad geografica (la demanda de bancos centrales "
+           "emergentes es inelastica a los tipos de los paises avanzados); el ML captura "
+           "el cambio de regimen sin especificarlo a priori (el SHAP muestra que el "
+           "momentum y el VIX ganan peso cuando los TIPS pierden potencia). La conclusion: "
+           "2022-2024 refleja la superposicion del mecanismo de coste de oportunidad y "
+           "la demanda soberana emergente en el proceso de de-dolarizacion.")
+
+    H2(doc, "8.4 Implicaciones para inversores e instituciones")
+    P(doc, "Para el **inversor**: el oro protege mejor con tipos reales negativos o "
+           "decrecientes y VIX elevado. La DA del 61,5% sugiere que senales cuantitativas "
+           "pueden mejorar la temporizacion tactica, aunque el margen sobre el azar es "
+           "modesto y debe contextualizarse contra costes de transaccion. Para el "
+           "**banco central**: el mecanismo de coste de oportunidad opera con los tipos "
+           "reales de la propia moneda de referencia. Para el **investigador**: la "
+           "convergencia VECM-SHAP tiene valor epistemico propio.")
+
+
+def cap9(doc):
+    H1(doc, "Capitulo 9: Conclusiones")
+
+    H2(doc, "9.1 Conclusiones principales")
+
+    H3(doc, "9.1.1 Sobre los determinantes del precio del oro")
+    P(doc, "**Los tipos de interes reales son el determinante estructural mas importante.** "
+           "Esta conclusion se sostiene en cuatro fuentes independientes: mayor causalidad "
+           "de Granger (p < 0,001), IRF de mayor magnitud (-3,2% acumulado a 24 meses), "
+           "mayor FEVD (28% a 12 meses), coeficiente mas significativo en el panel "
+           "(-0,61, p < 0,001) y segunda posicion SHAP (|phi| = 0,617). El mecanismo "
+           "de coste de oportunidad opera universalmente.")
+    P(doc, "**La inflacion domina la prediccion mensual de corto plazo** (primera posicion "
+           "SHAP, |phi| = 0,954). Los dos resultados son complementarios: la sorpresa "
+           "inflacionaria reciente es la senal de alta frecuencia del coste de oportunidad; "
+           "el nivel de los tipos reales ancla la relacion de equilibrio de largo plazo.")
+    P(doc, "**El dolar y la renta variable son determinantes secundarios.** El DXY ocupa "
+           "el segundo lugar en el FEVD (19%) pero la octava posicion SHAP de corto "
+           "plazo, indicando mayor relevancia en horizontes de 12-24 meses.")
+
+    H3(doc, "9.1.2 Sobre la estabilidad temporal")
+    P(doc, "**Las relaciones no son constantes.** Los tests de Chow rechazan la "
+           "estabilidad con el mayor F en marzo de 2022 (F = 4,53, p < 0,001). El CUSUM "
+           "confirma inestabilidad en 2022-2024. El coeficiente rolling del TIPS se "
+           "atenuo de -0,68 a -0,25 en ese periodo.")
+    P(doc, "**La paradoja de 2022-2024 tiene una explicacion coherente.** La demanda "
+           "soberana de bancos centrales emergentes — inelastica a los tipos reales de "
+           "paises avanzados y motivada por la de-dolarizacion — actuo como soporte "
+           "estructural que ralentizo la correccion hacia el equilibrio historico.")
+
+    H3(doc, "9.1.3 Sobre la aportacion del machine learning")
+    P(doc, "**La LSTM mejora la prediccion** con DA = 61,5% (+5,6 pp vs. naive) y RMSE "
+           "= 3,815 pp (-24,5% vs. naive). **El SHAP valida la especificacion "
+           "econometrica**: convergencia entre jerarquias del VECM y del ML.")
+
+    H2(doc, "9.2 Aportaciones originales")
+    P(doc, "**Primera**: validacion cross-country del mecanismo de coste de oportunidad "
+           "en cuatro economias avanzadas, actualizando la evidencia de Baur y McDermott "
+           "(2010). **Segunda**: cuantificacion formal de la inestabilidad estructural "
+           "mediante Chow y CUSUM en puntos de quiebre economicamente motivados. "
+           "**Tercera**: validacion cruzada VECM-SHAP en determinantes dominantes. "
+           "**Cuarta**: analisis integrador del episodio 2022-2024.")
+
+    H2(doc, "9.3 Limitaciones y cautelas")
+    P(doc, "(i) Panel con N = 4 economias: inferencia sobre heterogeneidad entre paises "
+           "limitada. (ii) Muestra de ML de 271 observaciones: resultados indicativos. "
+           "(iii) Ausencia de variable de compras de bancos centrales emergentes a alta "
+           "frecuencia. (iv) Tests formales de raiz unitaria y cointegracion en panel "
+           "no aplicados. (v) Periodo 2000-2025 especialmente rico en episodios "
+           "excepcionales que pueden inflar la importancia aparente de ciertos determinantes.")
+
+    H2(doc, "9.4 Lineas de investigacion futura")
+    P(doc, "**Primera**: ampliar el panel a economias emergentes (China, India, Turquia). "
+           "**Segunda**: incluir reservas oficiales de oro del FMI-IFS como variable de "
+           "demanda soberana. **Tercera**: extender a frecuencia diaria con NLP sobre "
+           "actas de la Fed. **Cuarta**: estimar un Markov Switching VAR que formalice "
+           "los regimenes de dominancia del coste de oportunidad y dominancia de la "
+           "demanda soberana.")
+
+    H2(doc, "9.5 Reflexion final")
+    P(doc, "El oro no es un misterio economico impenetrable ni un activo perfectamente "
+           "predecible: es un activo con catalizadores bien definidos cuyas ponderaciones "
+           "cambian segun el regimen de mercado dominante. Este trabajo ha demostrado que, "
+           "a pesar de su singularidad, sus determinantes son identificables con robustez "
+           "metodologica notable — tres metodologias independientes convergen en tipos "
+           "reales e inflacion como catalizadores dominantes, y la universalidad de esos "
+           "mecanismos se confirma en cuatro economias avanzadas. Los modelos establecen "
+           "con claridad las condiciones bajo las que el oro tendera a subir — tipos "
+           "reales cayendo, incertidumbre financiera elevada, dolar debil, demanda "
+           "soberana sostenida — y las condiciones bajo las que su coste de oportunidad "
+           "se hace dificilmente justificable. Esa capacidad de articular condiciones, "
+           "mas que un numero concreto, es lo que la econometria rigurosa puede aportar.")
+
+
+# =====================================================================
+# 7. REFERENCIAS (APA 7a, orden alfabetico)
 # =====================================================================
 
 REFERENCES_APA = [
@@ -629,8 +972,8 @@ REFERENCES_APA = [
     ("Driscoll, J. C., & Kraay, A. C. (1998). Consistent covariance matrix estimation "
      "with spatially dependent panel data. Review of Economics and Statistics, "
      "80(4), 549-560."),
-    ("Engle, R. F. (1982). Autoregressive conditional heteroscedasticity with estimates "
-     "of the variance of United Kingdom inflation. Econometrica, 50(4), 987-1007."),
+    ("Engle, R. F. (1982). Autoregressive conditional heteroscedasticity. "
+     "Econometrica, 50(4), 987-1007."),
     ("Erb, C. B., & Harvey, C. R. (2013). The golden dilemma. "
      "Financial Analysts Journal, 69(4), 10-42."),
     ("Glosten, L. R., Jagannathan, R., & Runkle, D. E. (1993). On the relation between "
@@ -645,10 +988,9 @@ REFERENCES_APA = [
     ("Johansen, S. (1991). Estimation and hypothesis testing of cointegration vectors "
      "in Gaussian vector autoregressive models. Econometrica, 59(6), 1551-1580."),
     ("Johansen, S., & Juselius, K. (1990). Maximum likelihood estimation and inference "
-     "on cointegration with applications to the demand for money. "
-     "Oxford Bulletin of Economics and Statistics, 52(2), 169-210."),
-    ("Liang, C., Li, Y., Ma, F., & Wei, Y. (2023). Forecasting gold price using "
-     "machine learning methodologies. Chaos, Solitons & Fractals, 173, 113589."),
+     "on cointegration. Oxford Bulletin of Economics and Statistics, 52(2), 169-210."),
+    ("Liang, C., Li, Y., Ma, F., & Wei, Y. (2023). Forecasting gold price using machine "
+     "learning methodologies. Chaos, Solitons & Fractals, 173, 113589."),
     ("Lopez de Prado, M. (2018). Advances in Financial Machine Learning. Wiley."),
     ("Lundberg, S. M., & Lee, S.-I. (2017). A unified approach to interpreting model "
      "predictions. Advances in Neural Information Processing Systems, 30, 4765-4774."),
@@ -680,220 +1022,137 @@ def write_references(doc):
         para.paragraph_format.left_indent       = Cm(1.0)
         para.paragraph_format.line_spacing_rule = WD_LINE_SPACING.SINGLE
         para.paragraph_format.space_after       = Pt(6)
-        r = para.add_run(ref)
-        _tnr(r, size=12)
+        r = para.add_run(ref); _tnr(r, 12)
 
 
 # =====================================================================
-# 8. SUMMARY (ingles, min 1000 palabras)
+# 8. SUMMARY (ingles, >= 1000 palabras)
 # =====================================================================
-
-SUMMARY_PARAS = [
-    # --- TITLE / SUBTITLE treated as H2 by main() ---
-    ("__H2__", "Gold Price Dynamics (2000-2025): "
-     "An Econometric and Machine Learning Analysis"),
-
-    # --- Section headings treated as H3 by main() ---
-    ("__H3__", "Introduction and motivation"),
-    (
-        "Gold occupies a unique position in the taxonomy of financial assets. It "
-        "generates no cash flows, pays no dividends or coupons, and has limited "
-        "productive use compared to industrial commodities. Yet central banks, "
-        "sovereign wealth funds, and private investors continue to accumulate it as "
-        "a store of value and safe haven. The period 2000-2025 concentrated five "
-        "exceptional market episodes: the Global Financial Crisis (GFC) of 2008, "
-        "the post-quantitative easing (QE) peak of 2011, the COVID-19 pandemic of "
-        "2020, the most aggressive interest rate hiking cycle in four decades from "
-        "2022 to 2024, and an extraordinary rally in 2025 that pushed prices above "
-        "USD 4,500 per troy ounce for the first time in history. In each episode, "
-        "gold behaved differently -- sometimes as a predictable safe haven, sometimes "
-        "defying conventional economic logic -- making this period an exceptionally "
-        "rich laboratory for applying modern econometric and machine learning tools."
-    ),
-    (
-        "This thesis is organised around three research questions. First, which "
-        "macroeconomic and financial variables determine the price of gold over the "
-        "period 2000-2025, and what is their relative importance at different time "
-        "horizons? Second, have those determinants remained stable across the major "
-        "crisis episodes, or can formal structural breaks be identified? Third, can "
-        "machine learning improve short-run predictive accuracy beyond classical "
-        "econometric benchmarks, and what does it reveal about the relative weight "
-        "of each variable across different market regimes?"
-    ),
-
-    ("__H3__", "Theoretical framework"),
-    (
-        "The analysis rests on four theoretical pillars from the financial economics "
-        "literature. First, the opportunity cost mechanism: since gold bears no yield, "
-        "its equilibrium price should be a decreasing function of the real interest "
-        "rate -- the forgone return on risk-free real assets. This mechanism, "
-        "formalised by Barsky and Summers (1988) and documented empirically by Erb "
-        "and Harvey (2013), forms the backbone of the Vector Error Correction Model "
-        "estimated in Chapter 5. Second, the hedge and safe haven distinctions "
-        "introduced by Baur and Lucey (2010): gold is a hedge if its unconditional "
-        "correlation with risk assets is negative on average, and a safe haven if "
-        "that correlation is negative conditionally on extreme negative market returns. "
-        "Third, the role of inflation expectations -- measured by Treasury breakeven "
-        "rates -- as a high-frequency signal of the opportunity cost of holding gold. "
-        "Fourth, the institutional context of the de-dollarisation process, through "
-        "which emerging market central banks have been systematically increasing gold "
-        "reserves since 2022 at historically unprecedented rates, creating a demand "
-        "channel structurally different from the financial investor channel modelled "
-        "by classical econometrics."
-    ),
-    (
-        "The methodological choice of a VAR/VECM framework follows Sims's (1980) "
-        "critique of structural simultaneous equation models: since gold, the dollar, "
-        "real interest rates, and equity markets mutually affect each other in ways "
-        "that cannot be specified a priori, treating all variables as equally "
-        "endogenous is the most methodologically honest approach."
-    ),
-
-    ("__H3__", "Data and methodology"),
-    (
-        "The dataset covers 312 monthly observations from January 2000 to December "
-        "2025. Gold prices are sourced from Yahoo Finance (futures contract GC=F). "
-        "Macroeconomic variables -- 10-year TIPS yields, CPI, 10-year breakeven "
-        "inflation rates -- are obtained from the Federal Reserve Economic Data "
-        "(FRED) database. Financial market variables -- DXY dollar index, S&P 500, "
-        "VIX, WTI crude oil, and the 10-year Treasury nominal yield -- are also "
-        "sourced from Yahoo Finance. All price series are transformed to logarithmic "
-        "first differences to ensure stationarity; interest rate and volatility series "
-        "are used in levels. Five historical episodes are demarcated: GFC 2008 "
-        "(August 2007 - June 2009), post-QE peak 2011 (July 2011 - June 2013), "
-        "COVID-19 2020 (February - August 2020), the rate hike cycle 2022 (March "
-        "2022 - July 2024), and the 2025 triple-confluence rally."
-    ),
-
-    ("__H3__", "VAR/VECM econometric results"),
-    (
-        "Augmented Dickey-Fuller and KPSS unit root tests confirm that all five "
-        "variables in the core system are integrated of order one, I(1). The Johansen "
-        "trace and maximum eigenvalue tests identify two cointegrating vectors at the "
-        "5% significance level, justifying the VECM specification. The long-run "
-        "cointegrating vector assigns the largest coefficient to TIPS yields "
-        "(approximately -0.72), confirming the opportunity cost mechanism as the "
-        "primary structural determinant. The DXY enters with a coefficient of "
-        "approximately -0.43. The error correction coefficient of -0.08 implies that "
-        "approximately 8% of any deviation from long-run equilibrium is corrected each "
-        "month, corresponding to a half-life of about eight months."
-    ),
-    (
-        "Granger causality tests reject the null of non-causality from TIPS to gold "
-        "at all lags (p < 0.001). Impulse response functions confirm that a one-"
-        "standard-deviation positive shock to real rates generates a persistent "
-        "negative response lasting 12-18 months. Forecast error variance decomposition "
-        "attributes 38% of the 24-month variance of gold to TIPS shocks and 21% to "
-        "DXY shocks. GJR-GARCH modelling reveals significant asymmetric volatility: "
-        "negative shocks generate larger subsequent variance increases than positive "
-        "shocks of the same magnitude. Structural stability tests reject parameter "
-        "stability at all five episode breakpoints, with the highest F-statistic at "
-        "March 2022. CUSUM analysis exits the 5% confidence bands during 2022-2024. "
-        "Rolling coefficient estimates confirm that the historical TIPS-gold "
-        "coefficient of approximately -0.7 attenuated significantly during 2022-2024, "
-        "when gold rose despite historically high real yields."
-    ),
-
-    ("__H3__", "Panel data analysis"),
-    (
-        "Chapter 6 extends the analysis to a cross-country panel of four advanced "
-        "economies: the United States, the Euro Area, Japan, and the United Kingdom, "
-        "using 96 monthly observations (January 2016 - December 2023) and local-"
-        "currency gold prices. The Hausman test rejects the random effects "
-        "specification (chi-squared = 14.73, p < 0.01), confirming that fixed effects "
-        "capture stable unobserved country-level heterogeneity -- likely differences "
-        "in the gold-currency correlation driven by exchange rate regimes and local "
-        "market structure. Under fixed effects with Driscoll-Kraay standard errors "
-        "(robust to cross-sectional dependence), the real interest rate coefficient is "
-        "negative and statistically significant in all four economies, with estimates "
-        "ranging from -0.31 (Japan) to -0.68 (United States). The VIX coefficient is "
-        "positive and significant across all countries, validating the safe haven "
-        "hypothesis in a cross-country setting and confirming that the opportunity "
-        "cost mechanism is a universal property of the asset rather than a peculiarity "
-        "of U.S. Treasury markets."
-    ),
-
-    ("__H3__", "Machine learning: results and SHAP analysis"),
-    (
-        "Three machine learning architectures are estimated and evaluated with a "
-        "walk-forward expanding window protocol: XGBoost (gradient boosting over "
-        "decision trees), Random Forest (bagging), and LSTM (Long Short-Term Memory "
-        "recurrent neural network). The feature matrix includes 35 variables -- "
-        "lagged values of all macroeconomic and financial series, gold momentum "
-        "indicators, and a binary crisis regime dummy -- with 271 effective "
-        "observations after removing NaNs from lagged features. The LSTM achieves "
-        "the best performance: RMSE of 3.815 percentage points versus 5.054 for the "
-        "naive random walk benchmark (-24.5%), and directional accuracy (DA) of 61.5% "
-        "versus 55.9% for the naive benchmark (+5.6 percentage points). Random Forest "
-        "outperforms XGBoost in all metrics -- a common result for financial time "
-        "series with fewer than 500 observations where bagging's variance reduction "
-        "dominates boosting's sequential correction."
-    ),
-    (
-        "SHAP value analysis of the XGBoost model reveals that the CPI one-month lag "
-        "is the most important predictor at the monthly horizon (mean absolute SHAP "
-        "|phi| = 0.954), followed by TIPS with a two-month lag (|phi| = 0.617), "
-        "one-month gold momentum (|phi| = 0.526), and the 10-year breakeven with a "
-        "three-month lag (|phi| = 0.485). The SHAP hierarchy is fully consistent with "
-        "the VECM variance decomposition. When two approaches with entirely different "
-        "assumptions produce the same hierarchy of variable importance, the evidence "
-        "for genuine economic causality is considerably strengthened relative to "
-        "model-specific artefacts. SHAP waterfall analysis of three representative "
-        "episodes confirms that the relative weight of each variable shifts across "
-        "market regimes: in crisis episodes the VIX and momentum amplify the signal; "
-        "in exceptional rate environments TIPS dominate."
-    ),
-
-    ("__H3__", "Conclusions and contributions"),
-    (
-        "Four main conclusions emerge. First, real interest rates are the dominant "
-        "structural determinant of gold prices in the long run -- a finding that "
-        "holds across the time series, panel, and machine learning frameworks "
-        "simultaneously. Second, inflation is the most potent short-run predictor at "
-        "the monthly horizon, operating through a different mechanism than the "
-        "long-run real yield level that anchors the cointegrating vector. Third, the "
-        "structural relationships between gold and its determinants are not constant: "
-        "formal tests document statistically significant instability at all five "
-        "episode breakpoints. Fourth, the 2022-2024 paradox -- gold reaching "
-        "historical highs while real yields also reached multi-decade highs -- is "
-        "explained by structural demand from emerging market central banks motivated "
-        "by geopolitical de-dollarisation incentives, a channel inelastic to advanced-"
-        "economy real rates whose existence is detected by the structural stability "
-        "tests even if it cannot be fully modelled with available data."
-    ),
-    (
-        "The thesis makes four original contributions: (i) cross-country validation "
-        "of the classical opportunity cost and safe haven mechanisms with data updated "
-        "through 2025; (ii) formal quantification of structural instability at "
-        "economically motivated breakpoints; (iii) cross-methodological validation "
-        "between VECM variance decomposition and SHAP importance rankings; and "
-        "(iv) an integrated analysis of the 2022-2024 episode connecting the "
-        "econometric detection of structural break with the economic explanation of "
-        "de-dollarisation. Limitations include the small panel cross-section (N = 4), "
-        "the limited ML sample size (271 observations), and the absence of high-"
-        "frequency central bank reserve data. Natural extensions include expanding the "
-        "panel to emerging economies, explicitly modelling central bank demand, and "
-        "estimating Markov Switching VAR models to formally characterise the regime "
-        "changes identified descriptively in this thesis."
-    ),
-    (
-        "Keywords: gold, VECM, cointegration, panel data, machine learning, SHAP, "
-        "de-dollarisation."
-    ),
-]
-
 
 def write_summary(doc):
     H1(doc, "SUMMARY")
-    for item in SUMMARY_PARAS:
-        if isinstance(item, tuple):
-            tag, text = item
-            if tag == "__H2__":
-                H2(doc, text)
-            elif tag == "__H3__":
-                H3(doc, text)
-        else:
-            P(doc, item)
+    H2(doc, "Gold Price Dynamics (2000-2025): "
+            "An Econometric and Machine Learning Analysis")
+
+    H3(doc, "Introduction and motivation")
+    P(doc, "Gold occupies a unique position in the taxonomy of financial assets. It "
+           "generates no cash flows, pays no dividends or coupons, and has limited "
+           "productive use compared to industrial commodities. Yet central banks, "
+           "sovereign wealth funds, and private investors continue to accumulate it as "
+           "a store of value and safe haven. The period 2000-2025 concentrated five "
+           "exceptional market episodes: the Global Financial Crisis of 2008, the post-QE "
+           "peak of 2011, the COVID-19 pandemic of 2020, the most aggressive rate hiking "
+           "cycle in four decades (2022-2024), and an extraordinary 2025 rally that pushed "
+           "prices above USD 4,500 per troy ounce for the first time in history. Each "
+           "episode saw gold behave differently, making this period an exceptionally rich "
+           "laboratory for applying modern econometric and machine learning tools.")
+    P(doc, "This thesis is organised around three research questions: (i) which "
+           "macroeconomic and financial variables determine the price of gold over "
+           "2000-2025, and what is their relative importance at different time horizons? "
+           "(ii) Have those determinants remained stable across major crisis episodes, or "
+           "can formal structural breaks be identified? (iii) Can machine learning improve "
+           "short-run predictive accuracy beyond classical econometric benchmarks?")
+
+    H3(doc, "Theoretical framework")
+    P(doc, "The analysis rests on four theoretical pillars. First, the opportunity cost "
+           "mechanism: since gold bears no yield, its equilibrium price should be a "
+           "decreasing function of the real interest rate. This mechanism, formalised by "
+           "Barsky and Summers (1988) and documented by Erb and Harvey (2013), forms the "
+           "backbone of the VECM. Second, the hedge and safe haven distinctions of Baur "
+           "and Lucey (2010): gold is a hedge if its unconditional correlation with risk "
+           "assets is negative on average, and a safe haven if that correlation is negative "
+           "conditionally on extreme negative market returns. Third, the role of inflation "
+           "expectations as a high-frequency signal of the opportunity cost. Fourth, the "
+           "institutional context of de-dollarisation, through which emerging market "
+           "central banks have been increasing gold reserves since 2022 at unprecedented "
+           "rates, creating a demand channel structurally different from the financial "
+           "investor channel. The VAR/VECM framework follows Sims's (1980) critique of "
+           "structural simultaneous equation models: treating all variables as equally "
+           "endogenous is the most methodologically honest approach.")
+
+    H3(doc, "Data and methodology")
+    P(doc, "The dataset covers 312 monthly observations from January 2000 to December "
+           "2025. Gold prices are sourced from Yahoo Finance (GC=F). Macroeconomic "
+           "variables -- 10-year TIPS yields, CPI, 10-year breakeven rates -- from FRED. "
+           "Financial market variables -- DXY, S&P 500, VIX, WTI, 10-year Treasury "
+           "yield -- from Yahoo Finance. Price series are transformed to logarithmic first "
+           "differences; rate series used in levels. Five historical episodes are "
+           "demarcated: GFC 2008 (Aug. 2007 - Jun. 2009), post-QE peak 2011 (Jul. 2011 - "
+           "Jun. 2013), COVID-19 2020 (Feb. - Aug. 2020), rate hike cycle 2022 (Mar. "
+           "2022 - Jul. 2024), and the 2025 triple-confluence rally.")
+
+    H3(doc, "VAR/VECM econometric results")
+    P(doc, "ADF and KPSS unit root tests confirm that all five core system variables are "
+           "I(1). The Johansen trace and maximum eigenvalue tests identify one "
+           "cointegrating vector (r = 1) at the 5% significance level. The long-run "
+           "cointegrating vector assigns the largest coefficient to TIPS yields (-0.68), "
+           "confirming the opportunity cost mechanism. The DXY enters with -1.24 and "
+           "the S&P 500 with -0.31. The error correction coefficient of -0.083 implies "
+           "approximately 8% of any deviation from long-run equilibrium is corrected "
+           "each month (half-life: ~8 months). Granger causality tests reject "
+           "non-causality from TIPS to gold at all lags (p < 0.001). Impulse response "
+           "functions show that a one-standard-deviation positive shock to real rates "
+           "generates a -3.2% cumulative decline in gold at 24 months. FEVD at 12 months "
+           "attributes 28% of gold's variance to TIPS shocks and 19% to DXY shocks. "
+           "GJR-GARCH modelling reveals significant volatility clustering (beta = 0.847) "
+           "but no significant asymmetry (gamma = -0.042, p = 0.133). Structural "
+           "stability tests reject parameter stability at all five episode breakpoints, "
+           "with the highest F-statistic at March 2022 (F = 4.53, p < 0.001). CUSUM "
+           "exits the 5% confidence bands during 2022-2024.")
+
+    H3(doc, "Panel data analysis")
+    P(doc, "The cross-country panel covers four advanced economies (United States, Euro "
+           "Area, United Kingdom, Japan) with 96 monthly observations and local-currency "
+           "gold prices. The Hausman test rejects the random effects specification "
+           "(chi-squared = 12.74, p = 0.013), confirming that fixed effects capture "
+           "stable unobserved country-level heterogeneity. Under fixed effects with "
+           "Driscoll-Kraay standard errors (robust to cross-sectional dependence), the "
+           "real interest rate coefficient is negative and statistically significant "
+           "(beta_2 = -0.61, p < 0.001), the inflation coefficient is positive (beta_1 "
+           "= +0.42, p < 0.05), and the VIX coefficient is positive (beta_3 = +0.08, "
+           "p < 0.001). These findings confirm that the opportunity cost mechanism and "
+           "the safe haven function are universal properties of gold, not peculiarities "
+           "of U.S. Treasury markets.")
+
+    H3(doc, "Machine learning: results and SHAP analysis")
+    P(doc, "Three machine learning architectures are evaluated with a walk-forward "
+           "expanding window: XGBoost, Random Forest, and LSTM. The feature matrix "
+           "includes 35 variables and 271 effective observations. The LSTM achieves the "
+           "best performance: RMSE of 3.815 pp versus 5.054 for the naive random walk "
+           "(-24.5%), and directional accuracy (DA) of 61.5% versus 55.9% (+5.6 pp). "
+           "Random Forest outperforms XGBoost -- common in financial time series with "
+           "n < 500 observations where bagging dominates boosting. SHAP analysis of the "
+           "XGBoost model shows: CPI one-month lag is the most important predictor "
+           "(mean |SHAP| = 0.954), followed by TIPS two-month lag (0.617), one-month "
+           "gold momentum (0.526), and 10-year breakeven three-month lag (0.485). The "
+           "SHAP hierarchy is fully consistent with the VECM variance decomposition. "
+           "When two approaches with entirely different assumptions produce the same "
+           "variable importance ranking, the evidence for genuine economic causality is "
+           "considerably strengthened.")
+
+    H3(doc, "Conclusions and contributions")
+    P(doc, "Four main conclusions emerge. First, real interest rates are the dominant "
+           "structural determinant of gold prices -- a finding robust across the time "
+           "series, panel, and machine learning frameworks. Second, inflation is the most "
+           "potent short-run predictor at the monthly horizon. Third, structural "
+           "relationships are not constant: formal tests document instability at all five "
+           "episode breakpoints. Fourth, the 2022-2024 paradox -- gold at historical "
+           "highs while real yields also reached multi-decade highs -- is explained by "
+           "structural demand from emerging market central banks motivated by "
+           "de-dollarisation incentives, a channel inelastic to advanced-economy real "
+           "rates and undetectable by purely financial variable-based models.")
+    P(doc, "The thesis makes four original contributions: (i) cross-country validation "
+           "of classical mechanisms with data through 2025; (ii) formal quantification "
+           "of structural instability at economically motivated breakpoints; "
+           "(iii) cross-methodological validation between VECM variance decomposition "
+           "and SHAP importance rankings; and (iv) integrated analysis of the 2022-2024 "
+           "episode. Limitations include the small panel cross-section (N = 4), limited "
+           "ML sample size (271 observations), and the absence of high-frequency central "
+           "bank reserve data. Natural extensions: expanding the panel to emerging "
+           "economies, explicitly modelling central bank demand, and estimating Markov "
+           "Switching VAR models to formally characterise the regime changes.")
+    P(doc, "Keywords: gold, VECM, cointegration, panel data, machine learning, SHAP, "
+           "de-dollarisation.")
 
 
 # =====================================================================
@@ -905,30 +1164,12 @@ if __name__ == "__main__":
     print("TFG Oficial -- formato normativo UMU 2025-2026")
     print("=" * 60)
 
-    # 0. Verificar figuras
-    print("\n[0/3] Verificando figuras...")
-    missing_figs = []
-    for cap_num, fig_list in CHAPTER_END_FIGS.items():
-        for fig_name, _ in fig_list:
-            if not (FIGS_DIR / fig_name).exists():
-                missing_figs.append(fig_name)
-    if missing_figs:
-        print(f"  AVISO: faltan {len(missing_figs)} figura(s):")
-        for f in missing_figs:
-            print(f"    - {f}")
-        print("  Ejecuta primero: python -X utf8 create_tfg_completo.py")
-    else:
-        total = sum(len(v) for v in CHAPTER_END_FIGS.values())
-        print(f"  OK: {total} figuras disponibles en {FIGS_DIR.name}/")
+    print("\n[0/2] Verificando figuras...")
+    for fig in [FIG1, FIG2, FIG3, FIG4, FIG5, FIG6]:
+        estado = "OK  " if fig.exists() else "FALTA"
+        print(f"  {estado} {fig.name}")
 
-    # 1. Verificar .md
-    print("\n[1/3] Verificando archivos .md...")
-    for num, path in MD_FILES.items():
-        status = "OK  " if path.exists() else "FALTA"
-        print(f"  {status} Cap.{num}: {path.name}")
-
-    # 2. Construir documento
-    print("\n[2/3] Construyendo TFG_Oficial.docx...")
+    print("\n[1/2] Construyendo TFG_Oficial.docx...")
     doc = create_document()
     add_page_numbers(doc)
 
@@ -938,29 +1179,26 @@ if __name__ == "__main__":
 
     write_resumen(doc)
 
-    for num in range(1, 10):
-        md_path = MD_FILES[num]
-        if not md_path.exists():
-            print(f"  OMITIENDO cap.{num} (archivo no encontrado)")
-            continue
-        print(f"  Procesando cap.{num}...")
-        parse_md_chapter(doc, md_path, chapter_num=num)
-        PAGE_BREAK(doc)
+    cap1(doc); PAGE_BREAK(doc)
+    cap2(doc); PAGE_BREAK(doc)
+    cap3(doc); PAGE_BREAK(doc)
+    cap4(doc); PAGE_BREAK(doc)
+    cap5(doc); PAGE_BREAK(doc)
+    cap6(doc); PAGE_BREAK(doc)
+    cap7(doc); PAGE_BREAK(doc)
+    cap8(doc); PAGE_BREAK(doc)
+    cap9(doc); PAGE_BREAK(doc)
 
     write_references(doc)
     PAGE_BREAK(doc)
     write_summary(doc)
 
-    # 3. Guardar
     out_path = PROJECT_ROOT / "TFG_Oficial.docx"
     doc.save(str(out_path))
 
-    print(f"\n[3/3] Guardado: {out_path}")
+    print(f"\n[2/2] Guardado: {out_path}")
     print(f"  Parrafos : {len(doc.paragraphs)}")
     print(f"  Tablas   : {len(doc.tables)}")
-    print(
-        "\nInstrucciones finales:"
-        "\n  1. Abrir TFG_Oficial.docx en Microsoft Word"
-        "\n  2. Ctrl+A -> F9 para actualizar el indice"
-        "\n  3. Revisar portada y paginacion"
-    )
+    print("\nInstrucciones:")
+    print("  1. Abrir TFG_Oficial.docx en Word")
+    print("  2. Hacer clic sobre el indice -> F9 -> Actualizar toda la tabla")
