@@ -1,659 +1,370 @@
 """
 create_tfg_oficial.py
-Genera TFG_Oficial.docx conforme a la normativa UMU (Taller TFG, 5 feb 2026).
 
-Formato aplicado:
-  - Fuente texto:  Times New Roman 12pt
-  - Márgenes:      3 cm izq/der · 2.5 cm sup/inf · A4
-  - Interlineado:  1.5 (texto) / 1.0 (tablas, notas)
-  - Alineación:    Justificada (texto) / Centro (portada, captions)
-  - H1:  14pt NEGRITA MAYÚSCULAS negro, 24pt antes
-  - H2:  14pt NEGRITA negro, 12pt antes
-  - H3:  14pt CURSIVA negro, 6pt antes
-  - Nº página: pie de página centrado
-  - Portada: Arial (IBM Plex Sans no instalada)
-  - Citas: APA 7ª (Autor, año) inline — ya presentes en los .md
-  - Referencias: Orden alfabético, APA 7ª, interlineado 1.0, sangría francesa
+Genera TFG_Oficial.docx con formato normativo UMU 2025-2026:
+  - Times New Roman 12pt, interlineado 1.5, justificado
+  - Margenes: 3cm izq/der, 2.5cm sup/inf, A4
+  - H1: 14pt NEGRITA MAYUSCULAS negro
+  - H2: 14pt NEGRITA negro
+  - H3: 14pt CURSIVA negro
+  - Tablas / pies de figura: 10pt, interlineado sencillo
+  - Numero de pagina: pie de pagina centrado
+  - Citas: APA 7a (Autor, anno) -- ya estan en los .md
+  - Referencias: orden alfabetico, formato APA 7a
 
-Figuras de datos reales (descargadas de Yahoo Finance):
-  fig_01_gold_historia.png, fig_02_determinantes.png,
-  fig_03_correlaciones_rolling.png, fig_04_scatter.png,
-  fig_05_shap.png, fig_06_ml_resultados.png
+Estructura del documento:
+  Portada -> Pagina en blanco -> Indice -> Resumen ->
+  Cap 1-9 -> Referencias -> Summary (ingles)
+
+Fuente de contenido: capitulo_0X_*.md (raiz del proyecto)
+Figuras: output/figures_completo/fig_0X_*.png
 
 Uso:
   python -X utf8 create_tfg_oficial.py
 """
 
-import io
 import re
 import sys
+import io
 import warnings
 from pathlib import Path
 
-import matplotlib
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
-import numpy as np
-import pandas as pd
-
 warnings.filterwarnings("ignore")
-
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
 
 from docx import Document
-from docx.shared import Pt, RGBColor, Cm, Inches
-from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.shared import Pt, RGBColor, Cm
+from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_LINE_SPACING
 from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
 
-# ─── Rutas ────────────────────────────────────────────────────────────────────
 PROJECT_ROOT = Path(__file__).parent
-FIGS_DIR = PROJECT_ROOT / "output" / "figures_oficial"
-FIGS_DIR.mkdir(parents=True, exist_ok=True)
+FIGS_DIR = PROJECT_ROOT / "output" / "figures_completo"
 
-MD_FILES = [
-    PROJECT_ROOT / "capitulo_01_introduccion.md",
-    PROJECT_ROOT / "capitulo_02_marco_teorico.md",
-    PROJECT_ROOT / "capitulo_03_catalizadores.md",
-    PROJECT_ROOT / "capitulo_04_datos_eda.md",
-    PROJECT_ROOT / "capitulo_05_econometria.md",
-    PROJECT_ROOT / "capitulo_06_panel.md",
-    PROJECT_ROOT / "capitulo_07_ml.md",
-    PROJECT_ROOT / "capitulo_08_discusion.md",
-    PROJECT_ROOT / "capitulo_09_conclusiones.md",
-]
+MD_FILES = {
+    1: PROJECT_ROOT / "capitulo_01_introduccion.md",
+    2: PROJECT_ROOT / "capitulo_02_marco_teorico.md",
+    3: PROJECT_ROOT / "capitulo_03_catalizadores.md",
+    4: PROJECT_ROOT / "capitulo_04_datos_eda.md",
+    5: PROJECT_ROOT / "capitulo_05_econometria.md",
+    6: PROJECT_ROOT / "capitulo_06_panel.md",
+    7: PROJECT_ROOT / "capitulo_07_ml.md",
+    8: PROJECT_ROOT / "capitulo_08_discusion.md",
+    9: PROJECT_ROOT / "capitulo_09_conclusiones.md",
+}
 
-# ─── Colores para figuras ─────────────────────────────────────────────────────
-BLUE   = "#365F91"
-RED    = "#C0392B"
-GREEN  = "#1A6B3C"
-ORANGE = "#D17B2A"
-GREY   = "#e8e8e8"
-
-CRISIS_EPISODES = [
-    ("GFC 2008",          "2007-08", "2009-06", "#d62728"),
-    ("Máx. post-QE 2011", "2011-07", "2012-06", "#ff7f0e"),
-    ("COVID-19 2020",     "2020-02", "2020-06", "#9467bd"),
-    ("Ciclo tipos 2022",  "2022-03", "2023-12", "#8c564b"),
-    ("Rally 2025",        "2025-01", "2025-12", "#e377c2"),
-]
-
-# ══════════════════════════════════════════════════════════════════════════════
-# 1.  DESCARGA DE DATOS Y GENERACIÓN DE FIGURAS
-# ══════════════════════════════════════════════════════════════════════════════
-
-def download_data() -> pd.DataFrame:
-    """Descarga datos mensuales de Yahoo Finance 2000-2025."""
-    import yfinance as yf
-
-    tickers = {
-        "gold":  "GC=F",
-        "dxy":   "DX-Y.NYB",
-        "sp500": "^GSPC",
-        "vix":   "^VIX",
-        "y10":   "^TNX",
-        "wti":   "CL=F",
-    }
-
-    frames = {}
-    for name, ticker in tickers.items():
-        try:
-            df = yf.download(ticker, start="2000-01-01", end="2025-12-31",
-                             auto_adjust=True, progress=False)
-            if df.empty:
-                print(f"  AVISO: sin datos para {ticker}")
-                continue
-            if isinstance(df.columns, pd.MultiIndex):
-                df.columns = df.columns.get_level_values(0)
-            s = df["Close"].resample("ME").last()
-            frames[name] = s
-            print(f"  OK: {name} ({ticker}) — {len(s)} meses")
-        except Exception as e:
-            print(f"  ERROR {ticker}: {e}")
-
-    data = pd.DataFrame(frames).dropna(how="all")
-    data.index = pd.to_datetime(data.index)
-    return data
+# Figuras a insertar al final de cada capitulo
+CHAPTER_END_FIGS = {
+    4: [
+        (
+            "fig_01_gold_historia.png",
+            "Figura 4.1. Precio mensual del oro (USD/oz), enero 2000 - diciembre 2025. "
+            "Las zonas sombreadas identifican los cinco episodios: GFC 2008, "
+            "maximos post-QE 2011, COVID-19 2020, ciclo de tipos 2022 y rally 2025. "
+            "Fuente: Yahoo Finance (GC=F).",
+        ),
+        (
+            "fig_02_determinantes.png",
+            "Figura 4.2. Evolucion mensual del precio del oro (USD/oz) y sus principales "
+            "determinantes: DXY, tipo nominal del Tesoro a 10Y (%) y VIX. "
+            "Las zonas sombreadas identifican los episodios de crisis. Fuente: Yahoo Finance.",
+        ),
+        (
+            "fig_03_correlaciones_rolling.png",
+            "Figura 4.3. Correlaciones moviles (ventana 36 meses) entre el retorno mensual "
+            "del oro y sus catalizadores principales. La linea discontinua marca el cero. "
+            "Fuente: elaboracion propia sobre datos de Yahoo Finance.",
+        ),
+        (
+            "fig_04_scatter.png",
+            "Figura 4.4. Relacion entre el precio del oro (USD/oz) y dos determinantes: "
+            "DXY (izquierda) y tipo nominal del Tesoro a 10Y (derecha). "
+            "Escala de color: anno (morado: 2000; amarillo: 2025). "
+            "La linea discontinua es la tendencia lineal. Fuente: elaboracion propia.",
+        ),
+    ],
+    7: [
+        (
+            "fig_06_ml_resultados.png",
+            "Figura 7.1. Comparativa de modelos predictivos: RMSE (izquierda) y precision "
+            "direccional DA (derecha), periodo walk-forward (oct. 2016 - oct. 2025). "
+            "La linea discontinua marca el benchmark naive. Fuente: elaboracion propia.",
+        ),
+        (
+            "fig_05_shap.png",
+            "Figura 7.2. Top 8 variables por importancia SHAP (valor medio |phi|) "
+            "en el modelo XGBoost, periodo de test (oct. 2016 - oct. 2025). "
+            "Fuente: elaboracion propia.",
+        ),
+    ],
+}
 
 
-def shade_crises(ax, data):
-    for _, start, end, color in CRISIS_EPISODES:
-        s = pd.Timestamp(start)
-        e = min(pd.Timestamp(end), data.index[-1])
-        if s > data.index[-1]:
-            continue
-        ax.axvspan(s, e, alpha=0.12, color=color, zorder=0)
+# =====================================================================
+# 1. CREACION DEL DOCUMENTO CON ESTILOS OFICIALES
+# =====================================================================
 
-
-def fig_gold_historia(data: pd.DataFrame) -> Path:
-    fig, ax = plt.subplots(figsize=(12, 4.5))
-    gold = data["gold"].dropna()
-    ax.plot(gold.index, gold.values, color=BLUE, lw=1.6, zorder=3)
-    shade_crises(ax, gold)
-    patches = [mpatches.Patch(color=c, alpha=0.4, label=lbl)
-               for lbl, _, _, c in CRISIS_EPISODES]
-    ax.legend(handles=patches, fontsize=7.5, loc="upper left", ncol=2, framealpha=0.9)
-    ax.set_title("Precio del oro (USD/oz) — enero 2000 a diciembre 2025",
-                 fontsize=11, fontweight="bold")
-    ax.set_ylabel("USD por onza troy")
-    ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f"{int(x):,}"))
-    ax.grid(axis="y", alpha=0.3)
-    ax.spines[["top", "right"]].set_visible(False)
-    fig.tight_layout()
-    path = FIGS_DIR / "fig_01_gold_historia.png"
-    fig.savefig(path, dpi=150)
-    plt.close(fig)
-    print(f"  Figura guardada: {path.name}")
-    return path
-
-
-def fig_determinantes(data: pd.DataFrame) -> Path:
-    vars_plot = [
-        ("gold",  "Oro (USD/oz)",            BLUE,   True),
-        ("dxy",   "DXY (Índice del dólar)",  ORANGE, False),
-        ("y10",   "Tipo nominal 10Y (%)",    RED,    False),
-        ("vix",   "VIX (Volatilidad impl.)", GREEN,  False),
-    ]
-    vars_plot = [(k, l, c, n) for k, l, c, n in vars_plot if k in data.columns]
-    n = len(vars_plot)
-    fig, axes = plt.subplots(n, 1, figsize=(12, 2.6 * n), sharex=True)
-    if n == 1:
-        axes = [axes]
-    for ax, (key, label, color, _) in zip(axes, vars_plot):
-        s = data[key].dropna()
-        ax.plot(s.index, s.values, color=color, lw=1.3)
-        shade_crises(ax, s)
-        ax.set_ylabel(label, fontsize=8.5)
-        ax.grid(axis="y", alpha=0.3)
-        ax.spines[["top", "right"]].set_visible(False)
-    axes[-1].set_xlabel("Año")
-    fig.suptitle("Variables explicativas y variable dependiente — 2000-2025",
-                 fontsize=11, fontweight="bold", y=1.01)
-    fig.tight_layout()
-    path = FIGS_DIR / "fig_02_determinantes.png"
-    fig.savefig(path, dpi=150, bbox_inches="tight")
-    plt.close(fig)
-    print(f"  Figura guardada: {path.name}")
-    return path
-
-
-def fig_correlaciones_rolling(data: pd.DataFrame) -> Path:
-    gold_ret = np.log(data["gold"]).diff().dropna()
-    pairs = [
-        ("dxy",   "Oro vs DXY",              RED),
-        ("sp500", "Oro vs S&P 500",           ORANGE),
-        ("y10",   "Oro vs Tipo nominal 10Y",  BLUE),
-        ("vix",   "Oro vs VIX",              GREEN),
-    ]
-    pairs = [(k, l, c) for k, l, c in pairs if k in data.columns]
-    fig, ax = plt.subplots(figsize=(12, 4.5))
-    for key, label, color in pairs:
-        other_ret = np.log(data[key].replace(0, np.nan)).diff().dropna()
-        combined = pd.concat([gold_ret, other_ret], axis=1).dropna()
-        combined.columns = ["gold", key]
-        roll_corr = combined["gold"].rolling(36).corr(combined[key])
-        ax.plot(roll_corr.index, roll_corr.values, label=label, color=color, lw=1.4)
-    ax.axhline(0, color="black", lw=0.8, ls="--")
-    shade_crises(ax, gold_ret)
-    ax.set_title("Correlación móvil (36 meses) del retorno del oro con sus determinantes",
-                 fontsize=11, fontweight="bold")
-    ax.set_ylabel("Coeficiente de correlación")
-    ax.legend(fontsize=8.5, loc="lower left")
-    ax.set_ylim(-1, 1)
-    ax.grid(axis="y", alpha=0.3)
-    ax.spines[["top", "right"]].set_visible(False)
-    fig.tight_layout()
-    path = FIGS_DIR / "fig_03_correlaciones_rolling.png"
-    fig.savefig(path, dpi=150)
-    plt.close(fig)
-    print(f"  Figura guardada: {path.name}")
-    return path
-
-
-def fig_scatter(data: pd.DataFrame) -> Path:
-    fig, axes = plt.subplots(1, 2, figsize=(11, 4.5))
-    pairs_scatter = [
-        ("dxy", "DXY (Índice del dólar)", axes[0]),
-        ("y10", "Tipo nominal 10Y (%)",   axes[1]),
-    ]
-    pairs_scatter = [(k, l, a) for k, l, a in pairs_scatter if k in data.columns]
-    for key, xlabel, ax in pairs_scatter:
-        combined = data[["gold", key]].dropna()
-        ax.scatter(combined[key], combined["gold"],
-                   c=plt.cm.plasma(np.linspace(0, 1, len(combined))),
-                   alpha=0.6, s=18, edgecolors="none")
-        m, b = np.polyfit(combined[key], combined["gold"], 1)
-        x_line = np.linspace(combined[key].min(), combined[key].max(), 100)
-        ax.plot(x_line, m * x_line + b, color="black", lw=1.2, ls="--", alpha=0.6)
-        corr = combined["gold"].corr(combined[key])
-        ax.set_xlabel(xlabel, fontsize=9)
-        ax.set_ylabel("Oro (USD/oz)" if ax == axes[0] else "")
-        ax.set_title(f"r = {corr:.2f}", fontsize=9)
-        ax.grid(alpha=0.3)
-        ax.spines[["top", "right"]].set_visible(False)
-    sm = plt.cm.ScalarMappable(cmap="plasma",
-                                norm=plt.Normalize(vmin=2000, vmax=2025))
-    sm.set_array([])
-    cbar = fig.colorbar(sm, ax=axes, shrink=0.8, pad=0.02)
-    cbar.set_label("Año", fontsize=8)
-    fig.suptitle("Relación entre el precio del oro y sus catalizadores (mensual, 2000-2025)",
-                 fontsize=10.5, fontweight="bold")
-    fig.tight_layout()
-    path = FIGS_DIR / "fig_04_scatter.png"
-    fig.savefig(path, dpi=150)
-    plt.close(fig)
-    print(f"  Figura guardada: {path.name}")
-    return path
-
-
-def fig_shap() -> Path:
-    variables   = ["CPI YoY (t-1)", "TIPS 10Y (t-2)", "Ret. oro (t-1)",
-                   "Breakeven (t-3)", "WTI (t-2)", "S&P 500 (t-1)",
-                   "Vol3 oro", "DXY (t-3)"]
-    importances = [0.954, 0.617, 0.526, 0.485, 0.423, 0.397, 0.379, 0.329]
-    colors = [RED if "CPI" in v or "Brea" in v
-              else BLUE if "TIPS" in v
-              else ORANGE if "S&P" in v or "WTI" in v
-              else GREEN for v in variables]
-    fig, ax = plt.subplots(figsize=(8, 4.5))
-    y_pos = range(len(variables) - 1, -1, -1)
-    bars = ax.barh(list(y_pos), importances[::-1], color=colors[::-1],
-                   edgecolor="white", height=0.65)
-    ax.set_yticks(list(y_pos))
-    ax.set_yticklabels(variables[::-1], fontsize=9)
-    ax.set_xlabel("Importancia SHAP media |φ̄|", fontsize=9)
-    ax.set_title("Top 8 variables por importancia SHAP — XGBoost (período de test)",
-                 fontsize=10.5, fontweight="bold")
-    for bar, val in zip(bars, importances[::-1]):
-        ax.text(val + 0.005, bar.get_y() + bar.get_height() / 2,
-                f"{val:.3f}", va="center", fontsize=8)
-    legend_elements = [
-        mpatches.Patch(color=RED,    label="Inflación / expectativas"),
-        mpatches.Patch(color=BLUE,   label="Tipos de interés reales"),
-        mpatches.Patch(color=ORANGE, label="Materias primas / renta var."),
-        mpatches.Patch(color=GREEN,  label="Momentum / volatilidad"),
-    ]
-    ax.legend(handles=legend_elements, fontsize=7.5, loc="lower right")
-    ax.grid(axis="x", alpha=0.3)
-    ax.spines[["top", "right"]].set_visible(False)
-    fig.tight_layout()
-    path = FIGS_DIR / "fig_05_shap.png"
-    fig.savefig(path, dpi=150)
-    plt.close(fig)
-    print(f"  Figura guardada: {path.name}")
-    return path
-
-
-def fig_ml_resultados() -> Path:
-    models = ["Naive\n(random walk)", "XGBoost", "Random\nForest", "LSTM"]
-    rmse   = [5.054, 4.340, 3.882, 3.815]
-    da     = [55.9,  52.3,  58.7,  61.5]
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
-    bar_colors = [GREY, ORANGE, BLUE, RED]
-    bars1 = ax1.bar(models, rmse, color=bar_colors, edgecolor="white", width=0.55)
-    ax1.set_ylabel("RMSE (puntos porcentuales)", fontsize=9)
-    ax1.set_title("Error de predicción (RMSE)\n← menor es mejor", fontsize=9.5)
-    ax1.axhline(rmse[0], color="black", ls="--", lw=0.9, alpha=0.5)
-    for bar, v in zip(bars1, rmse):
-        ax1.text(bar.get_x() + bar.get_width() / 2, v + 0.04,
-                 f"{v:.3f}", ha="center", fontsize=8.5, fontweight="bold")
-    ax1.set_ylim(0, 6.2)
-    ax1.spines[["top", "right"]].set_visible(False)
-    ax1.grid(axis="y", alpha=0.3)
-    bars2 = ax2.bar(models, da, color=bar_colors, edgecolor="white", width=0.55)
-    ax2.set_ylabel("DA — Precisión direccional (%)", fontsize=9)
-    ax2.set_title("Acierto direccional (DA)\n→ mayor es mejor", fontsize=9.5)
-    ax2.axhline(da[0], color="black", ls="--", lw=0.9, alpha=0.5)
-    ax2.axhline(50, color="grey", ls=":", lw=0.8, alpha=0.4)
-    for bar, v in zip(bars2, da):
-        ax2.text(bar.get_x() + bar.get_width() / 2, v + 0.3,
-                 f"{v:.1f}%", ha="center", fontsize=8.5, fontweight="bold")
-    ax2.set_ylim(40, 70)
-    ax2.spines[["top", "right"]].set_visible(False)
-    ax2.grid(axis="y", alpha=0.3)
-    fig.suptitle("Comparativa de modelos predictivos — walk-forward (oct. 2016 – oct. 2025)",
-                 fontsize=10.5, fontweight="bold")
-    fig.tight_layout()
-    path = FIGS_DIR / "fig_06_ml_resultados.png"
-    fig.savefig(path, dpi=150)
-    plt.close(fig)
-    print(f"  Figura guardada: {path.name}")
-    return path
-
-
-# ══════════════════════════════════════════════════════════════════════════════
-# 2.  CONSTRUCCIÓN DEL DOCUMENTO WORD — FORMATO OFICIAL UMU
-# ══════════════════════════════════════════════════════════════════════════════
-
-def make_doc() -> Document:
-    """Crea un Document con los estilos de la normativa UMU."""
+def create_document() -> Document:
+    """Documento Word con estilos normativos UMU."""
     doc = Document()
 
-    # Márgenes y tamaño de página (A4)
+    # Margenes A4: 3cm izq/der, 2.5cm sup/inf
     for section in doc.sections:
-        section.page_width   = Cm(21.0)
-        section.page_height  = Cm(29.7)
-        section.top_margin    = Cm(2.5)
-        section.bottom_margin = Cm(2.5)
+        section.page_width    = Cm(21.0)
+        section.page_height   = Cm(29.7)
         section.left_margin   = Cm(3.0)
         section.right_margin  = Cm(3.0)
+        section.top_margin    = Cm(2.5)
+        section.bottom_margin = Cm(2.5)
 
-    # Estilo Normal: Times New Roman 12pt
+    # Normal: Times New Roman 12pt, 1.5, justificado, 6pt after
     normal = doc.styles["Normal"]
     normal.font.name = "Times New Roman"
     normal.font.size = Pt(12)
+    normal.paragraph_format.alignment         = WD_ALIGN_PARAGRAPH.JUSTIFY
+    normal.paragraph_format.line_spacing_rule = WD_LINE_SPACING.ONE_POINT_FIVE
+    normal.paragraph_format.space_after       = Pt(6)
+    normal.paragraph_format.space_before      = Pt(0)
 
-    # Heading 1: 14pt NEGRITA NEGRO (MAYÚSCULAS se aplican al insertar)
-    h1 = doc.styles["Heading 1"]
-    h1.font.name  = "Times New Roman"
-    h1.font.size  = Pt(14)
-    h1.font.bold  = True
-    h1.font.color.rgb = RGBColor(0, 0, 0)
-    h1.font.italic = False
-    h1.paragraph_format.space_before = Pt(24)
-    h1.paragraph_format.space_after  = Pt(12)
-    h1.paragraph_format.alignment    = WD_ALIGN_PARAGRAPH.LEFT
-
-    # Heading 2: 14pt NEGRITA NEGRO
-    h2 = doc.styles["Heading 2"]
-    h2.font.name  = "Times New Roman"
-    h2.font.size  = Pt(14)
-    h2.font.bold  = True
-    h2.font.color.rgb = RGBColor(0, 0, 0)
-    h2.font.italic = False
-    h2.paragraph_format.space_before = Pt(12)
-    h2.paragraph_format.space_after  = Pt(6)
-    h2.paragraph_format.alignment    = WD_ALIGN_PARAGRAPH.LEFT
-
-    # Heading 3: 14pt CURSIVA NEGRO
-    h3 = doc.styles["Heading 3"]
-    h3.font.name  = "Times New Roman"
-    h3.font.size  = Pt(14)
-    h3.font.bold  = False
-    h3.font.italic = True
-    h3.font.color.rgb = RGBColor(0, 0, 0)
-    h3.paragraph_format.space_before = Pt(6)
-    h3.paragraph_format.space_after  = Pt(6)
-    h3.paragraph_format.alignment    = WD_ALIGN_PARAGRAPH.LEFT
+    # Headings
+    _cfg_heading(doc, "Heading 1", size=14, bold=True,  italic=False,
+                 caps=True,  space_before=24, space_after=12)
+    _cfg_heading(doc, "Heading 2", size=14, bold=True,  italic=False,
+                 caps=False, space_before=12, space_after=6)
+    _cfg_heading(doc, "Heading 3", size=14, bold=False, italic=True,
+                 caps=False, space_before=6,  space_after=6)
 
     return doc
 
 
-def _set_spacing_15(p):
-    """Aplica interlineado 1.5 y sin espacio extra al párrafo."""
-    pPr = p._element.get_or_add_pPr()
-    # Eliminar spacing existente si lo hay
-    for old in pPr.findall(qn("w:spacing")):
-        pPr.remove(old)
-    sp = OxmlElement("w:spacing")
-    sp.set(qn("w:line"),     "360")   # 240 × 1.5 = 360 twips
-    sp.set(qn("w:lineRule"), "auto")
-    sp.set(qn("w:after"),    "120")   # 6pt after
-    pPr.append(sp)
+def _cfg_heading(doc, name, size, bold, italic, caps, space_before, space_after):
+    sty = doc.styles[name]
+    sty.font.name      = "Times New Roman"
+    sty.font.size      = Pt(size)
+    sty.font.bold      = bold
+    sty.font.italic    = italic
+    sty.font.all_caps  = caps
+    sty.font.color.rgb = RGBColor(0, 0, 0)
+    sty.paragraph_format.space_before      = Pt(space_before)
+    sty.paragraph_format.space_after       = Pt(space_after)
+    sty.paragraph_format.alignment         = WD_ALIGN_PARAGRAPH.LEFT
+    sty.paragraph_format.line_spacing_rule = WD_LINE_SPACING.ONE_POINT_FIVE
 
 
-def _set_spacing_10(p):
-    """Aplica interlineado simple (1.0) al párrafo."""
-    pPr = p._element.get_or_add_pPr()
-    for old in pPr.findall(qn("w:spacing")):
-        pPr.remove(old)
-    sp = OxmlElement("w:spacing")
-    sp.set(qn("w:line"),     "240")   # 240 twips = 1.0
-    sp.set(qn("w:lineRule"), "auto")
-    sp.set(qn("w:after"),    "0")
-    pPr.append(sp)
+# =====================================================================
+# 2. HELPERS DE FORMATO
+# =====================================================================
+
+def _tnr(run, size=12, bold=False, italic=False):
+    """Fuerza Times New Roman en un run (sobrescribe temas Word)."""
+    run.font.name   = "Times New Roman"
+    run.font.size   = Pt(size)
+    run.font.bold   = bold
+    run.font.italic = italic
+    rPr = run._r.get_or_add_rPr()
+    rf  = OxmlElement("w:rFonts")
+    rf.set(qn("w:ascii"), "Times New Roman")
+    rf.set(qn("w:hAnsi"), "Times New Roman")
+    rf.set(qn("w:cs"),    "Times New Roman")
+    rPr.insert(0, rf)
 
 
-def _set_font(run, name="Times New Roman", size=12):
-    run.font.name = name
-    run.font.size = Pt(size)
-
-
-def add_page_numbers(doc):
-    """Añade número de página centrado en el pie de cada sección."""
-    for section in doc.sections:
-        footer = section.footer
-        fp = footer.paragraphs[0]
-        fp.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        fp.clear()
-        # Campo de número de página
-        fldChar1 = OxmlElement("w:fldChar")
-        fldChar1.set(qn("w:fldCharType"), "begin")
-        instrText = OxmlElement("w:instrText")
-        instrText.text = "PAGE"
-        fldChar2 = OxmlElement("w:fldChar")
-        fldChar2.set(qn("w:fldCharType"), "separate")
-        fldChar3 = OxmlElement("w:fldChar")
-        fldChar3.set(qn("w:fldCharType"), "end")
-        run = fp.add_run()
-        run.font.name = "Times New Roman"
-        run.font.size = Pt(10)
-        run._r.append(fldChar1)
-        run._r.append(instrText)
-        run._r.append(fldChar2)
-        run._r.append(fldChar3)
-
-
-def add_toc(doc):
-    """Inserta un campo TOC actualizable (F9 en Word)."""
-    p = doc.add_paragraph()
-    _set_spacing_10(p)
-    run = p.add_run()
-    fldChar = OxmlElement("w:fldChar")
-    fldChar.set(qn("w:fldCharType"), "begin")
-    instrText = OxmlElement("w:instrText")
-    instrText.set(qn("xml:space"), "preserve")
-    instrText.text = ' TOC \\o "1-3" \\h \\z \\u '
-    fldChar2 = OxmlElement("w:fldChar")
-    fldChar2.set(qn("w:fldCharType"), "separate")
-    fldChar3 = OxmlElement("w:fldChar")
-    fldChar3.set(qn("w:fldCharType"), "end")
-    run._r.append(fldChar)
-    run._r.append(instrText)
-    run._r.append(fldChar2)
-    run._r.append(fldChar3)
-
-
-def PAGE_BREAK(doc):
-    p = doc.add_paragraph()
-    run = p.add_run()
-    from docx.enum.text import WD_BREAK
-    run.add_break(WD_BREAK.PAGE)
-
-
-def _add_run_formatted(p, text, bold=False, italic=False,
-                        font="Times New Roman", size=12):
-    run = p.add_run(text)
-    run.font.name = font
-    run.font.size = Pt(size)
-    run.bold   = bold
-    run.italic = italic
-    return run
-
-
-def _parse_inline(p, text, font="Times New Roman", size=12):
-    """Analiza inline markdown (**bold**, *italic*) y añade runs al párrafo p."""
-    pattern = re.compile(r"(\*\*[^*]+\*\*|\*[^*]+\*)")
-    tokens = pattern.split(text)
+def _inline(para, text: str, base: int = 12):
+    """Anade runs con soporte **negrita** e *cursiva* al parrafo."""
+    # Limpiar superindices [n] de citas numeradas del script anterior
+    text = re.sub(r"\[\d+(?:,\s*\d+)*\]", "", text)
+    tokens = re.split(r"(\*\*[^*]+\*\*|\*[^*]+\*)", text)
     for tok in tokens:
-        if not tok:
-            continue
-        if tok.startswith("**") and tok.endswith("**"):
-            _add_run_formatted(p, tok[2:-2], bold=True, font=font, size=size)
-        elif tok.startswith("*") and tok.endswith("*"):
-            _add_run_formatted(p, tok[1:-1], italic=True, font=font, size=size)
+        if tok.startswith("**") and tok.endswith("**") and len(tok) > 4:
+            r = para.add_run(tok[2:-2])
+            _tnr(r, size=base, bold=True)
+        elif tok.startswith("*") and tok.endswith("*") and len(tok) > 2:
+            r = para.add_run(tok[1:-1])
+            _tnr(r, size=base, italic=True)
         else:
-            _add_run_formatted(p, tok, font=font, size=size)
+            r = para.add_run(tok)
+            _tnr(r, size=base)
 
 
-def H1(doc, text):
-    """Heading 1: 14pt NEGRITA MAYÚSCULAS negro."""
-    p = doc.add_heading("", level=1)
-    run = p.add_run(text.upper())
-    run.font.name  = "Times New Roman"
-    run.font.size  = Pt(14)
-    run.font.bold  = True
-    run.font.color.rgb = RGBColor(0, 0, 0)
-    run.font.italic = False
-    return p
+def P(doc, text: str):
+    """Parrafo Normal con markdown inline."""
+    para = doc.add_paragraph(style="Normal")
+    _inline(para, text)
+    return para
 
 
-def H2(doc, text):
-    """Heading 2: 14pt NEGRITA negro."""
-    p = doc.add_heading("", level=2)
-    run = p.add_run(text)
-    run.font.name  = "Times New Roman"
-    run.font.size  = Pt(14)
-    run.font.bold  = True
-    run.font.color.rgb = RGBColor(0, 0, 0)
-    run.font.italic = False
-    return p
+def H1(doc, text: str):
+    return doc.add_heading(text, level=1)
 
 
-def H3(doc, text):
-    """Heading 3: 14pt CURSIVA negro."""
-    p = doc.add_heading("", level=3)
-    run = p.add_run(text)
-    run.font.name  = "Times New Roman"
-    run.font.size  = Pt(14)
-    run.font.bold  = False
-    run.font.italic = True
-    run.font.color.rgb = RGBColor(0, 0, 0)
-    return p
+def H2(doc, text: str):
+    return doc.add_heading(text, level=2)
 
 
-def P(doc, text, justify=True, size=12, bold=False, italic=False,
-       align=None, font="Times New Roman"):
-    """Párrafo de texto normal con soporte a inline markdown."""
-    p = doc.add_paragraph()
-    _set_spacing_15(p)
-    if align is not None:
-        p.alignment = align
-    elif justify:
-        p.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
-    if bold or italic:
-        run = p.add_run(text)
-        run.font.name = font
-        run.font.size = Pt(size)
-        run.bold   = bold
-        run.italic = italic
-    else:
-        _parse_inline(p, text, font=font, size=size)
-    return p
+def H3(doc, text: str):
+    return doc.add_heading(text, level=3)
 
 
-def CAPTION(doc, text):
-    """Pie de figura: Times New Roman 10pt cursiva centrado."""
-    p = doc.add_paragraph()
-    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    _set_spacing_10(p)
-    run = p.add_run(text)
-    run.font.name  = "Times New Roman"
-    run.font.size  = Pt(10)
-    run.italic     = True
-    p.paragraph_format.space_before = Pt(2)
-    p.paragraph_format.space_after  = Pt(10)
-    return p
+def CAPTION(doc, text: str):
+    """Pie de figura: 10pt cursiva centrado."""
+    para = doc.add_paragraph()
+    para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    para.paragraph_format.space_before = Pt(2)
+    para.paragraph_format.space_after  = Pt(12)
+    r = para.add_run(text)
+    _tnr(r, size=10, italic=True)
 
 
-def INSERT_FIG(doc, path: Path, caption: str, width_cm: float = 14.0):
-    """Inserta figura con pie de imagen."""
+def INSERT_FIG(doc, fig_name: str, caption: str, width_cm: float = 14.0):
+    """Inserta figura PNG con pie."""
+    path = FIGS_DIR / fig_name
     if not path.exists():
-        P(doc, f"[Figura no disponible: {path.name}]")
+        P(doc, f"[Figura no disponible: {fig_name}]")
         return
-    p = doc.add_paragraph()
-    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = p.add_run()
-    run.add_picture(str(path), width=Cm(width_cm))
+    para = doc.add_paragraph()
+    para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    para.paragraph_format.space_before = Pt(8)
+    r = para.add_run()
+    r.add_picture(str(path), width=Cm(width_cm))
     CAPTION(doc, caption)
 
 
-def _word_table(doc, headers, rows, col_widths=None):
-    """Tabla Word: Times New Roman 10pt, interlineado simple."""
-    t = doc.add_table(rows=1 + len(rows), cols=len(headers))
-    t.style = "Table Grid"
+def TABLE(doc, headers: list, rows: list):
+    """Tabla Word: cabecera negrita 10pt, datos 10pt, interlineado sencillo."""
+    ncols = len(headers)
+    tbl   = doc.add_table(rows=1 + len(rows), cols=ncols)
+    tbl.style = "Table Grid"
     # Cabecera
     for i, h in enumerate(headers):
-        cell = t.rows[0].cells[i]
+        cell = tbl.rows[0].cells[i]
         cell.text = ""
-        run = cell.paragraphs[0].add_run(h)
-        run.bold = True
-        run.font.size = Pt(10)
-        run.font.name = "Times New Roman"
-        _set_spacing_10(cell.paragraphs[0])
-    # Filas
+        para = cell.paragraphs[0]
+        para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        para.paragraph_format.line_spacing_rule = WD_LINE_SPACING.SINGLE
+        r = para.add_run(h)
+        _tnr(r, size=10, bold=True)
+    # Datos
     for ri, row in enumerate(rows):
-        for ci, val in enumerate(row[:len(headers)]):
-            cell = t.rows[ri + 1].cells[ci]
-            cell.text = str(val)
-            if cell.paragraphs[0].runs:
-                cell.paragraphs[0].runs[0].font.size = Pt(10)
-                cell.paragraphs[0].runs[0].font.name = "Times New Roman"
-            _set_spacing_10(cell.paragraphs[0])
+        for ci, val in enumerate(row[:ncols]):
+            cell = tbl.rows[ri + 1].cells[ci]
+            cell.text = ""
+            para = cell.paragraphs[0]
+            para.paragraph_format.line_spacing_rule = WD_LINE_SPACING.SINGLE
+            r = para.add_run(str(val))
+            _tnr(r, size=10)
     doc.add_paragraph()
 
 
-# ══════════════════════════════════════════════════════════════════════════════
-# 3.  PARSER DE MARKDOWN → WORD
-# ══════════════════════════════════════════════════════════════════════════════
+def PAGE_BREAK(doc):
+    from docx.enum.text import WD_BREAK
+    para = doc.add_paragraph()
+    para.add_run().add_break(WD_BREAK.PAGE)
 
-def parse_md_file(doc, filepath: Path, fig_map: dict):
-    """
-    Lee un archivo .md y lo convierte a párrafos Word con el formato UMU.
-    fig_map: dict con claves (texto de sección ancla, normalizado) → Path de figura + caption.
-    Ejemplo: {"4.1 fuentes de datos": (fig_path, "Figura 4.1. ...")}
-    """
-    text = filepath.read_text(encoding="utf-8")
+
+# =====================================================================
+# 3. NUMERO DE PAGINA Y TABLA DE CONTENIDOS
+# =====================================================================
+
+def add_page_numbers(doc):
+    """Numero de pagina centrado en el pie de todas las secciones."""
+    for section in doc.sections:
+        footer = section.footer
+        if footer.paragraphs:
+            para = footer.paragraphs[0]
+            para.clear()
+        else:
+            para = footer.add_paragraph()
+        para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        r = para.add_run()
+        _tnr(r, size=10)
+        fld_begin = OxmlElement("w:fldChar")
+        fld_begin.set(qn("w:fldCharType"), "begin")
+        instr     = OxmlElement("w:instrText")
+        instr.set(qn("xml:space"), "preserve")
+        instr.text = " PAGE "
+        fld_end   = OxmlElement("w:fldChar")
+        fld_end.set(qn("w:fldCharType"), "end")
+        r._r.append(fld_begin)
+        r._r.append(instr)
+        r._r.append(fld_end)
+
+
+def add_toc(doc):
+    """Campo TOC actualizable con Ctrl+A > F9 en Word."""
+    H1(doc, "INDICE")
+    para = doc.add_paragraph(style="Normal")
+    r = para.add_run()
+    _tnr(r, size=12)
+    fld_begin = OxmlElement("w:fldChar")
+    fld_begin.set(qn("w:fldCharType"), "begin")
+    instr = OxmlElement("w:instrText")
+    instr.set(qn("xml:space"), "preserve")
+    instr.text = ' TOC \\o "1-3" \\h \\z \\u '
+    fld_sep = OxmlElement("w:fldChar")
+    fld_sep.set(qn("w:fldCharType"), "separate")
+    placeholder = OxmlElement("w:r")
+    pt = OxmlElement("w:t")
+    pt.text = "[Pulse Ctrl+A y luego F9 en Word para actualizar el indice]"
+    placeholder.append(pt)
+    fld_end = OxmlElement("w:fldChar")
+    fld_end.set(qn("w:fldCharType"), "end")
+    r._r.append(fld_begin)
+    r._r.append(instr)
+    r._r.append(fld_sep)
+    r._r.append(placeholder)
+    r._r.append(fld_end)
+    doc.add_paragraph()
+
+
+# =====================================================================
+# 4. PARSER DE MARKDOWN
+# =====================================================================
+
+def parse_md_chapter(doc, md_path: Path, chapter_num: int = 0):
+    """Lee un .md y lo vuelca al documento con formato oficial."""
+    text  = md_path.read_text(encoding="utf-8")
     lines = text.splitlines()
 
-    in_table = False
-    table_headers = []
-    table_rows = []
-    in_code = False
-    in_equation = False
-    equation_lines = []
-    pending_text = []
-    last_heading_norm = ""
+    buffer     = []   # Lineas del parrafo actual
+    tbl_rows   = []
+    in_table   = False
+    in_code    = False
 
-    def flush_pending():
-        nonlocal pending_text
-        combined = " ".join(pending_text).strip()
-        if combined:
-            # Limpiar marcadores de referencia de capítulo (`- ref`) al final
-            # Solo si parece bibliografía local
-            if not combined.startswith("- "):
-                P(doc, combined)
-            else:
-                # Ítem de lista
-                p = doc.add_paragraph(style="List Bullet")
-                _set_spacing_15(p)
-                p.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
-                _parse_inline(p, combined[2:].strip())
-        pending_text = []
+    # Patron para detectar referencias inline a figuras/tablas del pipeline
+    FIG_REF_RE = re.compile(
+        r"^\*?\[?\*?\*?(Figura|Tabla|Figure|Table)\s+\d+\.\d+", re.IGNORECASE
+    )
+
+    def flush_para():
+        nonlocal buffer
+        txt = " ".join(buffer).strip()
+        txt = re.sub(r"\s+", " ", txt).strip()
+        buffer.clear()
+        if not txt:
+            return
+        # Saltar lineas que solo son referencias a figuras del pipeline
+        if FIG_REF_RE.match(txt.lstrip("*[")):
+            return
+        P(doc, txt)
 
     def flush_table():
-        nonlocal in_table, table_headers, table_rows
-        if table_headers and table_rows:
-            _word_table(doc, table_headers, table_rows)
+        nonlocal tbl_rows, in_table
+        if tbl_rows and len(tbl_rows) >= 2:
+            hdr  = tbl_rows[0]
+            data = [r for r in tbl_rows[1:]
+                    if not all(re.match(r"^[-: ]+$", c) for c in r)]
+            if data:
+                TABLE(doc, hdr, data)
+        tbl_rows.clear()
         in_table = False
-        table_headers = []
-        table_rows = []
-
-    def check_fig_after_heading(norm_heading):
-        """Inserta figura si hay un ancla configurada para este heading."""
-        for key, (fig_path, caption) in fig_map.items():
-            if key in norm_heading:
-                INSERT_FIG(doc, fig_path, caption)
-                break
 
     i = 0
     while i < len(lines):
-        line = lines[i]
-        stripped = line.strip()
+        raw      = lines[i]
+        stripped = raw.rstrip()
 
-        # Bloque de código — omitir (no incluir código fuente en el Word final)
-        if stripped.startswith("```"):
+        # Bloques de codigo (saltar)
+        if stripped.lstrip().startswith("```"):
             in_code = not in_code
             i += 1
             continue
@@ -661,671 +372,595 @@ def parse_md_file(doc, filepath: Path, fig_map: dict):
             i += 1
             continue
 
-        # Ecuación en bloque $$...$$
-        if stripped.startswith("$$") and not in_equation:
-            flush_pending()
-            if stripped == "$$":
-                in_equation = True
-                equation_lines = []
-            else:
-                # Ecuación en una sola línea: $$...$$
-                eq_text = stripped[2:-2].strip() if stripped.endswith("$$") and len(stripped) > 4 else stripped[2:]
-                p = doc.add_paragraph(eq_text)
-                p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-                _set_spacing_15(p)
-            i += 1
-            continue
-        if in_equation:
-            if stripped == "$$":
-                in_equation = False
-                eq_text = " ".join(equation_lines)
-                p = doc.add_paragraph(eq_text)
-                p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-                _set_spacing_15(p)
-                equation_lines = []
-            else:
-                equation_lines.append(stripped)
-            i += 1
-            continue
-
-        # Tabla markdown
-        if "|" in stripped and stripped.startswith("|"):
-            flush_pending()
-            if not in_table:
-                # Primera línea → cabecera
-                parts = [c.strip() for c in stripped.split("|") if c.strip()]
-                table_headers = parts
-                in_table = True
-                in_sep = False
-                table_rows = []
-            else:
-                # ¿Es la fila separadora ---?
-                if re.match(r"\|[\s\-:|]+\|", stripped):
-                    pass  # Ignorar fila separadora
-                else:
-                    parts = [c.strip() for c in stripped.split("|") if c.strip()]
-                    table_rows.append(parts)
-            i += 1
-            # Si la próxima línea NO tiene |, cerrar tabla
-            next_stripped = lines[i].strip() if i < len(lines) else ""
-            if "|" not in next_stripped or not next_stripped.startswith("|"):
-                flush_table()
-            continue
-
-        # Cerrar tabla si salimos de ella
-        if in_table and "|" not in stripped:
-            flush_table()
-
-        # Línea en blanco → flush pending
-        if not stripped:
-            flush_pending()
-            i += 1
-            continue
-
-        # Separador horizontal ---
-        if re.match(r"^-{3,}$", stripped):
-            flush_pending()
-            i += 1
-            continue
-
         # Headings
-        if stripped.startswith("#### "):
-            flush_pending()
-            heading_text = stripped[5:].strip()
-            H3(doc, heading_text)  # H4 → se trata como H3
-            last_heading_norm = heading_text.lower()
-            check_fig_after_heading(last_heading_norm)
-            i += 1
-            continue
-
         if stripped.startswith("### "):
-            flush_pending()
-            heading_text = stripped[4:].strip()
-            H3(doc, heading_text)
-            last_heading_norm = heading_text.lower()
-            check_fig_after_heading(last_heading_norm)
+            flush_para()
+            if in_table: flush_table()
+            heading_txt = stripped[4:].strip()
+            # Saltar subseccion "Referencias de este capitulo"
+            if "Referencias" in heading_txt and "capitulo" in heading_txt.lower():
+                # Saltar hasta el siguiente heading de nivel >= 2
+                i += 1
+                while i < len(lines):
+                    l = lines[i].strip()
+                    if l.startswith("## ") or l.startswith("# "):
+                        break
+                    i += 1
+                continue
+            H3(doc, heading_txt)
             i += 1
             continue
 
         if stripped.startswith("## "):
-            flush_pending()
-            heading_text = stripped[3:].strip()
-            H2(doc, heading_text)
-            last_heading_norm = heading_text.lower()
-            check_fig_after_heading(last_heading_norm)
+            flush_para()
+            if in_table: flush_table()
+            heading_txt = stripped[3:].strip()
+            # Saltar seccion "Referencias de este capitulo"
+            if "Referencias" in heading_txt:
+                i += 1
+                while i < len(lines):
+                    l = lines[i].strip()
+                    if l.startswith("## ") or l.startswith("# "):
+                        break
+                    i += 1
+                continue
+            H2(doc, heading_txt)
             i += 1
             continue
 
         if stripped.startswith("# "):
-            flush_pending()
-            heading_text = stripped[2:].strip()
-            H1(doc, heading_text)
-            last_heading_norm = heading_text.lower()
-            check_fig_after_heading(last_heading_norm)
+            flush_para()
+            if in_table: flush_table()
+            H1(doc, stripped[2:].strip())
             i += 1
             continue
 
-        # Lista numerada
-        if re.match(r"^\d+\.\s", stripped):
-            flush_pending()
-            item_text = re.sub(r"^\d+\.\s+", "", stripped)
-            p = doc.add_paragraph(style="List Number")
-            _set_spacing_15(p)
-            p.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
-            _parse_inline(p, item_text)
+        # Tablas Markdown
+        if stripped.startswith("|"):
+            flush_para()
+            if re.match(r"^\|\s*[-:| ]+\s*\|", stripped):
+                i += 1
+                continue
+            cells = [c.strip() for c in stripped.split("|")]
+            cells = [c for c in cells if c != ""]
+            if cells:
+                in_table = True
+                tbl_rows.append(cells)
+            i += 1
+            continue
+        else:
+            if in_table:
+                flush_table()
+
+        # Regla horizontal
+        if stripped.strip() in ("---", "***", "___"):
+            flush_para()
             i += 1
             continue
 
-        # Lista de viñetas (- o *)
-        if re.match(r"^[-*]\s", stripped):
-            flush_pending()
-            item_text = stripped[2:].strip()
-            p = doc.add_paragraph(style="List Bullet")
-            _set_spacing_15(p)
-            p.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
-            _parse_inline(p, item_text)
-            i += 1
-            continue
-
-        # Cita / blockquote > ...
+        # Blockquotes
         if stripped.startswith("> "):
-            flush_pending()
-            quote_text = stripped[2:].strip()
-            p = doc.add_paragraph()
-            _set_spacing_10(p)
-            p.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
-            run = p.add_run(quote_text)
-            run.font.name  = "Times New Roman"
-            run.font.size  = Pt(10)
-            run.italic     = True
-            p.paragraph_format.left_indent = Cm(1.5)
+            flush_para()
+            content = stripped[2:].strip()
+            # Saltar si referencia a Tabla/Figura del pipeline o "Vease output/"
+            if (FIG_REF_RE.match(content.lstrip("*[")) or
+                    "Vease" in content or "output/" in content or
+                    "Nota metodologica" in content):
+                i += 1
+                continue
+            # Nota aclaratoria -> cursiva indentada
+            note = re.sub(r"^\*+|\*+$", "", content.strip()).strip()
+            if note:
+                note_para = doc.add_paragraph(style="Normal")
+                note_para.paragraph_format.left_indent = Cm(1.0)
+                note_para.paragraph_format.space_after = Pt(4)
+                r = note_para.add_run(note)
+                _tnr(r, size=11, italic=True)
             i += 1
             continue
 
-        # Sección de referencias locales al final del capítulo
-        # ("## Referencias de este capítulo") → saltar
-        if "referencias de este capítulo" in stripped.lower():
-            # Saltar hasta el final del archivo
-            flush_pending()
-            break
+        # Ecuaciones $$
+        if stripped.strip().startswith("$$"):
+            flush_para()
+            inner = stripped.strip()[2:]
+            if inner == "":
+                # Bloque multilinea $$\n...\n$$
+                eq_lines = []
+                i += 1
+                while i < len(lines) and lines[i].strip() != "$$":
+                    eq_lines.append(lines[i].strip())
+                    i += 1
+                i += 1
+                eq_text = " ".join(eq_lines)
+            else:
+                eq_text = inner[:-2] if inner.endswith("$$") else inner
+                i += 1
+            if eq_text.strip():
+                eq_para = doc.add_paragraph(style="Normal")
+                eq_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                eq_para.paragraph_format.space_before = Pt(4)
+                eq_para.paragraph_format.space_after  = Pt(4)
+                r = eq_para.add_run(eq_text.strip())
+                _tnr(r, size=12, italic=True)
+            continue
 
-        # Párrafo normal — acumular
-        pending_text.append(stripped)
+        # Linea vacia -> rompe parrafo
+        if stripped.strip() == "":
+            flush_para()
+            i += 1
+            continue
+
+        # Linea normal -> acumula
+        buffer.append(stripped.strip())
         i += 1
 
-    flush_pending()
+    # Fin del archivo
+    flush_para()
     if in_table:
         flush_table()
 
+    # Insertar figuras al final del capitulo
+    if chapter_num in CHAPTER_END_FIGS:
+        for fig_name, caption in CHAPTER_END_FIGS[chapter_num]:
+            INSERT_FIG(doc, fig_name, caption, width_cm=14.0)
 
-# ══════════════════════════════════════════════════════════════════════════════
-# 4.  SECCIONES NUEVAS: PORTADA, RESUMEN, SUMMARY, REFERENCIAS
-# ══════════════════════════════════════════════════════════════════════════════
+
+# =====================================================================
+# 5. PORTADA
+# =====================================================================
 
 def write_portada(doc):
-    """Portada oficial UMU — Arial (IBM Plex Sans no instalada)."""
-    PORTADA_FONT = "Arial"
+    """Portada UMU -- Arial como fallback de IBM Plex Sans."""
+    FONT = "Arial"
 
-    def cp(text, size, bold=False, italic=False,
-           align=WD_ALIGN_PARAGRAPH.CENTER, after=6):
-        p = doc.add_paragraph()
-        p.alignment = align
-        p.paragraph_format.space_after = Pt(after)
-        _set_spacing_10(p)
-        run = p.add_run(text)
-        run.font.name  = PORTADA_FONT
-        run.font.size  = Pt(size)
-        run.bold   = bold
-        run.italic = italic
-        return p
-
-    # Espacio superior
-    for _ in range(3):
-        p = doc.add_paragraph()
-        _set_spacing_10(p)
-
-    cp("UNIVERSIDAD DE MURCIA", 13, bold=True)
-    cp("Facultad de Economía y Empresa", 12)
-    cp("Grado en Economía", 12)
-
-    for _ in range(2):
-        p = doc.add_paragraph()
-        _set_spacing_10(p)
-
-    cp("TRABAJO DE FIN DE GRADO", 16, bold=True)
-
-    for _ in range(1):
-        p = doc.add_paragraph()
-        _set_spacing_10(p)
-
-    cp("DINÁMICA DEL PRECIO DEL ORO (2000-2025):", 16, bold=True)
-    cp("Un análisis econométrico y de machine learning", 14, italic=True)
+    def pline(text, size, bold=False, italic=False,
+              space_before=0, space_after=12):
+        para = doc.add_paragraph()
+        para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        para.paragraph_format.space_before = Pt(space_before)
+        para.paragraph_format.space_after  = Pt(space_after)
+        r = para.add_run(text)
+        r.font.name   = FONT
+        r.font.size   = Pt(size)
+        r.font.bold   = bold
+        r.font.italic = italic
+        return para
 
     for _ in range(4):
-        p = doc.add_paragraph()
-        _set_spacing_10(p)
+        blank = doc.add_paragraph()
+        blank.paragraph_format.space_after = Pt(0)
 
-    cp("Alumno: Jose León Belando", 12)
-    cp("Directora: Inmaculada Díaz Sánchez", 12)
-    cp("Curso académico 2025-2026", 12)
+    pline("MEMORIA DEL TRABAJO FIN DE GRADO",
+          size=13, bold=True, space_after=36)
+    pline("Dinamica del precio del oro (2000-2025):",
+          size=16, bold=True, space_after=6)
+    pline("un analisis econometrico y de machine learning",
+          size=15, bold=True, space_after=48)
+    pline("Jose Leon Belando",                   size=12, space_after=8)
+    pline("Grado en Economia",                    size=12, space_after=8)
+    pline("Curso academico 2025-2026",            size=12, space_after=8)
+    pline("Directora: Inmaculada Diaz Sanchez",  size=12, space_after=8)
+    pline("Universidad de Murcia",               size=12, space_after=0)
 
-    PAGE_BREAK(doc)
+    PAGE_BREAK(doc)   # final de portada
+    PAGE_BREAK(doc)   # pagina en blanco
 
 
-def write_blank_page(doc):
-    """Página en blanco."""
-    p = doc.add_paragraph()
-    _set_spacing_10(p)
-    PAGE_BREAK(doc)
+# =====================================================================
+# 6. RESUMEN (espanol, max ~300 palabras)
+# =====================================================================
+
+RESUMEN_PARRAFOS = [
+    (
+        "Este Trabajo de Fin de Grado analiza la dinamica del precio del oro durante "
+        "el periodo 2000-2025 mediante un enfoque metodologico integrado que combina "
+        "econometria de series temporales, analisis de datos de panel y modelos de "
+        "machine learning."
+    ),
+    (
+        "El trabajo se estructura en torno a tres preguntas de investigacion: "
+        "(i) que variables macroeconomicas y financieras determinan el precio del "
+        "oro y cual es su importancia relativa en distintos horizontes temporales; "
+        "(ii) si esas relaciones han sido estables o han cambiado tras los episodios "
+        "de crisis del periodo analizado; y (iii) si el machine learning puede mejorar "
+        "la prediccion a corto plazo respecto a los modelos econometricos clasicos."
+    ),
+    (
+        "La metodologia descansa en tres pilares. El primero es un modelo de "
+        "correccion de errores vectorial (VECM) complementado con un modelo GJR-GARCH "
+        "para la volatilidad condicional y tests de estabilidad estructural (Chow y "
+        "CUSUM). El segundo es un modelo de datos de panel con efectos fijos aplicado "
+        "a cuatro economias avanzadas (EE.UU., Eurozona, Japon y Reino Unido) con "
+        "errores estandar de Driscoll-Kraay. El tercero son modelos de machine "
+        "learning (XGBoost, Random Forest y LSTM) evaluados con validacion "
+        "walk-forward y analisis SHAP de interpretabilidad."
+    ),
+    (
+        "Los resultados principales son cuatro. Primero, los tipos de interes reales "
+        "son el determinante estructural mas importante del precio del oro a largo "
+        "plazo (segundo rango SHAP: |phi| = 0,617; coeficiente VECM negativo "
+        "significativo en las cuatro economias). Segundo, la inflacion pasada "
+        "reciente es el predictor mas potente en el horizonte mensual (primer rango "
+        "SHAP: |phi| = 0,954). Tercero, el test de Hausman rechaza efectos aleatorios "
+        "(p < 0,01), confirmando que los efectos fijos capturan heterogeneidad "
+        "no observada estable entre paises. Cuarto, la red LSTM alcanza una precision "
+        "direccional del 61,5%, superando al benchmark naive en 5,6 puntos "
+        "porcentuales. La paradoja de 2022-2024 -- oro historicamente alto "
+        "coexistiendo con tipos reales historicamente altos -- se explica por la "
+        "demanda estructural de bancos centrales emergentes en el contexto del proceso "
+        "de de-dolarizacion."
+    ),
+    (
+        "Palabras clave: oro, VECM, cointegracion, datos de panel, machine learning, "
+        "SHAP, de-dolarizacion."
+    ),
+]
 
 
 def write_resumen(doc):
-    """Resumen en español (≤ 300 palabras)."""
-    H1(doc, "Resumen")
-
-    texto = (
-        "Este Trabajo de Fin de Grado analiza la dinámica del precio del oro durante "
-        "el periodo 2000-2025 mediante tres pilares metodológicos complementarios: "
-        "un modelo de corrección de errores vectorial (VECM) con análisis de "
-        "volatilidad GJR-GARCH, un análisis de datos de panel con cuatro economías "
-        "avanzadas (Estados Unidos, Alemania, Japón y Reino Unido), y modelos de "
-        "machine learning (XGBoost, Random Forest y LSTM) con validación walk-forward "
-        "y análisis de importancia SHAP. "
-        "La muestra comprende 312 observaciones mensuales y nueve variables: precio "
-        "del oro, índice del dólar (DXY), tipos de interés reales a 10 años (TIPS), "
-        "inflación interanual (CPI), expectativas de inflación (breakeven), VIX, "
-        "S&P 500, petróleo WTI y Google Trends. "
-        "Los resultados muestran que los tipos de interés reales son el determinante "
-        "estructural más importante del precio del oro en el largo plazo, con una "
-        "relación de equilibrio de cointegración confirmada por el test de Johansen "
-        "(rango r = 1). La inflación —medida por el CPI con un retardo de un mes— "
-        "domina la predicción de corto plazo según el análisis SHAP (|φ̄| = 0,954). "
-        "El análisis de panel con efectos fijos, validado mediante el contraste de "
-        "Hausman, confirma que el mecanismo de coste de oportunidad opera de forma "
-        "universal en las cuatro economías. Los tests de estabilidad estructural "
-        "(Chow y CUSUM) detectan una ruptura significativa en 2022, interpretada "
-        "como consecuencia del proceso de de-dolarización y la demanda soberana de "
-        "oro por bancos centrales emergentes. La red neuronal LSTM alcanza una "
-        "precisión direccional del 61,5%, superando el benchmark naive (55,9%), "
-        "mientras que la convergencia entre las jerarquías VECM y SHAP proporciona "
-        "validación cruzada de los determinantes identificados."
-    )
-    P(doc, texto)
-
-    # Palabras clave
-    p = doc.add_paragraph()
-    _set_spacing_15(p)
-    p.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
-    run = p.add_run("Palabras clave: ")
-    run.font.name = "Times New Roman"
-    run.font.size = Pt(12)
-    run.bold = True
-    run2 = p.add_run(
-        "precio del oro, VECM, cointegración, machine learning, SHAP, "
-        "tipos de interés reales, datos de panel, inestabilidad estructural."
-    )
-    run2.font.name = "Times New Roman"
-    run2.font.size = Pt(12)
-
+    H1(doc, "RESUMEN")
+    for blk in RESUMEN_PARRAFOS:
+        P(doc, blk)
     PAGE_BREAK(doc)
+
+
+# =====================================================================
+# 7. REFERENCIAS BIBLIOGRAFICAS (APA 7a, orden alfabetico)
+# =====================================================================
+
+REFERENCES_APA = [
+    ("Barsky, R. B., & Summers, L. H. (1988). Gibson's paradox and the gold standard. "
+     "Journal of Political Economy, 96(3), 528-550."),
+    ("Baur, D. G., & Lucey, B. M. (2010). Is gold a hedge or a safe haven? An analysis "
+     "of stocks, bonds and gold. Financial Review, 45(2), 217-229."),
+    ("Baur, D. G., & McDermott, T. K. (2010). Is gold a safe haven? International "
+     "evidence. Journal of Banking & Finance, 34(8), 1886-1898."),
+    ("Bollerslev, T. (1986). Generalized autoregressive conditional heteroskedasticity. "
+     "Journal of Econometrics, 31(3), 307-327."),
+    ("Breiman, L. (2001). Random forests. Machine Learning, 45(1), 5-32."),
+    ("Chen, T., & Guestrin, C. (2016). XGBoost: A scalable tree boosting system. "
+     "Proceedings of the 22nd ACM SIGKDD, 785-794."),
+    ("Chicago Fed. (2021). What drives gold prices? Chicago Fed Letter, No. 464."),
+    ("Christie-David, R., Chaudhry, M., & Koch, T. W. (2000). Do macroeconomics news "
+     "releases affect gold and silver prices? Journal of Economics and Business, "
+     "52(5), 405-421."),
+    ("Dornbusch, R. (1976). Expectations and exchange rate dynamics. "
+     "Journal of Political Economy, 84(6), 1161-1176."),
+    ("Driscoll, J. C., & Kraay, A. C. (1998). Consistent covariance matrix estimation "
+     "with spatially dependent panel data. Review of Economics and Statistics, "
+     "80(4), 549-560."),
+    ("Engle, R. F. (1982). Autoregressive conditional heteroscedasticity with estimates "
+     "of the variance of United Kingdom inflation. Econometrica, 50(4), 987-1007."),
+    ("Erb, C. B., & Harvey, C. R. (2013). The golden dilemma. "
+     "Financial Analysts Journal, 69(4), 10-42."),
+    ("Glosten, L. R., Jagannathan, R., & Runkle, D. E. (1993). On the relation between "
+     "the expected value and the volatility of the nominal excess return on stocks. "
+     "Journal of Finance, 48(5), 1779-1801."),
+    ("Granger, C. W. J., & Newbold, P. (1974). Spurious regressions in econometrics. "
+     "Journal of Econometrics, 2(2), 111-120."),
+    ("Hausman, J. A. (1978). Specification tests in econometrics. "
+     "Econometrica, 46(6), 1251-1271."),
+    ("Hochreiter, S., & Schmidhuber, J. (1997). Long short-term memory. "
+     "Neural Computation, 9(8), 1735-1780."),
+    ("Johansen, S. (1991). Estimation and hypothesis testing of cointegration vectors "
+     "in Gaussian vector autoregressive models. Econometrica, 59(6), 1551-1580."),
+    ("Johansen, S., & Juselius, K. (1990). Maximum likelihood estimation and inference "
+     "on cointegration with applications to the demand for money. "
+     "Oxford Bulletin of Economics and Statistics, 52(2), 169-210."),
+    ("Liang, C., Li, Y., Ma, F., & Wei, Y. (2023). Forecasting gold price using "
+     "machine learning methodologies. Chaos, Solitons & Fractals, 173, 113589."),
+    ("Lopez de Prado, M. (2018). Advances in Financial Machine Learning. Wiley."),
+    ("Lundberg, S. M., & Lee, S.-I. (2017). A unified approach to interpreting model "
+     "predictions. Advances in Neural Information Processing Systems, 30, 4765-4774."),
+    ("Lundberg, S. M., Erion, G., Chen, H., DeGrave, A., Prutkin, J. M., Nair, B., "
+     "Katz, R., Himmelfarb, J., Bansal, N., & Lee, S.-I. (2020). From local "
+     "explanations to global understanding with explainable AI for trees. "
+     "Nature Machine Intelligence, 2(1), 56-67."),
+    ("O'Connor, F. A., Lucey, B. M., Batten, J. A., & Baur, D. G. (2015). "
+     "The financial economics of gold: A survey. "
+     "International Review of Financial Analysis, 41, 186-205."),
+    ("Plakandaras, V., Gupta, R., Wohar, M. E., & Kaplanis, T. (2022). Forecasting "
+     "the price of gold using machine learning methodologies. Applied Economics, "
+     "54(33), 3768-3783."),
+    ("Sims, C. A. (1980). Macroeconomics and reality. Econometrica, 48(1), 1-48."),
+    ("Wooldridge, J. M. (2007). Introduccion a la econometria: un enfoque moderno "
+     "(3.a ed.). Thomson."),
+    ("World Gold Council. (2023). Gold Demand Trends: Full Year 2023. "
+     "World Gold Council."),
+    ("World Gold Council. (2024). Gold Demand Trends: Full Year 2024. "
+     "World Gold Council."),
+]
+
+
+def write_references(doc):
+    H1(doc, "REFERENCIAS BIBLIOGRAFICAS")
+    for ref in REFERENCES_APA:
+        para = doc.add_paragraph(style="Normal")
+        para.paragraph_format.first_line_indent = Cm(-1.0)
+        para.paragraph_format.left_indent       = Cm(1.0)
+        para.paragraph_format.line_spacing_rule = WD_LINE_SPACING.SINGLE
+        para.paragraph_format.space_after       = Pt(6)
+        r = para.add_run(ref)
+        _tnr(r, size=12)
+
+
+# =====================================================================
+# 8. SUMMARY (ingles, min 1000 palabras)
+# =====================================================================
+
+SUMMARY_PARAS = [
+    # --- TITLE / SUBTITLE treated as H2 by main() ---
+    ("__H2__", "Gold Price Dynamics (2000-2025): "
+     "An Econometric and Machine Learning Analysis"),
+
+    # --- Section headings treated as H3 by main() ---
+    ("__H3__", "Introduction and motivation"),
+    (
+        "Gold occupies a unique position in the taxonomy of financial assets. It "
+        "generates no cash flows, pays no dividends or coupons, and has limited "
+        "productive use compared to industrial commodities. Yet central banks, "
+        "sovereign wealth funds, and private investors continue to accumulate it as "
+        "a store of value and safe haven. The period 2000-2025 concentrated five "
+        "exceptional market episodes: the Global Financial Crisis (GFC) of 2008, "
+        "the post-quantitative easing (QE) peak of 2011, the COVID-19 pandemic of "
+        "2020, the most aggressive interest rate hiking cycle in four decades from "
+        "2022 to 2024, and an extraordinary rally in 2025 that pushed prices above "
+        "USD 4,500 per troy ounce for the first time in history. In each episode, "
+        "gold behaved differently -- sometimes as a predictable safe haven, sometimes "
+        "defying conventional economic logic -- making this period an exceptionally "
+        "rich laboratory for applying modern econometric and machine learning tools."
+    ),
+    (
+        "This thesis is organised around three research questions. First, which "
+        "macroeconomic and financial variables determine the price of gold over the "
+        "period 2000-2025, and what is their relative importance at different time "
+        "horizons? Second, have those determinants remained stable across the major "
+        "crisis episodes, or can formal structural breaks be identified? Third, can "
+        "machine learning improve short-run predictive accuracy beyond classical "
+        "econometric benchmarks, and what does it reveal about the relative weight "
+        "of each variable across different market regimes?"
+    ),
+
+    ("__H3__", "Theoretical framework"),
+    (
+        "The analysis rests on four theoretical pillars from the financial economics "
+        "literature. First, the opportunity cost mechanism: since gold bears no yield, "
+        "its equilibrium price should be a decreasing function of the real interest "
+        "rate -- the forgone return on risk-free real assets. This mechanism, "
+        "formalised by Barsky and Summers (1988) and documented empirically by Erb "
+        "and Harvey (2013), forms the backbone of the Vector Error Correction Model "
+        "estimated in Chapter 5. Second, the hedge and safe haven distinctions "
+        "introduced by Baur and Lucey (2010): gold is a hedge if its unconditional "
+        "correlation with risk assets is negative on average, and a safe haven if "
+        "that correlation is negative conditionally on extreme negative market returns. "
+        "Third, the role of inflation expectations -- measured by Treasury breakeven "
+        "rates -- as a high-frequency signal of the opportunity cost of holding gold. "
+        "Fourth, the institutional context of the de-dollarisation process, through "
+        "which emerging market central banks have been systematically increasing gold "
+        "reserves since 2022 at historically unprecedented rates, creating a demand "
+        "channel structurally different from the financial investor channel modelled "
+        "by classical econometrics."
+    ),
+    (
+        "The methodological choice of a VAR/VECM framework follows Sims's (1980) "
+        "critique of structural simultaneous equation models: since gold, the dollar, "
+        "real interest rates, and equity markets mutually affect each other in ways "
+        "that cannot be specified a priori, treating all variables as equally "
+        "endogenous is the most methodologically honest approach."
+    ),
+
+    ("__H3__", "Data and methodology"),
+    (
+        "The dataset covers 312 monthly observations from January 2000 to December "
+        "2025. Gold prices are sourced from Yahoo Finance (futures contract GC=F). "
+        "Macroeconomic variables -- 10-year TIPS yields, CPI, 10-year breakeven "
+        "inflation rates -- are obtained from the Federal Reserve Economic Data "
+        "(FRED) database. Financial market variables -- DXY dollar index, S&P 500, "
+        "VIX, WTI crude oil, and the 10-year Treasury nominal yield -- are also "
+        "sourced from Yahoo Finance. All price series are transformed to logarithmic "
+        "first differences to ensure stationarity; interest rate and volatility series "
+        "are used in levels. Five historical episodes are demarcated: GFC 2008 "
+        "(August 2007 - June 2009), post-QE peak 2011 (July 2011 - June 2013), "
+        "COVID-19 2020 (February - August 2020), the rate hike cycle 2022 (March "
+        "2022 - July 2024), and the 2025 triple-confluence rally."
+    ),
+
+    ("__H3__", "VAR/VECM econometric results"),
+    (
+        "Augmented Dickey-Fuller and KPSS unit root tests confirm that all five "
+        "variables in the core system are integrated of order one, I(1). The Johansen "
+        "trace and maximum eigenvalue tests identify two cointegrating vectors at the "
+        "5% significance level, justifying the VECM specification. The long-run "
+        "cointegrating vector assigns the largest coefficient to TIPS yields "
+        "(approximately -0.72), confirming the opportunity cost mechanism as the "
+        "primary structural determinant. The DXY enters with a coefficient of "
+        "approximately -0.43. The error correction coefficient of -0.08 implies that "
+        "approximately 8% of any deviation from long-run equilibrium is corrected each "
+        "month, corresponding to a half-life of about eight months."
+    ),
+    (
+        "Granger causality tests reject the null of non-causality from TIPS to gold "
+        "at all lags (p < 0.001). Impulse response functions confirm that a one-"
+        "standard-deviation positive shock to real rates generates a persistent "
+        "negative response lasting 12-18 months. Forecast error variance decomposition "
+        "attributes 38% of the 24-month variance of gold to TIPS shocks and 21% to "
+        "DXY shocks. GJR-GARCH modelling reveals significant asymmetric volatility: "
+        "negative shocks generate larger subsequent variance increases than positive "
+        "shocks of the same magnitude. Structural stability tests reject parameter "
+        "stability at all five episode breakpoints, with the highest F-statistic at "
+        "March 2022. CUSUM analysis exits the 5% confidence bands during 2022-2024. "
+        "Rolling coefficient estimates confirm that the historical TIPS-gold "
+        "coefficient of approximately -0.7 attenuated significantly during 2022-2024, "
+        "when gold rose despite historically high real yields."
+    ),
+
+    ("__H3__", "Panel data analysis"),
+    (
+        "Chapter 6 extends the analysis to a cross-country panel of four advanced "
+        "economies: the United States, the Euro Area, Japan, and the United Kingdom, "
+        "using 96 monthly observations (January 2016 - December 2023) and local-"
+        "currency gold prices. The Hausman test rejects the random effects "
+        "specification (chi-squared = 14.73, p < 0.01), confirming that fixed effects "
+        "capture stable unobserved country-level heterogeneity -- likely differences "
+        "in the gold-currency correlation driven by exchange rate regimes and local "
+        "market structure. Under fixed effects with Driscoll-Kraay standard errors "
+        "(robust to cross-sectional dependence), the real interest rate coefficient is "
+        "negative and statistically significant in all four economies, with estimates "
+        "ranging from -0.31 (Japan) to -0.68 (United States). The VIX coefficient is "
+        "positive and significant across all countries, validating the safe haven "
+        "hypothesis in a cross-country setting and confirming that the opportunity "
+        "cost mechanism is a universal property of the asset rather than a peculiarity "
+        "of U.S. Treasury markets."
+    ),
+
+    ("__H3__", "Machine learning: results and SHAP analysis"),
+    (
+        "Three machine learning architectures are estimated and evaluated with a "
+        "walk-forward expanding window protocol: XGBoost (gradient boosting over "
+        "decision trees), Random Forest (bagging), and LSTM (Long Short-Term Memory "
+        "recurrent neural network). The feature matrix includes 35 variables -- "
+        "lagged values of all macroeconomic and financial series, gold momentum "
+        "indicators, and a binary crisis regime dummy -- with 271 effective "
+        "observations after removing NaNs from lagged features. The LSTM achieves "
+        "the best performance: RMSE of 3.815 percentage points versus 5.054 for the "
+        "naive random walk benchmark (-24.5%), and directional accuracy (DA) of 61.5% "
+        "versus 55.9% for the naive benchmark (+5.6 percentage points). Random Forest "
+        "outperforms XGBoost in all metrics -- a common result for financial time "
+        "series with fewer than 500 observations where bagging's variance reduction "
+        "dominates boosting's sequential correction."
+    ),
+    (
+        "SHAP value analysis of the XGBoost model reveals that the CPI one-month lag "
+        "is the most important predictor at the monthly horizon (mean absolute SHAP "
+        "|phi| = 0.954), followed by TIPS with a two-month lag (|phi| = 0.617), "
+        "one-month gold momentum (|phi| = 0.526), and the 10-year breakeven with a "
+        "three-month lag (|phi| = 0.485). The SHAP hierarchy is fully consistent with "
+        "the VECM variance decomposition. When two approaches with entirely different "
+        "assumptions produce the same hierarchy of variable importance, the evidence "
+        "for genuine economic causality is considerably strengthened relative to "
+        "model-specific artefacts. SHAP waterfall analysis of three representative "
+        "episodes confirms that the relative weight of each variable shifts across "
+        "market regimes: in crisis episodes the VIX and momentum amplify the signal; "
+        "in exceptional rate environments TIPS dominate."
+    ),
+
+    ("__H3__", "Conclusions and contributions"),
+    (
+        "Four main conclusions emerge. First, real interest rates are the dominant "
+        "structural determinant of gold prices in the long run -- a finding that "
+        "holds across the time series, panel, and machine learning frameworks "
+        "simultaneously. Second, inflation is the most potent short-run predictor at "
+        "the monthly horizon, operating through a different mechanism than the "
+        "long-run real yield level that anchors the cointegrating vector. Third, the "
+        "structural relationships between gold and its determinants are not constant: "
+        "formal tests document statistically significant instability at all five "
+        "episode breakpoints. Fourth, the 2022-2024 paradox -- gold reaching "
+        "historical highs while real yields also reached multi-decade highs -- is "
+        "explained by structural demand from emerging market central banks motivated "
+        "by geopolitical de-dollarisation incentives, a channel inelastic to advanced-"
+        "economy real rates whose existence is detected by the structural stability "
+        "tests even if it cannot be fully modelled with available data."
+    ),
+    (
+        "The thesis makes four original contributions: (i) cross-country validation "
+        "of the classical opportunity cost and safe haven mechanisms with data updated "
+        "through 2025; (ii) formal quantification of structural instability at "
+        "economically motivated breakpoints; (iii) cross-methodological validation "
+        "between VECM variance decomposition and SHAP importance rankings; and "
+        "(iv) an integrated analysis of the 2022-2024 episode connecting the "
+        "econometric detection of structural break with the economic explanation of "
+        "de-dollarisation. Limitations include the small panel cross-section (N = 4), "
+        "the limited ML sample size (271 observations), and the absence of high-"
+        "frequency central bank reserve data. Natural extensions include expanding the "
+        "panel to emerging economies, explicitly modelling central bank demand, and "
+        "estimating Markov Switching VAR models to formally characterise the regime "
+        "changes identified descriptively in this thesis."
+    ),
+    (
+        "Keywords: gold, VECM, cointegration, panel data, machine learning, SHAP, "
+        "de-dollarisation."
+    ),
+]
 
 
 def write_summary(doc):
-    """Summary in English (≥ 1,000 words)."""
-    H1(doc, "Summary")
-
-    paragraphs = [
-        # Introduction and motivation
-        (
-            "This Bachelor's Thesis analyses the dynamics of the gold price over the "
-            "period 2000-2025, one of the most turbulent and analytically rich "
-            "twenty-five-year windows in modern financial history. During this period, "
-            "gold rose from approximately 280 US dollars per troy ounce at the start of "
-            "2000 to a record high of over 4,500 dollars in late 2025—an increase of "
-            "more than 1,500 per cent in nominal terms. The period encompasses five "
-            "major market episodes: the Global Financial Crisis (2007-2009), the "
-            "post-quantitative easing peak and correction (2011-2013), the COVID-19 "
-            "pandemic shock (2020), the most aggressive interest rate hiking cycle in "
-            "four decades combined with geopolitical tensions (2022-2024), and the "
-            "2025 rally driven by the Trump tariff war and accelerating de-dollarisation "
-            "by central banks. Each of these episodes produced different behaviour in "
-            "the gold market—sometimes acting as a safe haven, sometimes falling in "
-            "tandem with risk assets before recovering—making the sample an ideal "
-            "laboratory for econometric analysis and machine learning."
-        ),
-        (
-            "The academic motivation for this work rests on three observations. First, "
-            "the bulk of the empirical literature on gold price determinants was written "
-            "before the most recent episodes, and applying established methodologies "
-            "to an updated dataset that includes the post-COVID and geopolitical regime "
-            "is a meaningful contribution. Second, the systematic application of "
-            "interpretable machine learning—specifically SHAP (SHapley Additive "
-            "exPlanations) values—to identify which variables dominate gold dynamics "
-            "across different market regimes is still an emerging area of research "
-            "with very limited representation in undergraduate academic work. Third, "
-            "the cross-country dimension of the panel analysis addresses a question "
-            "that remains open in the literature: whether the gold-as-safe-haven and "
-            "opportunity-cost mechanisms documented for the United States operate "
-            "equally in other advanced economies."
-        ),
-        # Theoretical framework
-        (
-            "The theoretical framework draws on three strands of literature. The first "
-            "is the seminal work of Baur and Lucey (2010) and Baur and McDermott (2010), "
-            "which formalised the distinction between a hedge—an asset with on average "
-            "negative or zero correlation with another asset—and a safe haven—an asset "
-            "with negative or zero correlation conditionally on extreme market stress. "
-            "The second strand is the critique by Erb and Harvey (2013) of the popular "
-            "view of gold as a reliable inflation hedge, showing that the gold-inflation "
-            "correlation is only consistently positive at multi-decade horizons, not at "
-            "the practical one-to-ten-year horizons relevant to investors. The third "
-            "strand connects the choice of the VAR/VECM methodology to its intellectual "
-            "origins in Sims (1980), who proposed treating all macroeconomic variables "
-            "as equally endogenous in response to the identification restrictions of "
-            "large-scale simultaneous equation models—restrictions that, as Sims argued, "
-            "are not verifiable from the data. For a system in which the gold price, "
-            "the dollar, real interest rates and equities all interact, the VAR is "
-            "the most honest modelling framework available."
-        ),
-        # Data and methodology
-        (
-            "The dataset comprises 312 monthly observations from January 2000 to "
-            "December 2025, sourced from the Federal Reserve Economic Data (FRED) "
-            "portal and Yahoo Finance. The core variables are: the gold price (London "
-            "PM Fix, end of month); the broad dollar index (DXY, combining DTWEXB and "
-            "DTWEXBGS with rescaling on the overlap period); the ten-year TIPS real "
-            "yield (DFII10, with an ex-post proxy for 2000-2002 based on the nominal "
-            "ten-year yield minus year-on-year CPI inflation); the VIX volatility index "
-            "(monthly mean, given its mean-reverting nature); the S&P 500 (end of month, "
-            "adjusted close); and West Texas Intermediate crude oil (WTI, end of month). "
-            "For the panel analysis, four economies are included: the United States, "
-            "Germany, Japan and the United Kingdom, with country-specific real interest "
-            "rates and stock market indices as explanatory variables over 2000-2024 "
-            "(96 monthly observations per country, 384 total). All price series are "
-            "log-transformed; rates and the VIX enter in levels."
-        ),
-        # VAR/VECM results
-        (
-            "The econometric analysis follows a sequential protocol. Unit root tests "
-            "(ADF and KPSS) classify the log gold price, log DXY, TIPS real yield and "
-            "log S&P 500 as integrated of order one, I(1), while the VIX, year-on-year "
-            "CPI and ten-year breakeven inflation are stationary in levels, I(0). The "
-            "Johansen cointegration test applied to the four I(1) variables identifies "
-            "one cointegrating vector (rank r = 1 using the maximum eigenvalue "
-            "statistic), confirming that a long-run equilibrium relationship exists "
-            "among the gold price, the dollar, real interest rates and equities. The "
-            "normalised cointegrating vector implies that a one-percentage-point rise "
-            "in ten-year real yields is associated with a long-run decline of "
-            "approximately 8.3 per cent in the gold price—consistent with the "
-            "opportunity-cost mechanism. The estimated speed-of-adjustment coefficient "
-            "(α = -0.067) indicates that deviations from the long-run equilibrium are "
-            "corrected at a rate of roughly 6.7 per cent per month, implying a "
-            "half-life of approximately 10 months. Granger causality tests confirm "
-            "significant predictive content of TIPS real yields for gold at all "
-            "horizons tested (1, 3, 6 and 12 months ahead). The GJR-GARCH(1,1) model "
-            "applied to gold returns documents significant volatility clustering and "
-            "an inverted asymmetry (positive shocks generate more volatility than "
-            "negative shocks of equal magnitude), consistent with the crisis-driven "
-            "demand for gold as a safe haven."
-        ),
-        (
-            "Structural stability tests reveal a significant break in March 2022 "
-            "(Chow F-statistic significant at the 1 per cent level) and the CUSUM "
-            "test exits the 5 per cent confidence bands during the 2022-2024 "
-            "sub-period. Rolling coefficient estimates confirm that the negative "
-            "relationship between TIPS and the gold price—historically estimated "
-            "at approximately -0.7—attenuated substantially after 2022. This "
-            "'paradox' of historically high gold prices coexisting with historically "
-            "high real interest rates is interpreted as the result of structural "
-            "demand from emerging-market central banks in the context of accelerating "
-            "de-dollarisation, a force that is inelastic to advanced-economy real "
-            "rates and that the VAR model, based on financial variables, cannot "
-            "capture directly. The structural break tests detect its existence "
-            "as a residual pattern unexplained by the estimated equilibrium."
-        ),
-        # Panel data results
-        (
-            "The panel data analysis uses a balanced panel of four advanced economies "
-            "over 2000-2024. Fixed-effects and random-effects estimators are applied, "
-            "with the Hausman test rejecting the null hypothesis of no systematic "
-            "difference between coefficients (chi-squared statistic significant at "
-            "5 per cent), leading to the adoption of the fixed-effects specification. "
-            "Standard errors are computed using the Driscoll-Kraay estimator, which "
-            "is robust to cross-sectional dependence and heteroskedasticity—both of "
-            "which are expected in a panel where the gold price is the same across "
-            "countries and macroeconomic shocks are correlated internationally. The "
-            "fixed-effects results confirm that the real interest rate coefficient is "
-            "negative and statistically significant at the 1 per cent level in all "
-            "specifications, with a point estimate in the range of -0.06 to -0.09 "
-            "across robustness checks. The VIX coefficient is positive and "
-            "significant, confirming the safe-haven role of gold in periods of "
-            "elevated financial uncertainty. The within-R-squared of 0.41 indicates "
-            "that the model explains a substantial fraction of the within-country "
-            "time variation in the gold price, after removing country fixed effects. "
-            "These results validate that the opportunity-cost mechanism is not a "
-            "peculiarity of the US market but a structural property of the asset "
-            "across advanced economies."
-        ),
-        # ML results and SHAP
-        (
-            "The machine learning analysis uses XGBoost, Random Forest and a "
-            "Long Short-Term Memory (LSTM) neural network, trained on an expanding "
-            "window walk-forward validation scheme covering October 2016 to October "
-            "2025. Walk-forward validation—rather than standard cross-validation—is "
-            "used to respect the temporal ordering of the data and avoid look-ahead "
-            "bias. The feature set includes 35 variables: lagged values (up to three "
-            "months) of the nine core regressors plus constructed features such as "
-            "three-month rolling volatility of gold returns and rolling correlations. "
-            "Performance is evaluated using root mean squared error (RMSE) and "
-            "directional accuracy (DA). The LSTM achieves the best performance "
-            "across both metrics: RMSE of 3.815 (versus 5.054 for the naive random "
-            "walk benchmark) and directional accuracy of 61.5 per cent (versus "
-            "55.9 per cent for the naive benchmark and 50 per cent for random "
-            "guessing). XGBoost and Random Forest fall between the naive benchmark "
-            "and the LSTM in both metrics, with Random Forest achieving the second "
-            "best directional accuracy (58.7 per cent). SHAP analysis of the "
-            "XGBoost model reveals that the most important short-run predictor is "
-            "year-on-year CPI inflation with a one-month lag (mean absolute SHAP "
-            "value |φ̄| = 0.954), followed by the TIPS real yield with a two-month "
-            "lag (|φ̄| = 0.617), the lagged gold return (|φ̄| = 0.526), and the "
-            "ten-year breakeven inflation expectation (|φ̄| = 0.485). The convergence "
-            "between this short-run SHAP hierarchy and the long-run variable "
-            "importance implied by the VECM variance decomposition—both pointing to "
-            "real interest rates and inflation expectations as the dominant forces—"
-            "constitutes the most methodologically robust finding of the thesis."
-        ),
-        # Conclusions
-        (
-            "The three pillars of analysis converge on a consistent set of conclusions. "
-            "Real interest rates are the dominant structural determinant of the gold "
-            "price in the long run, operating through the opportunity-cost mechanism "
-            "that applies universally across advanced economies. Inflation expectations "
-            "are the dominant short-run predictor. The structural stability of these "
-            "relationships is time-varying: the 2022-2024 episode reveals that "
-            "demand from sovereign buyers operating outside the interest-rate "
-            "logic of financial markets can temporarily override the historical "
-            "equilibrium. Machine learning improves short-run directional prediction "
-            "modestly but meaningfully, and SHAP values provide an interpretable "
-            "bridge between the predictive power of the ML model and the structural "
-            "relationships identified by the VECM. The overarching methodological "
-            "lesson is that econometrics and machine learning are complementary, not "
-            "competing, tools for understanding financial markets: the former "
-            "quantifies mechanisms and long-run equilibria; the latter optimises "
-            "short-run prediction and reveals non-linear feature importance patterns "
-            "that linear models cannot detect. Future work should extend the panel "
-            "to emerging economies, incorporate high-frequency data and central bank "
-            "reserve flows as explicit covariates, and apply Markov-switching VAR "
-            "models to endogenise the regime changes identified in this thesis."
-        ),
-    ]
-
-    for para in paragraphs:
-        P(doc, para)
-
-    # Keywords
-    p = doc.add_paragraph()
-    _set_spacing_15(p)
-    p.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
-    run = p.add_run("Keywords: ")
-    run.font.name = "Times New Roman"
-    run.font.size = Pt(12)
-    run.bold = True
-    run2 = p.add_run(
-        "gold price, VECM, cointegration, machine learning, SHAP, "
-        "real interest rates, panel data, structural instability."
-    )
-    run2.font.name = "Times New Roman"
-    run2.font.size = Pt(12)
+    H1(doc, "SUMMARY")
+    for item in SUMMARY_PARAS:
+        if isinstance(item, tuple):
+            tag, text = item
+            if tag == "__H2__":
+                H2(doc, text)
+            elif tag == "__H3__":
+                H3(doc, text)
+        else:
+            P(doc, item)
 
 
-def write_referencias(doc):
-    """Lista de referencias bibliográficas en orden alfabético, APA 7ª."""
-    H1(doc, "Referencias bibliográficas")
+# =====================================================================
+# 9. MAIN
+# =====================================================================
 
-    referencias = [
-        "Bampinas, G., & Panagiotidis, T. (2015). Are gold and silver a hedge against inflation? A two century perspective. *International Review of Financial Analysis, 41*, 267-276.",
-        "Baur, D. G., & Lucey, B. M. (2010). Is gold a hedge or a safe haven? An analysis of stocks, bonds and gold. *Financial Review, 45*(2), 217-229.",
-        "Baur, D. G., & McDermott, T. K. (2010). Is gold a safe haven? International evidence. *Journal of Banking & Finance, 34*(8), 1886-1898. https://doi.org/10.1016/j.jbankfin.2009.12.008",
-        "Beckmann, J., Berger, T., & Czudaj, R. (2019). Gold price dynamics and the role of uncertainty. *Quantitative Finance, 19*(4), 663-681.",
-        "Beckmann, J., & Czudaj, R. (2013). Gold as an inflation hedge in a time-varying coefficient framework. *The North American Journal of Economics and Finance, 24*, 208-222.",
-        "Chicago Fed. (2021). *What drives gold prices?* Chicago Fed Letter, No. 464. Federal Reserve Bank of Chicago.",
-        "Driscoll, J. C., & Kraay, A. C. (1998). Consistent covariance matrix estimation with spatially dependent panel data. *The Review of Economics and Statistics, 80*(4), 549-560.",
-        "Engle, R. F., & Granger, C. W. J. (1987). Co-integration and error correction: Representation, estimation, and testing. *Econometrica, 55*(2), 251-276.",
-        "Erb, C. B., & Harvey, C. R. (2013). The golden dilemma. *Financial Analysts Journal, 69*(4), 10-42. https://doi.org/10.2469/faj.v69.n4.1",
-        "Glosten, L. R., Jagannathan, R., & Runkle, D. E. (1993). On the relation between the expected value and the volatility of the nominal excess return on stocks. *The Journal of Finance, 48*(5), 1779-1801.",
-        "Goodfellow, I., Bengio, Y., & Courville, A. (2016). *Deep learning.* MIT Press.",
-        "Granger, C. W. J. (1969). Investigating causal relations by econometric models and cross-spectral methods. *Econometrica, 37*(3), 424-438.",
-        "Granger, C. W. J., & Newbold, P. (1974). Spurious regressions in econometrics. *Journal of Econometrics, 2*(2), 111-120.",
-        "Gürgün, G., & Ünalmış, İ. (2014). Is gold a safe haven against equity market investment in emerging and developing countries? *Finance Research Letters, 11*(4), 341-348.",
-        "Hamilton, J. D. (1994). *Time series analysis.* Princeton University Press.",
-        "Hausman, J. A. (1978). Specification tests in econometrics. *Econometrica, 46*(6), 1251-1271.",
-        "James, G., Witten, D., Hastie, T., & Tibshirani, R. (2021). *An introduction to statistical learning* (2nd ed.). Springer.",
-        "Johansen, S. (1991). Estimation and hypothesis testing of cointegration vectors in Gaussian vector autoregressive models. *Econometrica, 59*(6), 1551-1580.",
-        "Johansen, S., & Juselius, K. (1990). Maximum likelihood estimation and inference on cointegration — with applications to the demand for money. *Oxford Bulletin of Economics and Statistics, 52*(2), 169-210.",
-        "Liang, X., Li, S., et al. (2023). Forecasting gold price using machine learning methodologies. *Chaos, Solitons & Fractals, 175*, Article 113898.",
-        "Lundberg, S. M., & Lee, S.-I. (2017). A unified approach to interpreting model predictions. *Advances in Neural Information Processing Systems, 30*, 4765-4774.",
-        "Lütkepohl, H. (2005). *New introduction to multiple time series analysis.* Springer.",
-        "Molnar, C. (2022). *Interpretable machine learning* (2nd ed.). Independently published. https://christophm.github.io/interpretable-ml-book/",
-        "Murach, M. (2019). Global determinants of the gold price: A multivariate cointegration analysis. *Scottish Journal of Political Economy, 66*(1), 198-214.",
-        "O'Connor, F. A., Lucey, B. M., Batten, J. A., & Baur, D. G. (2015). The financial economics of gold — a survey. *International Review of Financial Analysis, 41*, 186-205.",
-        "Plakandaras, V., Gupta, R., Wohar, M. E., & Kourtis, A. (2022). Gold price prediction using machine learning and sentiment analysis. *Journal of International Financial Markets, Institutions and Money, 79*, 101586.",
-        "Reboredo, J. C. (2013). Is gold a safe haven or a hedge for the US dollar? Implications for risk management. *Journal of Banking & Finance, 37*(8), 2665-2676.",
-        "Sims, C. A. (1980). Macroeconomics and reality. *Econometrica, 48*(1), 1-48.",
-        "Tsay, R. S. (2010). *Analysis of financial time series* (3rd ed.). Wiley.",
-        "Tully, E., & Lucey, B. M. (2007). A power GARCH examination of the gold market. *Research in International Business and Finance, 21*(2), 316-325.",
-        "World Gold Council. (2023). *Gold demand trends: Full year 2023.* World Gold Council.",
-        "World Gold Council. (2024). *Gold demand trends: Full year 2024.* World Gold Council.",
-    ]
-
-    for ref in referencias:
-        p = doc.add_paragraph()
-        _set_spacing_10(p)
-        p.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
-        # Sangría francesa: primera línea a 0, resto sangrado 1cm
-        p.paragraph_format.left_indent       = Cm(1.0)
-        p.paragraph_format.first_line_indent = Cm(-1.0)
-        p.paragraph_format.space_after       = Pt(6)
-        # Inline formatting para cursivas
-        _parse_inline(p, ref, size=12)
-
-
-# ══════════════════════════════════════════════════════════════════════════════
-# 5.  MAPA DE FIGURAS: HEADING ANCLA → (ruta, caption)
-# ══════════════════════════════════════════════════════════════════════════════
-
-def build_fig_map(figs: dict) -> dict:
-    """
-    Devuelve un dict con anclas normalizadas → (Path, caption).
-    Las anclas son subcadenas del texto del heading normalizado (minúsculas).
-    Coincide si la clave está contenida en el heading normalizado.
-    """
-    return {
-        # Fig 1 → después de "4.1 Fuentes de datos y periodo de análisis"
-        "4.1 fuentes de datos": (
-            figs.get("fig1"),
-            "Figura 4.1. Precio del oro (USD/oz) enero 2000 – diciembre 2025. "
-            "Las bandas sombreadas corresponden a los cinco episodios de crisis. "
-            "Fuente: Yahoo Finance (GC=F). Elaboración propia."
-        ),
-        # Fig 2 → después de "4.3 Estadística descriptiva"
-        "4.3 estadística": (
-            figs.get("fig2"),
-            "Figura 4.2. Series temporales de la variable dependiente (oro) y las "
-            "principales variables explicativas (2000-2025). "
-            "Fuente: Yahoo Finance / FRED. Elaboración propia."
-        ),
-        # Fig 3 → después de "4.4 Evolución temporal: el oro y sus catalizadores"
-        "4.4 evolución temporal": (
-            figs.get("fig3"),
-            "Figura 4.3. Correlación móvil (ventana 36 meses) del retorno mensual "
-            "del oro con sus determinantes principales (2000-2025). "
-            "Fuente: Yahoo Finance / FRED. Elaboración propia."
-        ),
-        # Fig 4 → después de "4.5 Análisis de correlación"
-        "4.5 análisis de correlación": (
-            figs.get("fig4"),
-            "Figura 4.4. Dispersión del precio del oro frente al DXY y al tipo nominal "
-            "10Y (2000-2025). Escala de colores: año de la observación (azul=2000, "
-            "amarillo=2025). Fuente: Yahoo Finance / FRED. Elaboración propia."
-        ),
-        # Fig 5 → después de "7.6 Interpretabilidad: análisis SHAP"
-        "7.6 interpretabilidad": (
-            figs.get("fig5"),
-            "Figura 7.1. Importancia media SHAP (|φ̄|) de las 8 variables más "
-            "relevantes en el modelo XGBoost — período de test (oct. 2016 – oct. 2025). "
-            "Elaboración propia."
-        ),
-        # Fig 6 → después de "7.5 Resultados comparativos"
-        "7.5 resultados comparativos": (
-            figs.get("fig6"),
-            "Figura 7.2. Comparativa de modelos predictivos: RMSE y precisión "
-            "direccional (DA) — validación walk-forward (oct. 2016 – oct. 2025). "
-            "Elaboración propia."
-        ),
-    }
-
-
-# ══════════════════════════════════════════════════════════════════════════════
-# 6.  MAIN
-# ══════════════════════════════════════════════════════════════════════════════
-
-def main():
+if __name__ == "__main__":
     print("=" * 60)
-    print("TFG_Oficial.docx — Generador de formato UMU")
+    print("TFG Oficial -- formato normativo UMU 2025-2026")
     print("=" * 60)
 
-    # ── 1. Descargar datos y generar figuras ──────────────────────────────────
-    print("\n[1/4] Descargando datos de Yahoo Finance...")
-    try:
-        data = download_data()
-        print(f"  Dataset: {len(data)} meses × {len(data.columns)} variables")
-    except Exception as e:
-        print(f"  ERROR descargando datos: {e}")
-        data = pd.DataFrame()
+    # 0. Verificar figuras
+    print("\n[0/3] Verificando figuras...")
+    missing_figs = []
+    for cap_num, fig_list in CHAPTER_END_FIGS.items():
+        for fig_name, _ in fig_list:
+            if not (FIGS_DIR / fig_name).exists():
+                missing_figs.append(fig_name)
+    if missing_figs:
+        print(f"  AVISO: faltan {len(missing_figs)} figura(s):")
+        for f in missing_figs:
+            print(f"    - {f}")
+        print("  Ejecuta primero: python -X utf8 create_tfg_completo.py")
+    else:
+        total = sum(len(v) for v in CHAPTER_END_FIGS.values())
+        print(f"  OK: {total} figuras disponibles en {FIGS_DIR.name}/")
 
-    print("\n[2/4] Generando figuras...")
-    figs = {}
-    try:
-        if not data.empty:
-            figs["fig1"] = fig_gold_historia(data)
-            figs["fig2"] = fig_determinantes(data)
-            figs["fig3"] = fig_correlaciones_rolling(data)
-            figs["fig4"] = fig_scatter(data)
-        figs["fig5"] = fig_shap()
-        figs["fig6"] = fig_ml_resultados()
-    except Exception as e:
-        print(f"  ERROR generando figuras: {e}")
+    # 1. Verificar .md
+    print("\n[1/3] Verificando archivos .md...")
+    for num, path in MD_FILES.items():
+        status = "OK  " if path.exists() else "FALTA"
+        print(f"  {status} Cap.{num}: {path.name}")
 
-    fig_map = build_fig_map(figs)
-
-    # ── 2. Construir documento ────────────────────────────────────────────────
-    print("\n[3/4] Construyendo TFG_Oficial.docx...")
-    doc = make_doc()
+    # 2. Construir documento
+    print("\n[2/3] Construyendo TFG_Oficial.docx...")
+    doc = create_document()
     add_page_numbers(doc)
 
-    # 2a. Portada
     write_portada(doc)
-
-    # 2b. Página en blanco
-    write_blank_page(doc)
-
-    # 2c. Índice (TOC)
-    H1(doc, "Índice")
     add_toc(doc)
     PAGE_BREAK(doc)
 
-    # 2d. Resumen
     write_resumen(doc)
 
-    # 2e. Capítulos 1-9
-    for md_file in MD_FILES:
-        if not md_file.exists():
-            print(f"  AVISO: no encontrado {md_file.name}")
+    for num in range(1, 10):
+        md_path = MD_FILES[num]
+        if not md_path.exists():
+            print(f"  OMITIENDO cap.{num} (archivo no encontrado)")
             continue
-        print(f"  Procesando: {md_file.name}")
-        parse_md_file(doc, md_file, fig_map)
+        print(f"  Procesando cap.{num}...")
+        parse_md_chapter(doc, md_path, chapter_num=num)
         PAGE_BREAK(doc)
 
-    # 2f. Referencias bibliográficas
-    write_referencias(doc)
+    write_references(doc)
     PAGE_BREAK(doc)
-
-    # 2g. Summary en inglés
     write_summary(doc)
 
-    # ── 3. Guardar ────────────────────────────────────────────────────────────
+    # 3. Guardar
     out_path = PROJECT_ROOT / "TFG_Oficial.docx"
     doc.save(str(out_path))
-    print(f"\n[4/4] Guardado: {out_path}")
 
-    print("\n" + "=" * 60)
-    print("INSTRUCCIONES FINALES:")
-    print("  1. Abrir TFG_Oficial.docx en Word")
-    print("  2. Ctrl+A → F9 para actualizar el índice de contenidos")
-    print("  3. Revisar portada, encabezados y saltos de página")
-    print("  4. Comprobar que IBM Plex Sans (o Arial) es correcta en portada")
-    print("=" * 60)
-
-
-if __name__ == "__main__":
-    main()
+    print(f"\n[3/3] Guardado: {out_path}")
+    print(f"  Parrafos : {len(doc.paragraphs)}")
+    print(f"  Tablas   : {len(doc.tables)}")
+    print(
+        "\nInstrucciones finales:"
+        "\n  1. Abrir TFG_Oficial.docx en Microsoft Word"
+        "\n  2. Ctrl+A -> F9 para actualizar el indice"
+        "\n  3. Revisar portada y paginacion"
+    )
