@@ -1,0 +1,14368 @@
+=== Teoria_1.pdf (84 paginas) ===
+TEMA 1: MODELOS DE ECUACIONES 
+SIMULTÁNEAS
+A. Beyaert, M. Camacho 
+con la colaboración de M. González, A. Quesada
+Departamento de Métodos Cuantitativos para la Economía y la Empresa 
+
+Econometría III (4º GECO)
+Tema 1
+2
+Lo que estudiaremos en este tema:
+1.
+Introducción, especificación y supuestos
+1.1 Motivación
+1.2 Especificación y supuestos del MES: Forma estructural y forma reducida
+2.
+El problema de la identificación
+2.1 Motivación
+2.2. Método general de identificación
+2.3. Método particular de identificación
+3.
+Causalidad simultánea: el problema de la endogeneidad
+2.1 Concepto de causalidad simultánea
+2.2 Endogeneidad y sus consecuencias
+2.3 El estimador de variables instrumentales
+2.4. Otras causas de endogeneidad
+
+Tema 1
+3
+Lo que estudiaremos en este tema:
+4.
+Estimación: métodos uniecuacionales y multiecuacionales
+4.1 Consideraciones previas
+4.2 Método de información limitada: MC2E
+4.3 Métodos de información completa, MC3E
+5.
+Inferencia
+5.1 Contrastes sobre los coeficientes estructurales
+5.2 Contrastes de especificación
+6.
+Modelos de ecuaciones simultáneas dinámicos
+6.1 Introducción
+6.2 Forma estructural, forma reducida y forma final
+6.3 Efectos dinámicos 
+6.4 MES y estacionariedad
+6.5 MES y predicción
+Econometría III (4º GECO)
+Tema 1
+3
+
+Tema 1
+4
+Lo que estudiaremos en este tema:
+7.
+Otros modelos multiecuacionales
+7.1 Modelos recursivos
+7.2 Modelos SURE
+7.3 Modelos VAR
+Bibliografía básica:
+Johnston, J.  y Dinardo, J. 2001. Métodos de Economería. Ed. Vicens Vives, cap. 9.4
+Maddala, G. 1996. Introducción a la Econometria. Ed. Prentice Hall, cap. 9
+Novales, A. Novales, A. 1993. Econometría. Ed. Mc Graw Hill, cap. 17 y 18
+Wooldridge, J. 2007. Introducción a la econometría: un enfoque moderno. Ed. Thomson, cap. 16
+Econometría III (4º GECO)
+Tema 1
+4
+
+Tema 1
+5
+1. Introducción, especificación y supuestos 
+1.1 Motivación
+Econometría III (4º GECO)
+
+Datos históricos del precio de los cereales:
+Este índice se determina en los mercados como consecuencia del cruce
+entre oferta y demanda de cereales
+Tema 1
+5
+
+Tema 1
+6
+1. Introducción, especificación y supuestos 
+1.1 Motivación
+Econometría III (4º GECO)
+
+Gráfico de oferta y demanda de cereales. Para cada t:
+Tema 1
+6
+Pt
+Qt
+Qt
+S
+
+Qt
+D
+
+Tema 1
+7
+1. Introducción, especificación y supuestos 
+1.1 Motivación
+Econometría III (4º GECO)
+
+Ejemplo de modelo de ecuaciones simultáneas:
+Oferta y demanda de cereales
+(1) Ecuaciones de comportamiento
+–
+Ecuación de oferta: Rt cantidad de lluvia (exógena)
+–
+Ecuación de demanda
+(2) Condición de equilibrio
+Qt
+S = b1Pt +b2R t +e1t
+Pt = aQt
+D +e2t
+e1t ~ iid 0,s1
+2
+(
+)
+e2t ~ iid 0,s2
+2
+(
+)
+E e1te2t
+(
+) = s12
+Qt
+S = Qt
+D
+Tema 1
+7
+(
+)
+
+
+
+=
+e
+e
+
+t
+0
+E
+2
+t
+1
+
+Tema 1
+8
+1. Introducción, especificación y supuestos 
+1.1 Motivación
+Econometría III (4º GECO)
+Sustituiremos (2) en (1) hasta quedarnos sólo con dos ecuaciones de
+comportamiento que explican las dos variables endógenas del modelo
+Queda claro que las variables explicadas en una ecuación son
+explicativas en otra.
+Como economistas, queremos conocer el valor de α. ¿Cómo podemos
+obtenerlo de la mejor manera posible?
+Qt = b1Pt +b2R t +e1t
+Pt = aQt +e2t
+Tema 1
+8
+
+Tema 1
+9
+Econometría III (4º GECO)
+1. Introducción, especificación y supuestos 
+1.2 Especificación y supuestos del MES:
+Forma estructural y forma reducida
+
+Tipos de variables. En la ecuación de oferta del siguiente ejemplo:
+Endógenas: Qt y Pt
+Predeterminadas (Qt-1 y Rt):
+Exógenas (Rt):                                                   Exog estricta
+Endógenas retardadas (Qt-1): 
+Exog débil
+
+Requeriremos:
+Que el sistema sea completo, es decir, que el número de ecuaciones sea
+igual al de endógenas
+No deben existir ecuaciones redundantes
+E e1t Pt
+(
+) E e1t
+(
+)
+Qt = b1Pt +b2R t +b3Qt-1 +e1t
+E e1t Qt-1,R t
+(
+) = E e1t
+(
+) = 0
+E e1t R t+j
+(
+) = E e1t
+(
+) = 0,    t, j
+E e1t Qt-1
+(
+) = E e1t
+(
+) = 0
+Tema 1
+9
+Pt = aQt +e2t
+
+Tema 1
+10
+Econometría III (4º GECO)
+
+Problemática
+La econometría estudiada hasta ahora: una ecuación
+Pero la mayor parte de los modelos económicos tienen varias
+ecuaciones
+Distintas formas de acercarnos al problema: básicamente MES y
+VAR
+
+Modelos de ecuaciones simultáneas (MES)
+Modelos de varias ecuaciones (variables endógenas)
+Hay que distinguir a priori entre variables endógenas y exógenas
+Explicadas en una ecuación actúan de explicativas en otras
+Pueden ser estáticos o dinámicos
+Están siempre basados en la teoría económica
+1. Introducción, especificación y supuestos 
+1.2 Especificación y supuestos del MES:
+Forma estructural y forma reducida
+Tema 1
+10
+
+Tema 1
+11
+Econometría III (4º GECO)
+1. Introducción, especificación y supuestos 
+1.2 Especificación y supuestos del MES:
+Forma estructural y forma reducida
+Distinguimos entre forma estructural y forma reducida:
+FORMA ESTRUCTURAL:
+• Recoge las ecuaciones tal y como las describe la teoría económica
+• Las ecuaciones reflejan las relaciones causales establecidas por la teoría
+económica
+• Las variables endógenas de una ecuación son explicativas en otras
+• Los coeficientes tienen interpretación económica
+FORMA REDUCIDA:
+• Las endógenas son sólo función de predeterminadas
+• Se obtiene a partir de la forma estructural
+• Los
+coeficientes
+no
+tienen
+interpretación
+económica,
+porque
+son
+una
+combinación lineal de los coeficientes estructurales
+• Refleja los efectos directos e indirectos de las variables predeterminadas en
+las variables endógenas del modelo
+Tema 1
+11
+
+Tema 1
+12
+Econometría III (4º GECO)
+1. Introducción, especificación y supuestos 
+1.2 Especificación y supuestos del MES:
+Forma estructural y forma reducida
+
+En nuestro ejemplo:
+AYt = BXt +et
+1
+-b1
+-a
+1
+æ
+è
+çç
+ö
+ø
+÷÷
+Qt
+Pt
+æ
+è
+ç
+ç
+ö
+ø
+÷
+÷ =
+b2
+0
+æ
+è
+çç
+ö
+ø
+÷÷R t +
+e1t
+e2t
+æ
+è
+ç
+ç
+ö
+ø
+÷
+÷
+Qt = b1Pt +b2R t +e1t
+Pt = aQt +e2t
+S =
+s1
+2
+s12
+s12
+s2
+2
+æ
+è
+ç
+ç
+ö
+ø
+÷
+÷
+et ~ iid 0,S
+(
+)
+V e1t
+(
+) = s1
+2,  V e2t
+(
+) = s2
+2,  Cov e1t,e2t
+(
+) = s12
+Escrito en notación matricial:
+Tema 1
+12
+FORMA ESTRUCTURAL
+
+Tema 1
+13
+Econometría III (4º GECO)
+1. Introducción, especificación y supuestos 
+1.2 Especificación y supuestos del MES:
+Forma estructural y forma reducida
+
+Expresión general
+
+Tenemos y1t, ..., yMt variables endógenas en el vector de M filas Yt = (y1t, ..., yMt )’
+
+Tenemos X1t, ..., Xkt predeterminadas en el vector de K filas Xt = (1, X1t, ..., Xkt )’
+
+Tenemos e1t, ..., e Mt perturbaciones aleatorias en el vector de M filas et = (e1t, ..., eMt )’
+
+Entonces
+
+Nota: Si hay término constante K = k+1 
+et ~ iid 0,S
+(
+)
+AYt = BXt +et
+a11
+
+a1M
+
+
+
+a M1
+
+a MM
+æ
+è
+ç
+ç
+çç
+ö
+ø
+÷
+÷
+÷÷
+y1t
+
+yMt
+æ
+è
+ç
+ç
+çç
+ö
+ø
+÷
+÷
+÷÷
+=
+b10
+b11
+
+b1k
+
+
+
+bM0
+bM1
+
+bMk
+æ
+è
+ç
+ç
+çç
+ö
+ø
+÷
+÷
+÷÷
+1
+X1t
+
+Xkt
+æ
+è
+ç
+ç
+ç
+çç
+ö
+ø
+÷
+÷
+÷
+÷÷
++
+e1t
+
+eMt
+æ
+è
+ç
+ç
+çç
+ö
+ø
+÷
+÷
+÷÷
+E etet '
+(
+) = S
+E ete'
+(
+) = 0,t 
+S =
+s1
+2
+
+s1M
+
+
+
+s1M
+
+sM
+2
+æ
+è
+ç
+ç
+ç
+ç
+ö
+ø
+÷
+÷
+÷
+÷
+Tema 1
+13
+
+Tema 1
+14
+Econometría III (4º GECO)
+
+En nuestro ejemplo
+La matriz A debe ser cuadrada y no singular para que exista A-1. Ocurre si
+oferta y demanda distintas pendientes 
+Qt
+Pt
+æ
+è
+ç
+ç
+ö
+ø
+÷
+÷ =
+1
+-b1
+-a
+1
+æ
+è
+çç
+ö
+ø
+÷÷
+-1
+b2
+0
+æ
+è
+çç
+ö
+ø
+÷÷R t +
+1
+-b1
+-a
+1
+æ
+è
+çç
+ö
+ø
+÷÷
+-1
+e1t
+e2t
+æ
+è
+ç
+ç
+ö
+ø
+÷
+÷
+÷÷
+ø
+ö
+çç
+è
+æ
++
+÷÷
+ø
+ö
+çç
+è
+æ
+
+
+=
+÷÷
+ø
+ö
+çç
+è
+æ
+e
+e
+÷
+÷
+÷
+÷
+ø
+ö
+ç
+ç
+ç
+ç
+è
+æ
+ab
+-
+ab
+-
+a
+ab
+-
+b
+ab
+-
++
+÷
+÷
+÷
+÷
+ø
+ö
+ç
+ç
+ç
+ç
+è
+æ
+ab
+-
+ab
+ab
+-
+b
+=
+÷÷
+ø
+ö
+çç
+è
+æ
+t
+2
+t
+1
+t
+21
+11
+t
+2
+t
+1
+1
+1
+1
+1
+1
+t
+1
+2
+1
+2
+t
+t
+u
+u
+R
+1
+1
+1
+1
+1
+1
+R
+1
+1
+P
+Q
+Yt = A-1BXt + A-1et = PXt + Ut
+A 0 Û ab1 1
+1. Introducción, especificación y supuestos 
+1.2 Especificación y supuestos del MES:
+Forma estructural y forma reducida
+Tema 1
+14
+FORMA REDUCIDA
+t
+1
+t
+11
+t
+u
+R
+Q
++
+
+=
+(
+)
+(
+)
+(
+)
+12
+t
+2
+t
+1
+2
+2
+t
+2
+2
+1
+t
+1
+u
+,
+u
+Cov
+  ,
+u
+V
+  ,
+u
+V
+
+=
+
+=
+
+=
+t
+2
+t
+21
+t
+u
+R
+P
++
+
+=
+
+Tema 1
+15
+Econometría III (4º GECO)
+
+Expresión general
+Partimos del modelo en forma estructural
+Despejamos para encontrar la forma reducida
+AYt = BXt +et,
+Yt = A-1BXt + A-1et = PXt + Ut,
+Ut ~ 0,W
+(
+),   W = A-1S A-1
+(
+) '
+y1t
+
+yMt
+æ
+è
+ç
+ç
+çç
+ö
+ø
+÷
+÷
+÷÷
+=
+a11
+
+a1M
+
+
+
+a M1
+
+a MM
+æ
+è
+ç
+ç
+çç
+ö
+ø
+÷
+÷
+÷÷
+-1
+b10
+b11
+
+b1k
+
+
+
+bM0
+bM1
+
+bMk
+æ
+è
+ç
+ç
+çç
+ö
+ø
+÷
+÷
+÷÷
+1
+X1t
+
+Xkt
+æ
+è
+ç
+ç
+ç
+çç
+ö
+ø
+÷
+÷
+÷
+÷÷
++
+a11
+
+a1M
+
+
+
+a M1
+
+a MM
+æ
+è
+ç
+ç
+çç
+ö
+ø
+÷
+÷
+÷÷
+-1
+e1t
+
+eMt
+æ
+è
+ç
+ç
+çç
+ö
+ø
+÷
+÷
+÷÷
+y1t
+
+yMt
+æ
+è
+ç
+ç
+çç
+ö
+ø
+÷
+÷
+÷÷
+=
+10
+11
+
+1k
+
+
+
+M0
+M1
+
+Mk
+æ
+è
+ç
+ç
+çç
+ö
+ø
+÷
+÷
+÷÷
+1
+X1t
+
+Xkt
+æ
+è
+ç
+ç
+ç
+çç
+ö
+ø
+÷
+÷
+÷
+÷÷
++
+u1t
+
+uMt
+æ
+è
+ç
+ç
+çç
+ö
+ø
+÷
+÷
+÷÷
+,
+E etet '
+(
+) = S
+W =
+1
+2
+
+1M
+
+
+
+1M
+
+M
+2
+æ
+è
+ç
+ç
+ç
+ç
+ö
+ø
+÷
+÷
+÷
+÷
+1. Introducción, especificación y supuestos 
+1.2 Especificación y supuestos del MES:
+Forma estructural y forma reducida
+Tema 1
+15
+
+Tema 1
+16
+Econometría III (4º GECO)
+Centrémonos en los coeficientes del modelo
+¿Podemos encontrar
+a partir de
+?
+Tenemos 2 ecuaciones y 3 incógnitas
+Veremos cómo, en nuestro ejemplo, algunos (pero no todos) los
+parámetros de FE sí se pueden obtener a partir de los parámetros de FR
+1
+2
+11
+1
+ab
+-
+b
+=
+
+1
+2
+21
+1
+ab
+-
+ab
+=
+
+a, b1, b2
+21
+11  , 
+
+1. Introducción, especificación y supuestos 
+1.2 Especificación y supuestos del MES:
+Forma estructural y forma reducida
+Tema 1
+16
+
+Tema 1
+17
+Econometría III (4º GECO)
+2.
+El problema de la identificación 
+2.1 Motivación
+Tema 1
+17
+
+Este problema está relacionado con el hecho de que no podamos obtener los
+parámetros estructurales de forma única a partir de los de la forma reducida
+
+En el ejemplo podemos recuperar los parámetros estructurales de la ecuación de
+demanda porque está identificada
+
+Pero no los de la oferta
+
+En este ejemplo es sencillo comprobar si hay identificación. Pero necesitamos un
+método más general para analizar la identificación en casos más complicados porque
+la identificación es esencial para poder estimar adecuadamente los parámetros
+estructurales
+1
+2
+11
+1
+ab
+-
+b
+=
+
+1
+2
+21
+1
+ab
+-
+ab
+=
+
+21
+11
+
+a = 
+(
+)
+21
+2
+11
+1
+11
+1
+11
+1
+1
+æ
+ö
+
+b
+= 
+- ab
+= 
+-
+b
+ç
+÷
+
+è
+ø
+
+Tema 1
+18
+Econometría III (4º GECO)
+2.
+El problema de la identificación 
+2.1 Motivación
+Tema 1
+18
+
+El hecho de que la ecuación de demanda esté identificada es esencial para poder
+estimarla. Pero no podemos estimar adecuadamente la ecuación de oferta porque no
+está identificada
+INTUICION GRAFICA
+Los desplazamientos de la ecuación de oferta para cada valor de R perfilan la ecuación de
+demanda (ecuación identificada), pero no ocurre lo mismo para la ecuación de oferta
+(ecuación no identificada)
+Pt
+Qt
+tP
+Q0 = R0
+(
+)
+Q1 = R1
+(
+)
+Q2 = R 2
+(
+)
+
+
+
+
+Tema 1
+19
+Econometría III (4º GECO)
+Tema 1
+19
+Siempre se normaliza el MES: generalmente diag(A)=1
+Una teoría económica se diferencia de otra en las restricciones que
+imponen sobre los parámetros de la forma estructural
+Restricciones de exclusión: hacemos algunos parámetros iguales a cero.
+Son las más utilizadas. En nuestro ejemplo:
+Restricciones sobre las covarianzas: las veremos más adelante
+Otras restricciones. Ej. combinaciones lineales entre parámetros
+2
+1
+b
++
+b
+=
+a
+e
+-b
+b
+æ
+ö
+æ
+ö
+æ
+ö
+æ
+ö
+=
++
+ç
+÷
+ç
+÷
+ç
+÷
+ç
+÷
+e
+-a
+è
+ø
+è
+ø
+è
+ø
+è
+ø
+t
+1t
+1
+2
+t
+t
+2 t
+Q
+1
+R
+P
+1
+0
+t
+t
+t
+BX
+AY
+e
++
+=
+2.
+El problema de la identificación 
+2.1 Motivación
+
+Tema 1
+20
+Econometría III (4º GECO)
+2.
+El problema de la identificación 
+2.2 Método general de identificación
+Tema 1
+20
+
+Definición 1: Modelos Observacionalmente Equivalentes (MOE)
+Sea una teoría económica
+su estructura económica se refleja en FE1
+genera unos datos que se recogen en la FR
+Podría existir otra teoría cuyos parámetros sean una combinación lineal de los
+anteriores
+, donde F es una matriz M×M invertible
+su FE2 será
+tendría la misma FR
+Ambos modelos serán MOE porque tienen la misma FR. Dada la FR no sabremos
+cuál de las dos teorías económicas (FE) generó esos datos (FR).
+(
+)
+S
+,
+B
+,
+A
+t
+t
+t
+BX
+AY
+e
++
+=
+(
+)
+S
+=
+e
+e
+'
+E
+t
+t
+t
+t
+t
+1
+t
+1
+t
+U
+X
+A
+BX
+A
+Y
++
+P
+=
+e
++
+=
+-
+-
+(
+)
+(
+)' 
+A
+A
+'
+U
+U
+E
+1
+1
+t
+t
+-
+- S
+=
+W
+=
+(
+)
+W
+P ,
+(
+)'
+F
+F
+,
+FB
+,
+FA
+S
+t
+t
+t
+F
+FBX
+FAY
+e
++
+=
+(
+)
+'
+F
+F
+'
+F
+'
+F
+E
+t
+t
+S
+=
+e
+e
+t
+t
+t
+1
+1
+t
+1
+1
+t
+U
+X
+F
+F
+A
+FBX
+F
+A
+Y
++
+P
+=
+e
++
+=
+-
+-
+-
+-
+
+Tema 1
+21
+Econometría III (4º GECO)
+Tema 1
+21
+
+Definición 2: Transformaciones Admisibles (TA)
+Una teoría económica se concreta en los parámetros de su FE1
+donde impone restricciones
+Una teoría observacionalmente equivalente a la anterior que se concreta en sus
+parámetros estructurales
+es una transformación admisible de la
+primera si las restricciones que impone sobre sus parámetros estructurales coinciden
+
+Definición 3: Un MES está identificado si, debidamente normalizado, la
+única transformación admisible es
+. Implicaciones
+El MES sólo admite una TA que es él mismo
+Podremos encontrar todos los parámetros de la FE a partir de la FR de manera
+única
+(
+)
+S
+,
+B
+,
+A
+(
+)'
+F
+F
+,
+FB
+,
+FA
+S
+I
+F =
+(
+)
+(
+)
+S
+Û
+S
+,
+B
+,
+A
+'
+F
+F
+,
+FB
+,
+FA
+Se lee: “cumple las 
+mismas restricciones que”
+Û
+2.
+El problema de la identificación 
+2.2 Método general de identificación
+
+Tema 1
+22
+Econometría III (4º GECO)
+Tema 1
+22
+
+La forma de normalizar los modelos observacionalmente equivalente es 
+imponiendo que la diagonal principal de F sean 1
+
+¿Está identificado el MES del ejemplo anterior? NO
+La FE1 normalizada del modelo está definida por   
+Los MOE a este son
+
+Esos MOE serán TA si cumplen con las mismas restricciones que FE1
+
+
+
+
+
+
+÷÷
+ø
+ö
+çç
+è
+æ
+s
+s
+s
+s
+÷÷
+ø
+ö
+çç
+è
+æb
+÷÷
+ø
+ö
+çç
+è
+æ
+a
+-
+b
+-
+2
+2
+12
+12
+2
+1
+2
+1
+,
+0
+,
+1
+1
+(
+)
+S
+,
+B
+,
+A
+
+
+
+
+
+
+
+
+÷÷
+ø
+ö
+çç
+è
+æ
+÷÷
+ø
+ö
+çç
+è
+æ
+s
+s
+s
+s
+÷÷
+ø
+ö
+çç
+è
+æ
+÷÷
+ø
+ö
+çç
+è
+æb
+÷÷
+ø
+ö
+çç
+è
+æ
+÷÷
+ø
+ö
+çç
+è
+æ
+a
+-
+b
+-
+÷÷
+ø
+ö
+çç
+è
+æ
+'
+21
+12
+2
+2
+12
+12
+2
+1
+21
+12
+2
+21
+12
+1
+21
+12
+1
+f
+f
+1
+1
+f
+f
+1
+,
+0
+1
+f
+f
+1
+,
+1
+1
+1
+f
+f
+1
+(
+)
+(
+)
+S
+Û
+S
+,
+B
+,
+A
+'
+F
+F
+,
+FB
+,
+FA
+2.
+El problema de la identificación 
+2.2 Método general de identificación
+
+Tema 1
+23
+Econometría III (4º GECO)
+Tema 1
+23
+
+en A no se ha impuesto ninguna restricción (sólo la normalización)  
+=> no sacamos ninguna información sobre F
+
+en S no se ha impuesto ninguna restricción  => no sacamos 
+ninguna información sobre F
+
+Tendremos que imponer en FB las mismas restricciones que en B
+Para ello debemos imponer f12b2=0 f12=0
+La F de los MOA que son TA de FE1 es
+Como FE1 admite TA sin que F=I , el MES no está identificado
+?
+FB
+B
+¿
+Û
+?
+'F
+F
+¿
+S
+Û
+S
+÷÷
+ø
+ö
+çç
+è
+æb
+Û
+÷÷
+ø
+ö
+çç
+è
+æ
+b
+b
+=
+÷÷
+ø
+ö
+çç
+è
+æb
+÷÷
+ø
+ö
+çç
+è
+æ
+0
+f
+0
+1
+f
+f
+1
+2
+2
+21
+2
+2
+21
+12
+?
+A
+FA
+¿
+Û
+÷÷
+ø
+ö
+çç
+è
+æ
+=
+÷÷
+ø
+ö
+çç
+è
+æ
+1
+0
+f
+1
+1
+f
+f
+1
+12
+21
+12
+2.
+El problema de la identificación 
+2.2 Método general de identificación
+
+Tema 1
+24
+Econometría III (4º GECO)
+Tema 1
+24
+
+Aunque no podamos identificar todo el MES, es importante saber si algunas 
+de sus ecuaciones están identificadas porque serán las ecuaciones cuyos 
+parámetros estructurales podremos estimar
+
+¿Cómo saber si la ecuación j del MES está identificada?
+Buscamos las TA
+Si la fila j de F en las TA es como la fila j de la matriz identidad la 
+única TA de la ecuación j es ella misma la ecuación j estará 
+identificada
+
+En el ejemplo anterior la ecuación de demanda está identificada
+Intentaremos estimar a, aunque no podremos estimar b1, b2
+÷÷
+ø
+ö
+çç
+è
+æ
+=
+÷÷
+ø
+ö
+çç
+è
+æ
+1
+0
+f
+1
+1
+f
+f
+1
+12
+21
+12
+2.
+El problema de la identificación 
+2.2 Método general de identificación
+
+Tema 1
+25
+Econometría III (4º GECO)
+Tema 1
+25
+
+Podemos simplificar el método general para saber de forma sencilla si la 
+ecuación j de un MES está identificadas:
+Sólo sirve cuando hay restricciones de exclusión en A o B
+No sirve cuando las restricciones están en S o no sean de exclusión
+
+Definamos el número de endógenas y exógenas de la ecuación j
+
+En nuestro ejemplo: 
+Endógenas
+Exógenas
+Incluidas
+Excluidas
+mj
+Kj
+Total
+Kj
+*
+M-1
+K
+j
+m
+*
+t
+t
+2t
+2
+2
+2
+2
+P
+Q
+m
+k
+1,
+k
+m
+0
+   
+= a
++e
+
+=
+=
+=
+=
+2.
+El problema de la identificación 
+2.2 Método particular de identificación
+
+Tema 1
+26
+Econometría III (4º GECO)
+Tema 1
+26
+
+Sin pérdida de generalidad
+Supongamos j=1
+Las endógenas excluidas y las exógenas excluidas se colocan al final
+Los parámetros de la 1ª fila de A y B en el MES son
+Los parámetros de la 1ª fila de los MOE son
+(
+)
+B
+,
+A
+(
+)
+1
+1
+1 a
+0 , b
+0
+  
+(
+)
+1
+1
+1
+1
+2
+3
+4
+5
+1
+a
+0
+b
+0
+1,F
+C
+C
+C
+C
+C
+ , 
+
+
+æ
+ö
+æ
+ö
+
+
+ç
+÷
+ç
+÷
+è
+ø
+è
+ø
+
+
+(
+)
+FB
+,
+FA
+1
+(M
+1)
+m
+-
+
+*
+1
+(M
+1)
+K
+-
+
+1
+1 m
+
+*
+1
+K
+1
+2.
+El problema de la identificación 
+2.2 Método particular de identificación
+
+Tema 1
+27
+Econometría III (4º GECO)
+Tema 1
+27
+Las TA deben cumplir que              y               , o bien 
+Estará identificada sólo si las restricciones F1C=0 implican F1=0 
+Para ello debemos poder despejar F1 como sigue
+Existe (CC’)-1 cuando                               (condición de rango). Es una condición 
+suficiente para la identificación de la 1ª ecuación
+
+Para que                               es necesario que C al menos tenga tantas cols              
+como filas                                . Esto implica               y le llamamos condición de orden. 
+Para que una ecuación del MES esté identificada es necesario que estén excluidas al 
+menos tantas predeterminadas como endógenas incluidas. Sobreidentificada cuando
+1
+3
+0
+=
+FC
+1
+5
+0
+=
+F C
+(
+)
+0
+C
+F
+C
+,
+C
+F
+1
+5
+3
+1
+=
+=
+*
+1
+1
+(M
+1) (m
+K )
+-
+
++
+( )
+1
+M
+C
+rango
+-
+=
+*
+1
+1
+K
+m
+
+*
+1
+1
+K
+m
+
+2.
+El problema de la identificación 
+2.2 Método particular de identificación
+(
+)
+- =
+
+=
+1
+1
+1
+FCC' CC'
+0
+F
+0
+( )
+1
+M
+C
+rango
+-
+=
+*
+1
+1
+(m
+K )
++
+1
+1
+(M
+1)
+m
+m
+-
+=
++
+
+Tema 1
+28
+Econometría III (4º GECO)
+Tema 1
+28
+
+Método práctico para examinar la condición de rango
+Esquematizamos la estructura del modelo en una tabla. El símbolo X se refiere a 
+que la variable está incluida  y el 0 a que no lo está  en la ecuación
+Identificamos las columnas donde la ecuación tiene 0
+Montamos una matriz (C) con el resto de elementos y comprobamos su rango
+y1
+Ec 1
+Ec 2
+X
+X
+Ec 3
+y2
+y3
+x1
+x2
+x3
+0
+X
+X
+0
+X
+X
+X
+X
+X
+X
+X
+0
+0
+0
+0
+0
+2.
+El problema de la identificación 
+2.2 Método particular de identificación
+
+Tema 1
+29
+Econometría III (4º GECO)
+Tema 1
+29
+
+Examinemos la identificación de las ecuaciones de oferta y demanda
+Construimos la tabla
+Oferta
+Cond. orden: M1=1 < K*
+1 = 0 no identificada
+Cond. rango: No hace falta porque no cumple condición necesaria
+Demanda
+Cond. orden: M1=1 < K*
+1 = 1 potencialmente identificada
+Cond. rango: C = b2 rango(C) = 1 = M-1 identificada
+t
+1
+t
+2
+t
+1
+t
+Z
+P
+Q
+e
++
+b
++
+b
+=
+t
+2
+t
+t
+Q
+P
+e
++
+a
+=
+Q
+Oferta
+Demanda
+1
+b2
+P
+Z
+-b1
+-a
+1
+0
+2.
+El problema de la identificación 
+2.2 Método particular de identificación
+
+Tema 1
+30
+Econometría III (4º GECO)
+3. Causalidad simultánea: el problema de la endogeneidad
+3.1 Concepto de causalidad simultánea
+
+Causalidad simultánea:
+Se produce cuando dos o más variables se causan mutuamente.
+Ejemplo: Oferta y demanda de cereales
+Ecuación de oferta: Rt cantidad de lluvia (exógena)
+Ecuación de demanda
+La causalidad simultánea implica que alguna explicativa no sea ni
+siquiera débilmente o contemporáneamente exógena: es endógena.
+Qt = b1Pt +b2R t +e1t,
+Pt = aQt +e2t,
+e1t ~ iid 0,s1
+2
+(
+)
+e2t ~ iid 0,s2
+2
+(
+)
+E e1te2t
+(
+) = s12
+Tema 1
+30
+
+Tema 1
+31
+Econometría III (4º GECO)
+3. Causalidad simultánea: el problema de la endogeneidad
+3.2 Endogeneidad y sus consecuencias
+¿Sirve MCO para estimar la ecuación de demanda de cereales?
+Recuerda: ecuaciones de oferta y demanda. Suponemos 
+¿Cumple Q la exogeneidad débil en la ecuación de demanda?  
+Calculemos la covarianza                         (siempre que            )
+Sabemos  que                                     MCO no es consistente
+(
+)
+(
+)
+(
+)
+(
+)
+(
+)
+12
+2
+2
+1
+t
+2
+t
+1
+t
+2
+t1
+t
+2
+t
+2
+t
+1
+t
+2
+t1
+t
+2
+t
+1
+t
+2
+t
+,
+Q
+cov
+,
+Z
+Q
+cov
+,
+Z
+P
+cov
+,
+Q
+cov
+s
++
+s
+b
++
+e
+a
+b
+=
+e
+e
++
+b
++
+e
++
+a
+b
+=
+e
+e
++
+b
++
+b
+=
+e
+Qt = b1Pt +b2R t +e1t
+Pt = aQt +e2t
+(
+)
+a
+b
+-
+s
++
+s
+b
+=
+s
+=
+e
+e
+1
+12
+2
+2
+1
+Q
+t
+2
+t
+1
+,
+Q
+cov
+2
+a < 0, b1 0, b2 0
+cov Qt,e2t
+(
+)
+( )
+a
+
+s
+s
++
+a
+=
+a
+e
+2
+Q
+Q 2
+ˆ
+lim
+p
+b1a 1
+Tema 1
+31
+
+Tema 1
+32
+Econometría III (4º GECO)
+3. Causalidad simultánea: el problema de la endogeneidad
+3.2 Endogeneidad y sus consecuencias
+Sesgadez
+Inconsistencia
+ˆb = X'X
+(
+)
+-1 X'Y = X'X
+(
+)
+-1 X' Xb+e
+
+= b+ X'X
+(
+)
+-1 X'e
+E ˆb X
+(
+) = b+ E
+X'X
+(
+)
+-1 X'e X
+(
+) b
+plim ˆb( ) = plim b+ X'X
+T
+æ
+è
+ç
+ö
+ø
+÷
+-1 X'e
+T
+æ
+è
+çç
+ö
+ø
+÷÷ = b+ plim
+X'X
+T
+æ
+è
+ç
+ö
+ø
+÷
+-1
+æ
+è
+çç
+ö
+ø
+÷÷plim 1
+T
+Xtet
+å
+æ
+è
+ç
+ö
+ø
+÷ b
+•
+Es una media
+•
+Su plim es su esperanza
+•
+No 0 por endogeneidad
+Tema 1
+32
+Tenemos que buscar un estimador alternativo: el estimador de variables
+instrumentales (VI)
+En términos generales, la endogeneidad provoca que MCO sea sesgado e
+inconsistente
+En general, la variable Xjt es endógena cuando (
+)
+(
+)
+it
+jt
+it
+E
+X
+E
+e
+
+e
+
+Tema 1
+33
+Econometría III (4º GECO)
+3. Causalidad simultánea: el problema de la endogeneidad
+3.3 El estimador de variables instrumentales
+
+Sea el modelo lineal con K1 endógenas (XEn) y K2 predeterminadas (XEx) 
+Supongamos r variables w1, …, wr (instrumentos) tal que:
+(1) No relacionadas con ruido:
+(2) Relacionados con las endógenas. Cada endógena debe estar 
+relacionada con, por lo menos, un instrumento distinto. Debe cumplirse
+Supongamos transformación 
+con dimensión TxK1
+Sea                                    . El estimador por variables instrumentales (VI)
+(
+)
+e
++
+b
+=
+e
++
+b
+=
+Ex
+En X
+,
+X
+X
+Y
+(
+)
+Y
+'
+W
+X
+'
+W
+ˆ
+1
+VI
+-
+=
+b
+(
+)
+( )
+0
+E
+w
+,...,
+w
+E
+t
+rt
+t1
+t
+=
+e
+=
+e
+Tema 1
+33
+(
+)
+j
+,0
+X
+,
+w
+cov
+End
+jt
+
+
+(
+)
+r
+1
+w
+,...,
+w
+
+(
+)
+
+
+Ex
+r
+1
+X
+,
+w
+,...,
+w
+W
+
+=
+
+Tema 1
+34
+Econometría III (4º GECO)
+3. Causalidad simultánea: el problema de la endogeneidad
+3.3 El estimador de variables instrumentales
+
+Propiedades del estimador por variables instrumentales
+•
+Sesgado
+•
+Consistente
+
+Contrastes asintóticos válidos 
+–
+la da EVIEWS
+ˆbVI = W'X
+(
+)
+-1W'Y = W'X
+(
+)
+-1W' Xb+e
+
+= b+ W'X
+(
+)
+-1W'e
+E ˆbVI X
+(
+) = b+ E
+W'X
+(
+)
+-1W'e X
+æ
+èç
+ö
+ø÷ b
+plim ˆbVI
+(
+) = plim b+ W'X
+T
+æ
+è
+ç
+ö
+ø
+÷
+-1 W'e
+T
+æ
+è
+ç
+ç
+ö
+ø
+÷
+÷ = b+ plim
+W'X
+T
+æ
+è
+ç
+ö
+ø
+÷
+-1
+æ
+è
+ç
+ç
+ö
+ø
+÷
+÷plim 1
+T
+Wtet
+å
+æ
+è
+ç
+ö
+ø
+÷ = b
+• Es una media
+• Su plim es su esperanza
+• Vale 0 por exogeneidad de W
+V ˆar ˆbVI
+(
+)
+se relaciona con ε
+Tema 1
+34
+
+Tema 1
+35
+Econometría III (4º GECO)
+3. Causalidad simultánea: el problema de la endogeneidad
+3.3 El estimador de variables instrumentales
+
+¿Sirve VI para estimar la ecuación de demanda de cereales?
+–
+Recuerda las ecuaciones de oferta y demanda
+–
+En este caso no hay XEx, y además
+–
+Elegimos como instrumento w1t = Rt. Cumple las propiedades:
+–
+Ahora elegimos la transformación
+por lo que
+–
+Calculamos el estimador VI como,
+Qt = b1Pt +b2R t +e1t,
+P
+Y
+  ,
+Q
+X
+   
+Q,
+X
+En
+=
+=
+=
+Pt = aQt +e2t
+Tema 1
+35
+(
+)
+(
+)
+å
+å
+=
+=
+=
+a
+-
+-
+t
+t
+t
+t
+1
+1
+VI
+Q
+R
+P
+R
+P
+'
+R
+Q
+'
+R
+Y
+'
+W
+X
+'
+W
+ˆ
+(
+)
+(
+)
+0
+E
+R
+E
+t
+2
+t
+t
+2
+=
+e
+=
+e
+(
+)
+0
+Q
+,
+R
+Cov
+t
+t
+
+(
+)
+R
+w1 =
+
+R
+W =
+
+Tema 1
+36
+Econometría III (4º GECO)
+3. Causalidad simultánea: el problema de la endogeneidad
+3.4 Otras causas de endogeneidad
+Nota aclaratoria
+La endogeneidad afecta por igual a los datos de corte transversal.
+Además de la causalidad simultánea, existen otras causas de
+endogeneidad:
+• Omisión de variables relevantes
+Ejemplo
+la inteligencia de cada individuo no es observable,
+estará en
+y se relaciona con
+• Errores de medida en las variables explicativas
+Tema 1
+36
+i
+0
+1
+i
+i
+nota
+horas
+= b +b
++ e
+ie
+i
+horas
+
+Tema 1
+37
+Econometría III (3º GECO)
+4.
+Estimación: 
+métodos uniecuacionales y multiecuacionales
+4.1 Consideraciones previas
+
+Interés por estimar coeficientes estructurales: tienen interpretación económica
+
+Sólo se pueden estimar los coeficientes estructurales de las ecuaciones identificadas
+Si todas las ecuaciones del modelo están identificadas, podemos estimarlas todas a la
+vez: método “de información completa”.
+Si alguna ecuación no está identificada, sólo podremos estimar las ecuaciones
+identificadas: método “de información limitada”.
+
+Las ecuaciones estructurales contienen regresores endógenos MCO es inconsistente
+(“sesgo de simultaneidad”) hay que recurrir a estimadores alternativos, para lograr la
+consistencia (VI).
+
+Estudiaremos dos tipos de estimadores VI aplicados a MES
+de información limitada: Mínimos Cuadrados en 2 Etapas (MC2E)
+de información completa: Mínimos Cuadrados en 3 etapas (MC3E)
+
+38
+Econometría III (3º GECO)
+Notación complementaria, para distinguir los componentes en cada ecuación y 
+para asimilarla más a la notación de los modelos uniecuacionales
+FE para la ecuación j, tomando en cuenta las restricciones de exclusión:
+• En t:
+• Para todas las observaciones:
+j
+j
+j
+j
+j
+j
+j
+'
+'
+'
+2
+jt
+jt
+jt
+jt
+jt
+j
+jt
+jt
+j
+j
+(1 1)
+(1 m )
+(1 K )
+(1 1)
+1 (m
+K )
+(m
+K ) 1
+(1 1)
+a
+y
+Y
+,
+X
+Z
+;
+~ iid(0,
+)
+t
+b
+
+
+
+
+
++
++
+
+
+
+
+
+
+
+=
++ e
+=
+
+
++ e
+e
+s
+
+
+
+
+
+
+
+
+j
+j
+j
+j
+j
+2
+j
+j
+j
+j
+j
+j
+j
+j
+j
+j
+j T
+j
+(T 1)
+(T 1)
+T (m
+K )
+(m
+K ) 1
+(T 1)
+a
+y
+Y ,X
+Z
+;
+~ (0,
+) ,
+I
+b
+
+
+
++
++
+
+
+
+
+
+
+=
++ e
+=
+
+
++ e
+e
+S
+S = s
+
+
+
+
+
+j
+(m 1)
+
+j
+(K 1)
+
+Tema 1
+4.
+Estimación: 
+métodos uniecuacionales y multiecuacionales
+4.1 Consideraciones previas
+
+39
+Econometría III (3º GECO)
+Notación complementaria
+FE para el modelo completo,  tomando en cuenta las restricciones de 
+exclusión:
+•
+Para todas las observaciones:
+M
+M
+j
+j
+j
+j
+j 1
+j 1
+1
+1
+1
+1
+M
+M
+M
+M
+(TM 1)
+TM 1
+TM
+(m
+K )
+(m
+K ) 1
+y
+Z
+0
+0
+0
+0
+y
+0
+0
+Z
+=
+=
+
+
+
++
++
+
+
+e
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+=
+
++
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+e
+
+
+
+
+
+
+
+
+
+å
+å
+
+
+
+
+2
+1 T
+12 T
+1M T
+2
+12 T
+2 T
+2M T
+2
+1M T
+2M T
+M T
+I
+I
+I
+I
+I
+I
+I
+I
+I
+
+
+s
+s
+s
+
+
+s
+s
+s
+
+
+S = 
+
+
+
+
+
+s
+s
+s
+
+
+
+
+
+
+
+
+y
+Z
+=
++ e
+
+
+
+o bien
+con
+donde
+Tema 1
+4.
+Estimación: 
+métodos uniecuacionales y multiecuacionales
+4.1 Consideraciones previas
+
+40
+Econometría III (3º GECO)
+Notación complementaria
+FR para la variable endógena  j :
+• En t:   
+• Para todas las observaciones:
+'
+1
+2
+j
+j
+j
+j
+j T
+T K
+T 1
+K 1
+T 1
+'
+T
+X
+y
+X
+u
+,
+X
+,
+u ~ (0,
+I )
+X
+
+
+
+
+
+
+
+
+=
++
+=
+
+
+
+
+
+
+
+
+Tema 1
+4.
+Estimación: 
+métodos uniecuacionales y multiecuacionales
+4.1 Consideraciones previas
+
+41
+Econometría III (3º GECO)
+Notación complementaria 
+FR para las variables endógenas explicativas en la ecuación  j :
+• En t:   
+• Para todas las observaciones:
+Yjt
+1m j
+= Xt
+'
+1K
+P j
+Km j
++ U jt
+1m j
+j
+j
+j
+'
+1
+j
+j
+j
+T K
+T m
+K m
+T m
+'
+T
+X
+Y
+X
+U
+,
+X
+X
+
+
+
+
+
+
+
+
+=
+P +
+= 
+
+
+
+
+
+
+cada columna contiene los coeficientes de FR de una 
+variable endógena diferente
+Tema 1
+4.
+Estimación: 
+métodos uniecuacionales y multiecuacionales
+4.1 Consideraciones previas
+
+Notación complementaria
+FR para el modelo completo
+•
+Para todas las observaciones:
+42
+Econometría III (3º GECO)
+y1
+
+ym
+
+
+
+
+
+
+
+
+
+
+
+
+(TM1)
+=
+X
+0
+0
+0
+
+0
+0
+0
+X
+
+
+
+
+
+
+
+
+
+
+
+
+TMKM
+
+1
+
+m
+
+
+
+
+
+
+
+
+
+
+
+
+KM1
++
+u1
+
+um
+
+
+
+
+
+
+
+
+
+
+
+
+TM1
+2
+1 T
+12 T
+1M T
+2
+12 T
+2 T
+2M T
+2
+1M T
+2M T
+M T
+I
+I
+I
+I
+I
+I
+I
+I
+I
+
+
+
+
+
+
+
+
+
+
+
+
+W = 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+y = X+ u
+o bien
+con
+donde
+Tema 1
+4.
+Estimación: 
+métodos uniecuacionales y multiecuacionales
+4.1 Consideraciones previas
+
+43
+Econometría III (3º GECO)
+Tema 1
+4.
+Estimación: 
+métodos de información limitada y de información completa
+4.2 Método de información limitada: MC2E 
+A.
+Estimación de la FR: MCO
+•
+Queremos estimar la ecuación j,
+•
+Todos los regresores son predeterminados la estimación MCO es
+consistente:
+ˆj = (X'X)-1X'y j
+y j = Xj + u j
+2
+j
+j T
+u ~ (0,
+I )
+
+
+44
+Econometría III (3º GECO)
+Tema 1
+B. Estimación de la FE: Mínimos cuadrados en 2 etapas (MC2E)
+Queremos estimar la ecuación estructural j,
+Sabemos que:
+MCO inconsistente Necesitamos utilizar el estimador VI 
+Como Yj contiene mj variables endógenas Necesitamos, al menos, mj
+instrumentos distintos de Xj
+¿Podemos usar como instrumentos las predeterminadas? Sabemos que habrán en 
+el MES al menos mj instrumentos distintos de Xj (por identificación: Kj
+* ≥ mj)
+Necesitamos proponer una transformación de los instrumentos
+j
+j
+j
+j
+j
+j
+j
+j
+j
+j
+j
+j
+j
+j
+j
+a
+y
+Y a
+X b
+Z
+   con   Z
+Y ,X
+,    
+b
+
+
+
+
+=
++
++ e =
++ e
+=
+= 
+
+
+
+
+
+
+
+4.
+Estimación: 
+métodos de información limitada y de información completa
+4.2 Método de información limitada: MC2E 
+
+45
+Econometría III (3º GECO)
+Tema 1
+
+Tenemos que estimar
+Etapa 1: Buscamos instrumentos entre todas las predeterminadas
+w1,… wr son x1,…,xk, los transformamos eligiendo
+
+regresamos Yj sobre X y obtenemos el valor ajustado (estimación) de la FR.
+Etapa 2: Usar VI con
+ˆj,MC2E = ˆZ'j Z j
+(
+)
+-1 ˆZ'j y j
+4.
+Estimación: 
+métodos de información limitada y de información completa
+4.2 Método de información limitada: MC2E 
+(
+)
+1
+j
+j
+j
+ˆ
+ˆ
+Y
+X
+X X'X
+X'Y
+-
+=
+P =
+(
+)
+j
+j
+j
+j
+j
+j
+j
+j
+X
+,
+Y
+Z
+y
+e
++
+
+=
+e
++
+
+=
+Intuición:
+(
+)
+j
+j
+j
+X
+,
+Yˆ
+Zˆ
+W
+=
+=
+(
+)
+
+=
+=
+P
+1
+r
+j
+j
+ˆ
+ˆ
+w ,...,w
+Y
+X
+Parte de Yj
+relacionada con ε
+Yj = ˆYj + ˆU j
+Sólo depende de X,
+no relacionado con ε
+2
+j
+j T
+~ (0,
+I )
+e
+s
+
+Tema 1
+46
+Econometría III (3º GECO)
+4.
+Estimación: 
+métodos de información limitada y de información completa
+4.2 Método de información limitada: MC2E 
+¿Por qué este estimador se llama MC2E?
+Porque la segunda etapa se puede ver como la regresión MCO en el modelo original 
+donde las variables con problemas de endogeneidad se sustituyen por sus 
+estimaciones MCO en la forma reducida
+Demostración (recuerda: en MCO los residuos son ortogonales a explicativas y a la 
+estimación)
+De esta manera, las dos etapas quedan como:
+Etapa 1: MCO en la regresión de Yj sobre X 
+
+Etapa 2: MCO en la regresión de yj sobre  
+ˆZ'j Z j = ˆZ'j ˆZ j + ˆU j
+(
+) = ˆZ'j ˆZ j + ˆZ'j ˆU j = ˆZ'j ˆZ j
+j
+j
+j
+ˆ
+ˆ
+Z
+Y ,X
+
+
+= 
+
+(
+)
+j
+j
+j
+j
+j
+j
+j
+j
+X
+,
+Yˆ
+Zˆ
+y
+e
++
+
+=
+e
++
+
+=
+(
+)
+-
+
+=
+1
+'
+'
+jMC2E
+j
+j
+j
+j
+ˆ ˆ
+ˆ
+ˆ
+Z Z
+Z y
+jˆY
+(
+)
+j
+j
+j
+j
+j
+j
+j
+j
+X
+,
+Y
+Z
+y
+e
++
+
+=
+e
++
+
+=
+jˆZ
+(
+)
+'
+j
+j
+j
+j
+j
+ˆ
+ˆ
+ˆ
+ˆ
+Z' U
+Y ,X
+U
+0
+=
+=
+
+Tema 1
+47
+Econometría III (3º GECO)
+
+En nuestro ejemplo:
+(1) Definición e interpretación:
+Etapa 1: regresamos 
+Etapa 2: regresamos
+(2) Consistencia: 
+Como es un estimador por VI ya hemos demostrado que es consistente
+ˆaMC2E =
+ˆQ'P
+ˆQ' ˆQ
+Pt = a ˆQt +e2t
+= 
++
+
+= 
+t
+11
+t
+1t
+t
+11
+t
+ˆ
+Q
+R
+u
+Q
+ˆ R
+4.
+Estimación: 
+métodos de información limitada y de información completa
+4.2 Método de información limitada: MC2E 
+
+Tema 1
+48
+Econometría III (3º GECO)
+4.
+Estimación: 
+métodos uniecuacionales y multiecuacionales
+4.3 Método de información completa: MC3E 
+
+Se realiza la estimación de todas las ecuaciones a la vez: método “de información
+completa”
+
+Ventaja: cada ecuación se estima con más información, por lo que se gana en
+eficiencia
+
+Inconvenientes:
+
+indispensable que todas las ecuaciones estén identificadas
+
+la mala especificación de una ecuación de FE puede empeorar la estimación de
+las otras ecuaciones
+
+método más complejo, computacionalmente más pesado incluso para los
+ordenadores actuales cuando el número de ecuaciones es grande
+
+Esto explica que se use menos que MC2E
+
+Tema 1
+49
+Econometría III (3º GECO)
+4.
+Estimación: 
+métodos uniecuacionales y multiecuacionales
+4.3 Método de información completa: MC3E 
+A.
+Estimación de la FR: MCO
+
+Todos los regresores son predeterminados la estimación MCO es consistente.
+
+Parece que deberíamos tomar en cuenta la estructura no escalar de la matriz
+:
+hay heteroscedasticidad y autocorrelación MCGF
+
+Sin embargo, dada la estructura del modelo, MCGF y MCO coinciden (ver ejercicio)
+y MCO es tan eficiente como MCGF.
+
+Por tanto, la estimación de la FR con información completa es la misma que con
+información incompleta:
+y1
+
+yM
+
+
+
+
+
+
+
+
+
+
+
+
+(TM1)
+=
+X
+0
+0
+0
+
+0
+0
+0
+X
+
+
+
+
+
+
+
+
+
+
+
+
+TMKM
+
+1
+
+M
+
+
+
+
+
+
+
+
+
+
+
+
+KM1
++
+u1
+
+uM
+
+
+
+
+
+
+
+
+
+
+
+
+TM1
+o bien
+W
+1
+ˆ
+(X'X)
+X'y
+-
+= 
+
+
+Tema 1
+50
+Econometría III (3º GECO)
+4.
+Estimación: 
+métodos uniecuacionales y multiecuacionales
+4.3 Método de información completa: MC3E 
+B.
+Estimación de la FE: Mínimos Cuadrados en 3 Etapas (MC3E)
+•
+Los
+regresores
+combinan
+variables
+predeterminadas
+y
+variables
+endógenas MCO es inconsistente.
+•
+Además,
+no escalar: sabemos que hay “heteroscedasticidad” en el
+modelo completo y correlación entre ecuaciones podemos ganar
+eficiencia usando esta información.
+S
+y1
+
+yM
+
+
+
+
+
+
+
+
+
+
+
+
+(TM1)
+=
+Z1
+0
+0
+0
+
+0
+0
+0
+ZM
+
+
+
+
+
+
+
+
+
+
+
+
+
+1
+
+M
+
+
+
+
+
+
+
+
+
+
+
+
++
+e1
+
+eM
+
+
+
+
+
+
+
+
+
+
+
+
+TM1
+y = Z+ e
+o bien
+con
+donde
+2
+1 T
+12 T
+1M T
+2
+12 T
+2 T
+2M T
+2
+1M T
+2M T
+M T
+I
+I
+I
+I
+I
+I
+I
+I
+I
+
+
+s
+s
+s
+
+
+s
+s
+s
+
+
+S = 
+
+
+
+
+
+s
+s
+s
+
+
+
+
+
+
+
+
+
+•
+Etapa 1: obtener la estimación MC2E para
+y los residuos de
+todas las ecuaciones FE:
+Tema 1
+51
+Econometría III (3º GECO)
+4.
+Estimación: 
+métodos uniecuacionales y multiecuacionales
+4.3 Método de información completa: MC3E 
+j , j
+1,
+,M
+
+= 
+(
+)
+(
+)
+1
+'
+'
+1 1
+1,MC2E
+1 1
+MC2E
+1
+'
+'
+M,MC2E
+M
+M
+M
+M
+1,MC2E
+MC2E
+j,MC2E
+j
+j
+j,MC2E
+M,MC2E
+ˆ ˆ
+Z Z
+0
+0
+ˆ
+ˆZ y
+ˆ
+0
+0
+ˆ
+ˆZ y
+ˆ
+ˆ
+0
+0
+Z Z
+ˆu
+ˆ
+ˆ
+ˆ
+ˆ
+u
+donde u
+y
+Z
+, j
+1,...,M
+ˆu
+-
+-
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+=
+=
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+=
+=
+-
+
+=
+
+
+
+
+
+
+
+
+
+
+
+
+•
+Etapa 2: con ello, estimar  
+Tema 1
+52
+Econometría III (3º GECO)
+4.
+Estimación: 
+métodos uniecuacionales y multiecuacionales
+4.3 Método de información completa: MC3E 
+S
+2
+1,MC2E T
+12,MC2E T
+1M,MC2E T
+2
+12,MC2E T
+2,MC2E T
+2M,MC2E T
+MC2E
+2
+1M,MC2E T
+2M,MC2E T
+M,MC2E T
+T
+T
+2
+it,MC2E
+jt,MC2E
+jt,MC2E
+2
+t 1
+t 1
+ij,MC2E
+j,MC2E
+ˆ
+ˆ
+I
+I
+I
+ˆ
+ˆ
+ˆ
+I
+I
+I
+ˆ
+ˆ
+ˆ
+ˆ
+I
+I
+I
+ˆ
+ˆ
+ˆ
+u
+u
+u
+ˆ
+ˆ
+con
+,
+T
+T
+=
+=
+
+
+s
+s
+s
+
+
+s
+s
+s
+
+
+S
+= 
+
+
+
+
+
+s
+s
+s
+
+
+s
+=
+s
+=
+å
+å
+
+
+
+
+
+
+
+
+•
+Etapa 3: usar
+para mejorar la estimación de
+
+Usamos
+(definido en MC2E) para cada j y construimos
+
+Usamos
+en un enfoque MCGF y obtenemos
+Tema 1
+53
+Econometría III (3º GECO)
+4.
+Estimación: 
+métodos uniecuacionales y multiecuacionales
+4.3 Método de información completa: MC3E 
+
+ˆSMC2E
+ˆZ j
+1
+M
+ˆZ
+0
+0
+ˆZ
+0
+0
+ˆ
+0
+0
+Z
+
+
+
+
+= 
+
+
+
+
+
+
+
+ˆSMC2E
+ˆMC3E
+(
+)
+1,MC3E
+1
+1
+1
+MC3E
+MC2E
+MC2E
+M,MC3E
+ˆ
+ˆ
+ˆ
+ˆ
+ˆ
+ˆ
+ˆ
+Z'
+Z
+Z'
+y
+ˆ
+-
+-
+-
+
+
+
+
+
+
+=
+=
+S
+S
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Caso particular:
+Tema 1
+54
+Econometría III (3º GECO)
+4.
+Estimación: 
+métodos uniecuacionales y multiecuacionales
+4.3 Método de información completa: MC3E 
+
+, entonces
+
+Ojo: al hacer MC3E en Eviews siempre estimamos
+
+Demostración para el caso de 2 ecuaciones:
+En este caso no ganamos eficiencia al estimar MC3E frente a MC2E
+(
+)
+2
+1
+2
+M
+I
+0
+Si E uu '
+0
+I
+æ
+ö
+s
+ç
+÷
+= ç
+÷
+ç
+÷
+s
+è
+ø
+
+
+j,MC3E
+j,MC2E
+ˆ
+ˆ
+
+= 
+S
+(
+)
+(
+)
+(
+)
+2
+2
+1
+1
+2
+2
+2
+2
+1
+1
+1
+'
+'
+2
+2
+1
+1
+1
+1
+1
+1
+1
+1
+1
+MC3E
+2
+2
+2
+2
+2
+2
+2
+2
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+2
+2
+2
+2
+ˆ
+ˆ
+ˆ
+Z
+0
+I
+0
+Z
+0
+Z
+0
+I
+0
+y
+ˆ
+ˆ
+ˆ
+ˆ
+Z'
+Z'
+Z'
+y
+ˆ
+ˆ
+ˆ
+y
+0
+Z
+0
+Z
+0
+Z
+0
+I
+0
+I
+ˆ
+ˆ
+ˆ
+Z' Z
+Z 'y
+ˆ
+ˆ
+ˆ
+Z' Z
+Z' y
+-
+-
+-
+-
+-
+-
+-
+s
+s
+-
+s
+s
+
+
+æ
+ö
+æ
+ö
+æ
+ö
+æ
+ö
+æ
+ö
+s
+s
+æ
+ö
+
+
+b
+=
+S
+S
+=
+ç
+÷
+ç
+÷
+ç
+÷
+ç
+÷
+ç
+÷
+ç
+÷
+ç
+÷
+ç
+÷
+ç
+÷
+ç
+÷
+ç
+÷
+
+
+s
+s
+è
+ø
+è
+ø
+è
+ø
+è
+ø
+è
+ø
+è
+ø
+
+
+æ
+ö
+ç
+÷
+= ç
+÷
+ççè
+ø
+
+
+
+
+
+
+(
+)
+(
+)
+1
+1
+1
+1
+1
+1,MC2E
+1
+2,MC2E
+2
+2
+2
+2
+ˆ
+ˆ
+ˆ
+ˆ
+Z' Z
+Z 'y
+ˆ
+ˆ
+ˆ
+ˆ
+Z' Z
+Z' y
+-
+-
+æ
+ö
+æ
+ö
+
+ç
+÷
+ç
+÷
+=
+=
+ç
+÷
+ç
+÷
+
+÷
+ç
+÷
+è
+ø
+÷
+è
+ø
+
+Tema 1
+55
+Econometría III (4º GECO)
+5.
+Inferencia
+5.1 Contrastes sobre los coeficientes estructurales
+
+Se puede demostrar que:
+
+Es decir: los estimadores MC2E y MC3E se aproximan a una N si T grande
+(
+)
+(
+)
+1
+2
+'
+j,MC2E
+j
+j
+j
+j
+T
+1
+MC3E
+MC3E
+T
+ˆ
+ˆ ˆ
+ˆ
+N
+,
+Z Z
+ˆ
+ˆ
+ˆ
+ˆ
+N
+,Z'
+Z
+,
+-
+
+-
+
+
+
+
+
+s 
+
+
+
+
+S
+
+
+
+
+2
+1,MC3E T
+12,MC3E T
+1M,MC3E T
+2
+12,MC3E T
+2,MC3E T
+2M,MC3E T
+MC3E
+2
+1M,MC3E T
+2M,MC3E T
+M,MC3E T
+2
+ij,MC3E
+j,MC3E
+ˆ
+ˆ
+I
+I
+I
+ˆ
+ˆ
+ˆ
+I
+I
+I
+ˆ
+con
+ˆ
+ˆ
+ˆ
+I
+I
+I
+ˆ
+ˆ
+donde
+y
+se obtienen con los residuos MC3E.
+
+
+s
+s
+s
+
+
+s
+s
+s
+
+
+S
+= 
+
+
+
+
+
+s
+s
+s
+
+
+s
+s
+
+
+
+
+
+
+
+T
+2
+jt,MC2E
+2
+t 1
+j,MC2E
+ˆu
+ˆ
+con
+T
+=
+s
+=
+å
+
+Tema 1
+56
+Econometría III (4º GECO)
+5.
+Inferencia
+5.1 Contrastes sobre los coeficientes estructurales
+
+Por tanto: los contrastes sobre los coeficientes estructurales  estimados por 
+MC2E o MC3E
+
+usan las fórmulas asintóticas habituales para los estadísticos 
+
+son válidos para muestras suficientemente grandes
+Permite hacer contrastes individuales/conjuntos sobre elementos de 
+Eviews proporciona las matrices de varianzas-covarianzas estimadas, 
+necesarias para realizar estos contrastes
+j o
+
+
+
+Tema 1
+57
+Econometría III (4º GECO)
+5.
+Inferencia
+5.2 Contrastes de especificación
+
+La distinción entre endógenas y exógenas no siempre es clara. Sin embargo,
+es una distinción importante para:
+
+que la ecuación estructural esté identificada
+
+que la estimación, por MC2E o por MC3E, sea consistente
+
+Por tanto, es importante comprobar si:
+
+una variable es endógena o no: contraste de endogeneidad
+
+disponemos de instrumentos útiles: contraste de relevancia
+
+disponemos
+de
+suficientes
+instrumentos
+exógenos:
+contraste
+de
+sobreidentificación
+
+Tema 1
+58
+Econometría III (4º GECO)
+5.
+Inferencia
+5.2 Contrastes de especificación
+5.2.1 Contraste de endogeneidad
+
+Nos centramos en la ecuación estructural “j” :
+
+
+Contraste de endogeneidad:
+
+Obtener los residuos MCO de la FR de las
+variables en
+:
+
+Regresión auxiliar (por MCO) :
+
+Contraste:
+0
+j
+A
+j
+H : Y
+H :
+Y
+exógenas
+ al menos 1 endógena en 
+j
+Y
+j
+j1
+j2
+jm
+ˆ
+ˆ
+ˆ
+u ,u ,
+,u
+
+j
+0
+1
+m
+a
+0
+H :
+...
+0
+H :
+H
+exog 
+no 
+endog
+=
+= 
+=
+
+
+j
+j
+j
+j
+j
+j1 1
+jm
+m
+ˆ
+ˆ
+ˆ
+ˆ
+ˆ
+ˆ
+y
+Z
+u
+u
+=
++
++
++
+
+
+• con F si 
+• con t  si
+j
+m
+1
+
+j
+m
+1
+=
+j
+j
+j
+j
+j
+j
+j
+j
+j
+j
+j
+y
+Z
+Y a
+X b
+donde Y :(T
+m )
+=
++ e =
++
++ e
+
+j
+m
+
+Tema 1
+59
+Econometría III (4º GECO)
+5.
+Inferencia
+5.2 Contrastes de especificación
+5.2.2 Contraste de relevancia
+
+Nos centramos en la ecuación estructural “j” :
+
+Es  necesario que los instrumentos distintos a Xj (las predeterminadas no 
+incluidas      ) sean muy relevantes para hacer inferencia asintótica 
+
+
+Contraste de  relevancia:
+
+Obtener la estimación MCO de la FR  de las  mj variables    
+
+En cada ecuación, contraste (asintótico) GLOBAL de significatividad de 
+0
+A
+H :
+H :
+*
+*
+j
+j
+X  no relevantes
+ X  relevantes
+*
+*
+*
+*
+j
+j
+j
+j
+j
+j
+j
+j
+j
+j
+j
+j
+j
+j
+j
+y
+Z
+Y a
+X b
+; X
+X ;X
+; X :(T
+K ),K
+m
+
+
+=
++ e =
++
++ e
+=
+
+
+
+
+*
+j
+X
+j
+Y
+*
+j
+X
+
+Tema 1
+60
+Econometría III (4º GECO)
+5.
+Inferencia
+5.2 Contrastes de especificación
+5.2.3 Contraste de sobreidentificación
+
+Nos centramos en la ecuación estructural “j” :
+
+Nota técnica: necesitamos                      (sobreidenditificación)
+
+
+Esperamos que los instrumentos no tengan relación con  
+
+Contraste  “J”  de  sobreidentificación:
+
+Obtener la estimación MC2E  de        y los residuos : 
+
+Regresamos               sobre         y        :
+
+Como esperamos que      no se correlacione con los ruidos, el contraste:   
+0
+A
+H :
+H :
+*
+*
+j
+j
+X  exógenos (ec. sobreidentificada)
+ X  no todos exógenos
+*
+*
+*
+*
+j
+j
+j
+j
+j
+j
+j
+j
+j
+j
+j
+j
+j
+j
+j
+y
+Z
+Y a
+X b
+; X
+X ;X
+, X :(T
+K ), K
+m
+
+
+=
++ e =
++
++ e
+=
+
+
+
+
+*
+j
+X
+*
+j
+j
+K
+m
+
+j
+j,MC2E
+j
+j
+´j,MC2E
+ˆ
+e
+y
+Z
+=
+-
+
+j,MC2E
+e
+j
+X
+*
+*
+j,MC2E
+j
+J
+j
+J
+J
+e
+X
+X
+=
++
++ 
+je
+*
+0
+j
+a
+0
+H
+:
+0
+H
+:
+H
+e xog
+no
+endo g
+
+=
+
+
+*
+0
+j
+a
+0
+H :
+0
+H :
+H
+exog
+no 
+endog
+=
+
+
+*
+j
+j
+0
+*
+2
+j
+k
+m
+H
+J
+k F
+-
+=
+
+
+*
+j
+X
+
+Tema 1
+61
+Econometría III (4º GECO)
+6.
+Modelos de ecuaciones simultáneas dinámicos
+6.1 Introducción
+
+La economía es dinámica: lo que acontece hoy depende de lo que ocurrió en
+periodos anteriores
+
+La teoría económica refleja esta dinámica. Por ello, los MES a menudo
+contienen ecuaciones dinámicas
+
+Entre las variables predeterminadas encontraremos ahora:
+exógenas contemporáneas
+exógenas retardadas
+endógenas retardadas
+
+Los MES dinámicos aportan sobre todo información sobre:
+sendas
+temporales
+de
+las
+endógenas
+ante
+cambios
+en
+predeterminadas
+multiplicadores dinámicos (de corto, medio y largo plazo)
+
+Tema 1
+62
+Econometría III (4º GECO)
+6.
+Modelos de ecuaciones simultáneas dinámicos
+6.2 Forma estructural, forma reducida y forma final
+
+FORMA ESTRUCTURAL:
+•
+Antes:                                           , 
+•
+En MES dinámico:                                   
+
+Usando operadores de retardo:
+t
+t
+t
+AY
+BX
+=
++ e
+(
+)
+t ~ iid 0,
+e
+S
+0
+t
+0
+t
+1
+t 1
+q
+t
+q
+1
+t 1
+p
+t
+p
+t
+A Y
+B X
+B X
+B X
+A Y
+A Y
+-
+-
+-
+-
+=
++
++
++
++
++
++
++ e
+
+
+(
+)
+t ~ iid 0,
+e
+S
+t
+t
+t
+A (L)Y
+B(L)X
+=
++ e
+p
+q
+0
+1
+p
+t
+0
+1
+q
+t
+t
+(A
+A L
+A L )Y
+(B
+B L
+B L )X
+-
+-
+-
+=
++
++
++
++ e
+
+
+q
+p
+0
+t
+0
+1
+q
+t
+1
+p
+t
+t
+A Y
+(B
+B L
+B L )X
+(A L
+A L )Y
+=
++
++
++
++
++
++
++ e
+
+
+
+Tema 1
+63
+Econometría III (4º GECO)
+6.
+Modelos de ecuaciones simultáneas dinámicos
+6.2 Forma estructural, forma reducida y forma final
+
+FORMA REDUCIDA:
+Queremos
+expresar
+las
+endógenas
+sólo
+en
+función
+de
+las
+predeterminadas : exógenas y endógenas retardadas
+
+Partamos de la FE expresada como
+q
+p
+0
+t
+0
+1
+q
+t
+1
+p
+t
+t
+A Y
+(B
+B L
+B L )X
+(A L
+A L )Y
+=
++
++
++
++
++
++
++ e
+
+
+1
+q
+p
+t
+0
+0
+1
+q
+t
+1
+p
+t
+t
+Y
+A
+(B
+B L
+B L )X
+(A L
+A L )Y
+- 
+
+=
++
++
++
++
++
++
++ e
+
+
+
+
+1
+*
+t
+0
+t
+t
+t
+Y
+A
+B(L)X
+A (L)Y
+- 
+
+=
++
++ e
+
+
+1
+1
+*
+1
+t
+0
+t
+0
+t
+0
+t
+Y
+A
+B(L)X
+A
+A (L)Y
+A
+-
+-
+-
+=
++
++
+e
+(
+)
+'
+*
+1
+1
+t
+t
+t
+t
+t
+0
+0
+Y
+(L)X
+C (L)Y
+u
+, u
+iid(0,
+) ,
+A
+A
+-
+-
+= P
++
++
+W
+W =
+S
+
+
+Tema 1
+64
+Econometría III (4º GECO)
+6.
+Modelos de ecuaciones simultáneas dinámicos
+6.2 Forma estructural, forma reducida y forma final
+
+FORMA  FINAL:
+Queremos expresar las endógenas sólo en función de las exógenas
+Partamos de la FR expresada como
+
+
+=>
+ó sea:
+
+con
+Sirve para cuantificar los efectos netos de las exógenas sobre las
+explicadas, a corto, medio y largo plazo.
+*
+t
+t
+t
+t
+Y
+(L)X
+C (L)Y
+u
+= P
++
++
+*
+t
+t
+t
+I
+C (L) Y
+(L)X
+u
+
+
+-
+= P
++
+
+
+1
+1
+t
+t
+t
+Y
+C(L)
+(L)X
+C(L) u
+-
+-
+
+=
+P
++
+t
+t
+t
+C(L)Y
+(L)X
+u
+= P
++
+t
+t
+t
+Y
+F(L)X
+v
+=
++
+1
+1
+t
+t
+F(L)
+C(L)
+(L)
+v
+C(L)
+u
+-
+-
+
+=
+P
+
+=
+
+v es un MA(∞)
+F(L) de 
+orden ∞
+
+Tema 1
+65
+Econometría III (4º GECO)
+6.
+Modelos de ecuaciones simultáneas dinámicos
+6.2 Forma estructural, forma reducida y forma final
+
+Ejemplo del modelo de la telaraña con explicativas:
+Forma estructural:
+Pasando FE a notación matricial:
+0
+1
+t
+1
+t
+12
+t 1
+1t
+1
+0
+t
+21
+t 1
+21
+t
+2t
+Q
+b R
+a P
+P
+a P
+a Q
+-
+-
+
+=
++
++ e
+
+=
++
++ e
+
+1
+t
+t 1
+1t
+1
+12
+t
+0
+1
+t
+t 1
+2t
+21
+21
+Q
+Q
+1
+0
+b
+0
+a
+R
+P
+P
+a
+1
+0
+0
+a
+-
+-
+e
+æ
+ö
+æ
+ö
+æ
+ö
+æ
+ö
+æ
+ö
+æ
+ö
+=
++
++
+ç
+÷
+ç
+÷
+ç
+÷
+ç
+÷
+ç
+÷
+ç
+÷
+e
+-
+è
+ø
+è
+øè
+ø
+è
+ø
+è
+ø
+è
+ø
+
+Tema 1
+66
+Econometría III (4º GECO)
+6.
+Modelos de ecuaciones simultáneas dinámicos
+6.2 Forma estructural, forma reducida y forma final
+
+Ejemplo del modelo de la telaraña con explicativas:
+Forma reducida:
+Los coeficientes de X recogen los efectos directos de la lluvia R sobre P y Q,
+pero no los indirectos de medio y largo plazo que se producen a través de
+los retardos de P y Q.
+1
+1
+1
+1
+t
+t 1
+1t
+1
+12
+t
+0
+0
+0
+1
+t
+t 1
+2t
+21
+21
+21
+21
+Q
+Q
+1
+0
+1
+0
+1
+0
+b
+0
+a
+R
+P
+P
+a
+1
+a
+1
+a
+1
+0
+0
+a
+-
+-
+-
+-
+-
+e
+æ
+ö
+æ
+ö
+æ
+ö
+æ
+ö
+æ
+ö
+æ
+ö
+æ
+ö
+æ
+ö
+=
++
++
+ç
+÷
+ç
+÷
+ç
+÷
+ç
+÷
+ç
+÷
+ç
+÷
+ç
+÷
+ç
+÷
+e
+-
+-
+-
+è
+ø
+è
+ø
+è
+ø
+è
+ø
+è
+ø
+è
+ø
+è
+ø
+è
+ø
+1
+t
+t 1
+1t
+1
+12
+t
+0
+0
+0
+1
+1
+t
+t 1
+21 1t
+2t
+21
+1
+21 12
+21
+t
+0
+t
+1
+t 1
+t
+Q
+Q
+b
+0
+a
+R
+P
+P
+a
+a b
+0
+a a
+a
+Y
+X
+C Y
+u
+-
+-
+-
+e
+æ
+ö
+æ
+ö
+æ
+ö
+æ
+ö
+æ
+ö
+=
++
++
+ç
+÷
+ç
+÷
+ç
+÷
+ç
+÷
+ç
+÷
+e + e
++
+è
+ø
+è
+ø
+è
+ø
+è
+ø
+è
+ø
+= P
++
++
+
+Tema 1
+67
+Econometría III (4º GECO)
+6.
+Modelos de ecuaciones simultáneas dinámicos
+6.2 Forma estructural, forma reducida y forma final
+
+Ejemplo del modelo de la telaraña con explicativas:
+Forma final: partiendo de la FR,
+Los coeficientes de X recogen los efectos directos e indirectos de la lluvia R
+sobre P y Q, a corto, medio y largo plazo.
+
+
+t
+1
+t 1
+0
+t
+t
+1
+t
+0
+t
+t
+1
+t
+1t
+1
+12
+t
+0
+0
+0
+1
+1
+t
+21 1t
+2t
+21
+1
+21 12
+21
+Y
+C Y
+X
+u
+ó
+I
+C L Y
+X
+u
+Q
+b
+1
+0
+0
+a
+L
+R
+P
+a
+a b
+0
+1
+0
+a a
+a
+-
+-
+= P
++
+-
+= P
++
+
+
+e
+æ
+ö
+æ
+ö
+æ
+ö
+æ
+ö
+æ
+ö -
+=
++
+
+
+ç
+÷
+ç
+÷
+ç
+÷
+ç
+÷
+ç
+÷
+e + e
++
+
+
+è
+ø
+è
+ø
+è
+ø
+è
+ø
+è
+ø
+
+
+1
+1
+1
+1
+t
+1t
+1
+12
+12
+t
+0
+0
+1
+1
+0
+1
+1
+t
+2t
+21 1
+21 12
+21
+21 12
+21
+1
+1
+t
+1
+t
+t
+t
+t
+Q
+u
+b
+1
+0
+1
+0
+0
+a
+0
+a
+L
+R
+L
+P
+u
+a b
+0
+1
+0
+1
+0
+a a
+a
+0
+a a
+a
+Y
+C(L)
+X
+C(L) u
+F(L)X
+v
+-
+-
+-
+-
+
+
+
+
+æ
+ö
+æ
+ö
+æ
+ö
+æ
+ö
+æ
+ö
+æ
+ö
+æ
+ö
+
+=
+-
++
+-
+
+
+
+
+ç
+÷
+ç
+÷
+ç
+÷
+ç
+÷
+ç
+÷
+ç
+÷
+ç
+÷
++
++
+
+
+
+
+è
+ø
+è
+ø
+è
+ø
+è
+ø
+è
+ø
+è
+ø
+è
+ø
+
+
+
+
+=
+P
++
+=
++
+
+Tema 1
+68
+Econometría III (4º GECO)
+6.
+Modelos de ecuaciones simultáneas dinámicos
+6.3 Efectos dinámicos
+6.3.1 Concepto
+
+Interesa medir la respuesta de una variable
+ante un cambio
+en una de las variables exógenas
+en un ruido de la FE ,
+, que refleje un cambio no anticipado en
+Los MESD se usan sobre todo para respuestas a cambios en X
+Los VAR (tema II) para respuestas a sorpresas en Y (cambios en
+)
+X tiene un efecto directo sobre Y, y otro indirecto vía las Y retardadas
+=> los efectos que nos interesan se encuentran en los coeficientes de la FF:
+jy
+ix
+ne
+n
+y
+0
+t
+0
+t
+1
+t 1
+q
+t q
+1
+t 1
+p
+t p
+t
+A Y
+B X
+B X
+...
+B X
+A Y
+...
+A Y
+-
+-
+-
+-
+=
++
++
++
++
++
++
++ e
+t
+t
+t
+0
+t
+1
+t 1
+2
+t
+2
+t
+Y
+F(L)X
+v
+F X
+F X
+F X
+v
+-
+-
+=
++
+=
++
++
++
++
+
+e
+
+
+Examinaremos dos tipos de cambio en la exógena
+Respuesta al impulso: la exógena i cambia en t y vuelve a su valor
+inicial tras 1 periodo
+Respuesta al escalón: la exógena i cambia en t y se mantiene en su
+nuevo valor
+
+Supondremos cambio unitario
+Tema 1
+69
+Econometría III (4º GECO)
+6.
+Modelos de ecuaciones simultáneas dinámicos
+6.3 Efectos dinámicos: medición
+6.3.1 Concepto
+it
+X
+0.8
+1.0
+1.2
+1.4
+1.6
+1.8
+2.0
+2.2
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+X
+0.8
+1.0
+1.2
+1.4
+1.6
+1.8
+2.0
+2.2
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+X
+Variación impulso
+Variación escalón
+
+Tema 1
+70
+Econometría III (4º GECO)
+6.
+Modelos de ecuaciones simultáneas dinámicos
+6.3 Efectos dinámicos: 
+6.3.2 Función de respuesta al impulso
+•
+Función de respuesta al impulso (FRI) : muestra el efecto dinámico
+de un incremento de
+durante 1 periodo, sobre
+manteniendo el resto de exógenas constantes
+•
+Sin perdida de generalidad, supongamos que i=1 (cambio en
+)
+•
+La FRI para
+se obtiene a partir del elemento referido a
+de la fila
+“j” de la FF
+it
+X
+jt
+j,t 1
+j,t 2
+jt 3
+y ,y
+,y
+,y
+,
++
++
++ 
+jy
+1t
+X
+(1)
+(1)
+(1)
+(1)
+(1)
+jt
+j,0
+1t
+j,1
+1t 1
+j,2
+1t
+2
+j,3
+1t
+3
+jt
+y
+f
+X
+f
+X
+f
+X
+f
+X
+v
+-
+-
+-
+=
++
++
++
++
++
+
+1t
+X
+Hace referencia a los
+retardos de los ruidos
+de la ecuación j
+
+Tema 1
+71
+Econometría III (4º GECO)
+6.
+Modelos de ecuaciones simultáneas dinámicos
+6.3 Efectos dinámicos: 
+6.3.2 Función de respuesta al impulso
+La función de respuesta al impulso se suele representar y analizar
+gráficamente
+.0
+.1
+.2
+.3
+.4
+.5
+.6
+.7
+.8
+.9
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+RESPUESTA AL IMPULSO
+número de periodos después de variacion-impulso en X
+respuesta de Y
+(1)
+j,1
+f
+(1)
+j,2
+f
+(1)
+j,0
+f
+(1)
+j,3
+f
+(1)
+j,4
+f
+(1)
+j,5
+f
+
+Tema 1
+72
+Econometría III (4º GECO)
+6.
+Modelos de ecuaciones simultáneas dinámicos
+6.3 Efectos dinámicos: 
+6.3.3 Función de respuesta al  escalón y
+multiplicadores dinámicos
+•
+Función de respuesta al escalón (FRE) : muestra el efecto dinámico
+de un incremento permanente de
+sobre
+•
+De nuevo, si i=1 (cambio en
+):
+•
+Cambio inmediato:
+•
+Cambio después de 1 periodo:
+•
+Cambio después de 2 periodos:
+…
+•
+Cambio a largo plazo:
+it
+X
+jt
+j,t 1
+j,t 2
+jt 3
+y ,y
+,y
+,y
+,
++
++
++ 
+1t
+X
+(1)
+(1)
+(1)
+(1)
+j,0
+j,1
+j,2
+j,h
+h
+0
+f
+f
+f
+f
+
+=
++
++
++
+= å
+
+(1)
+(1)
+(1)
+j,0
+j,1
+j,2
+f
+f
+f
++
++
+(1)
+(1)
+j,0
+j,1
+f
+f
++
+(1)
+j,0
+f
+(1)
+(1)
+(1)
+(1)
+(1)
+jt
+j,0
+1t
+j,1
+1t 1
+j,2
+1t
+2
+j,3
+1t
+3
+jt
+y
+f
+X
+f
+X
+f
+X
+f
+X
+v
+-
+-
+-
+=
++
++
++
++
++
+
+
+Tema 1
+73
+Econometría III (4º GECO)
+6.
+Modelos de ecuaciones simultáneas dinámicos
+6.3 Efectos dinámicos: 
+6.3.3 Función de respuesta al escalón
+y multiplicadores dinámicos
+• Representación gráfica:
+0.6
+0.8
+1.0
+1.2
+1.4
+1.6
+1.8
+2.0
+2.2
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+RESPUESTA AL ESCALÓN
+Respuesta de Y
+numéro de periodos después de la variación-escalón de X
+(1)
+j,0
+f
+(1)
+j,1
+f
+(1)
+j,2
+f
+(1)
+j,3
+f
+(1)
+j,4
+f
+• Multiplicadores dinámicos: 
+• Multiplicador de impacto:
+• Multiplicador intermedio de orden h:            (ejemplo: h=1,2,3,4)
+• Multiplicador de largo plazo:  
+(1)
+j,0
+f
+h
+(1)
+j,s
+s 0
+f
+=å
+(1)
+j,s
+s 0
+f
+
+=å
+
+Tema 1
+74
+Econometría III (4º GECO)
+6.
+Modelos de ecuaciones simultáneas dinámicos
+6.3 Efectos dinámicos: 
+6.3.4 Cálculo en la práctica
+Los paquetes informáticos permiten obtener con pocas operaciones los gráficos
+de las funciones de respuesta al impulso, de respuesta al escalón y el valor de
+todos los multiplicadores dinámicos.
+En la práctica,
+se obtienen por simulación:
+Suponemos un cambio (de impulso o de escalón) en
+Simulación 1: usar el modelo para calcular el valor de las endógenas en t0, t0+1, t0+2,
+t0+3, … antes del cambio
+Simulación 2: usar el modelo para calcular el valor de las endógenas en t0, t0+1, t0+2,
+t0+3, … después del cambio
+
+son la diferencia en
+después del cambio y antes del
+cambio.
+A partir de
+podemos calcular las FRI, FRE y multiplicadores
+0
+it
+X
+0
+0
+0
+0
+jt
+j,t
+1
+j,t
+2
+jt
+3
+y
+,y
+,y
+,y
+,
++
++
++ 
+(i)
+j,h
+f
+(i)
+j,h
+f
+(i)
+j,h
+f
+
+Tema 1
+75
+Econometría III (4º GECO)
+6.
+Modelos de ecuaciones simultáneas dinámicos
+6.4 MES y estacionariedad
+Las variables económicas se pueden catalogar entre I(0) o I(d), con d>0 (en
+general, d=1 ó 2). Si d>0, la variable tiene raíz unitaria: su varianza crece con el
+tiempo, la variable no es estacionaria.
+Si el MES está bien especificado, las ecuaciones deben estar equilibradas y el
+MES será estacionario.
+El MES es estacionario y las ecuaciones FE estarán equilibradas si:
+todas I(0)
+algunas I(d): una dependiente I(d) tiene que explicarse por una o varias explicativas
+I(d), de tal manera que las varianzas crecientes se cancelan mutuamente.
+La teoría económica, detrás de la especificación de los MES, debería garantizar
+que las ecuaciones estructurales estén equilibradas.
+En un MES estacionario, con o sin variables I(1), MC2E y MC3E se pueden
+utilizar con las mismas propiedades que en ausencia de I(1).
+
+Tema 1
+76
+Econometría III (4º GECO)
+6.
+Modelos de ecuaciones simultáneas dinámicos
+6.5  MES y predicción
+El MES se puede utilizar para predecir el valor de las variables endógenas.
+Para ello, se necesita a priori el valor predicho de las variables exógenas.
+En la práctica, se obtiene la predicción por simulación del modelo con los
+valores predichos de las exógenas.
+Por ejemplo, en un MES dinámico, para un predicción de horizonte H con datos
+hasta la fecha T, se procede así:
+se proporcionan los valores predichos de las exógenas a partir de T:
+se usa el modelo estimado para simular el valor futuro de las endógenas
+entre (T+1) y (T+H) en función de estos valores de las exógenas:
+se suele acompañar la predicción numérica con el gráfico de la senda
+predicha de las variables endógenas de mayor interés.
+(p)
+(p)
+(p)
+T
+T 1
+T H
+X
+,X
+,
+,X
++
++
+
+(p)
+(p)
+(p)
+T
+T 1
+T H
+ˆ
+ˆ
+ˆ
+Y
+,Y
+,
+,Y
++
++
+
+
+Tema 1
+77
+Econometría III (4º GECO)
+Tema 1
+77
+
+Modelos Recursivos:
+Son un caso particular de modelos de ecuaciones simultáneas, donde:
+Una variable endógena de posición inferior no influye contemporáneamente
+en las endógenas de posición superior la matriz A es triangular inferior.
+Las covarianzas entre los ruidos de las ecuaciones son 0
+Todas las ecuaciones están identificadas
+Ejemplo
+Se pueden estimar por MCO ecuación a ecuación
+=
++
++
++ e
+=
++ a
++
++
++ e
+=
++ a
++ a
++
++
++ e
+1t
+10
+11
+1t
+21
+2 t
+1t
+2 t
+20
+21
+1t
+21
+1t
+22
+2 t
+2 t
+3 t
+30
+31
+1t
+32
+2 t
+31
+1t
+32
+2 t
+3 t
+y
+b
+                         
+b
+X
+b
+X
+y
+b
+y
+            
+b
+X
+b
+X
+y
+b
+y
+y
+b
+X
+b
+X
+cov e1t,e2t
+(
+) = cov e1t,e3t
+(
+) = cov e2t,e3t
+(
+) = 0
+7.
+Otros modelos multiecuacionales
+7.1 Modelos Recursivos
+
+Tema 1
+78
+Econometría III (4º GECO)
+Tema 1
+78
+
+Descripción:
+No
+hay
+causalidad
+simultánea:
+cada
+ecuación
+describe
+el
+comportamiento de una variable endógena como función de variables
+predeterminadas exclusivamente
+Son modelos de ecuaciones aparentemente no relacionadas (SURE): las
+relaciones entre las ecuaciones vienen exclusivamente a partir de las
+correlaciones entre los términos de error.
+7.
+Otros modelos multiecuacionales
+7.2 Modelos SURE
+
+Tema 1
+79
+Econometría III (4º GECO)
+Tema 1
+79
+y1t = x'1t b1 +e1t
+
+yMt = x'Mt bM +eMt
+Expresión matemática de un modelo SURE
+¿Cómo se estiman estos modelos?
+No necesitan estimadores VI 
+Generalmente por MCGF, habiendo estimado las covarianzas
+Si las explicativas fueran las mismas en todas las ecuaciones MCO
+=
+b + e
+=
+b
++ e
+
+1
+1
+1
+1
+M
+M
+M
+M
+y
+X
+y
+X
+
+y1
+
+yM
+æ
+è
+ç
+ç
+çç
+ö
+ø
+÷
+÷
+÷÷
+=
+X1
+
+0
+
+
+
+0
+
+XM
+æ
+è
+ç
+ç
+çç
+ö
+ø
+÷
+÷
+÷÷
+b1
+
+bM
+æ
+è
+ç
+ç
+çç
+ö
+ø
+÷
+÷
+÷÷
++
+e1
+
+eM
+æ
+è
+ç
+ç
+çç
+ö
+ø
+÷
+÷
+÷÷
+(
+)
+s
+s
+æ
+ö
+ç
+÷
+ee
+= ç
+÷
+ç
+÷
+s
+s
+è
+ø
+
+
+
+
+
+11 T
+1M T
+M1 T
+MM T
+I
+I
+E
+' X
+I
+I
+7.
+Otros modelos multiecuacionales
+7.2 Modelos SURE
+
+Tema 1
+80
+Econometría III (4º GECO)
+Tema 1
+80
+7.
+Otros modelos multiecuacionales
+7.3 Modelos VAR
+
+Descripción:
+No hay teoría económica tan estricta (y previa a la modelización)
+en la que se fundamenta el modelo como en MES
+El modelo no contiene variables exógenas puras
+Cada variable se hace depender de su propio pasado y del
+pasado del resto de variables del sistema. No se excluye ninguna
+variable de ninguna ecuación
+Estos modelos se expresan generalmente en forma reducida, ya
+que se usan sobre todo para predecir
+
+Tema 1
+81
+Econometría III (4º GECO)
+Tema 1
+81
+7.
+Otros modelos multiecuacionales
+7.3 Modelos VAR
+E UtUt
+'
+(
+) = W
+Yt = +C1Yt-1 +...+CpYt-p + Ut
+y1t
+
+ymt
+æ
+è
+ç
+ç
+çç
+ö
+ø
+÷
+÷
+÷÷
+=
+1
+
+m
+æ
+è
+ç
+ç
+çç
+ö
+ø
+÷
+÷
+÷÷
++
+c11
+1
+
+c1m
+1
+
+
+
+cm1
+1
+
+cmm
+1
+æ
+è
+ç
+ç
+ç
+ç
+ö
+ø
+÷
+÷
+÷
+÷
+y1t-1
+
+ymt-1
+æ
+è
+ç
+ç
+çç
+ö
+ø
+÷
+÷
+÷÷
++...+
+c11
+p
+
+c1m
+p
+
+
+
+cm1
+p
+
+cmm
+p
+æ
+è
+ç
+ç
+ç
+ç
+ö
+ø
+÷
+÷
+÷
+÷
+y1t-p
+
+ymt-p
+æ
+è
+ç
+ç
+ç
+ç
+ö
+ø
+÷
+÷
+÷
+÷
++
+u1t
+
+umt
+æ
+è
+ç
+ç
+çç
+ö
+ø
+÷
+÷
+÷÷
+-
+-
+=
+=
+-
+-
+=
+=
+= 
++
++
++
++
+= 
++
++
++
++
+å
+å
+å
+å
+
+p
+p
+i
+i
+1 t
+1
+1 1
+1 t
+i
+1m
+m t
+i
+1 t
+i
+1
+i
+1
+p
+p
+i
+i
+m t
+m
+m 1
+1 t
+i
+m m
+m t
+i
+m t
+i
+1
+i
+1
+y
+c
+y
+...
+c
+y
+u
+y
+c
+y
+...
+c
+y
+u
+Forma reducida de un modelo VAR
+Se estiman por MCO. No es necesario MCGF porque las explicativas son las
+mismas en todas las ecuaciones
+
+Lo que hemos aprendido:
+Econometría III (4º GECO)
+Características básicas de un modelo de ecuaciones simultáneas: forma
+estructural, forma reducida, causalidad simultánea.
+La causalidad simultánea provoca la inconsistencia de MCO para estimar los
+coeficientes de la FE. Hay que recurrir a estimadores alternativos, por variables
+instrumentales.
+Sólo
+tiene
+sentido
+(econométrico
+y
+económico)
+estimar
+las
+ecuaciones
+estructurales que estén identificadas.
+Una ecuación estructural está identificada si se puede la distinguir de una
+combinación lineal de ella misma con otra(s) ecuacion(es) estructural(es). Existe
+varios tipos de información a priori que pueden servir para identificar una ecuación.
+El método MC2E es un método de variables instrumentales, de información
+limitada, que proporciona una estimación consistente de una ecuación estructural
+a la vez. Ésta debe estar identificada.
+
+Lo que hemos aprendido:
+Econometría III (4º GECO)
+El método MC3E es un método de variables instrumentales, de información
+completa, que proporciona una estimación consistente de todas las ecuaciones
+estructurales a la vez. Todas deben estar identificadas. Es más eficiente que el
+MC2E si se aplica a un modelo bien especificado.
+Ambos estimadores son asintóticamente normales. Así, todas las fórmulas
+habituales de contraste sobre los coeficientes estructurales se pueden aplicar en
+su versión asintótica. Los contrastes serán válidos para muestras suficientemente
+grandes.
+Existen contrastes que permiten comprobar la endogeneidad de explicativas y
+la validez de las variables exógenas como instrumentos.
+. Los coeficientes de FR se pueden estimar consistentemente por MCO.
+A menudo, los MES montados sobre muestras temporales van a ser dinámicos.
+En tal caso, además de la FE y de la FR, también existe la FF que permite captar
+el efecto neto de las exógenas sobre las endógenas.
+
+Lo que hemos aprendido:
+Econometría III (4º GECO)
+Los MES dinámicos pueden servir para examinar cómo las endógenas
+reaccionan a variaciones de impulso y a variaciones de escalón de una exógena.
+Podemos obtener las funciones de respuesta al impulso, al escalón, y los
+multiplicadores dinámicos (de impacto, intermedios y de largo plazo).
+En un MES dinámico, en el que pueden intervenir variables I(d), d>0, es
+importante que las ecuaciones estén equilibradas. Si lo están, la presencia de I(d)
+no presenta problemas de inferencia.
+Los MES en general, y los dinámicos en particular, pueden usarse para realizar
+predicciones de las endógenas condicionadas al valor predicho externamente de
+las variables exógenas.
+Además de los modelos de ecuaciones simultáneas, existen otros modelos
+multicuacionales interesantes: triangulares y recursivos, SURE, VAR.
+
+
+=== Teoria_2.pdf (53 paginas) ===
+TEMA 2: MODELOS VAR y MCE
+M. Camacho 
+con la colaboración de A. Beyaert, M. González, A. Quesada
+Departamento de Métodos Cuantitativos para la Economía y la Empresa 
+
+Econometría III (4º GECO)
+Tema 2
+2
+Lo que estudiaremos en este tema:
+1.
+Introducción
+2.
+Modelos VAR
+2.1 FE, FR y FF del VAR
+2.2 Estimación y contrastes
+2.3 Análisis de la estacionariedad
+2.4 Elección del número máximo de retardos
+2.5 Chequeo de los residuos del modelo
+2.6 “Causalidad” de Granger
+2.7 Predicción
+2.8 Especificación estructural
+
+Econometría III (4º GECO)
+Tema 2
+3
+Lo que estudiaremos en este tema:
+3.
+Modelos de Corrección del Error
+3.1 Introducción
+3.2 Cointegración
+3.3 Estimación de MCE
+Bibliografía básica:
+Lutkepohl, H. 2005. Structural Vector Autoregressive Analysis for Cointegrated Variables.
+Documento de Trabajo del European Economic Institute No. 2005/2
+(http://cadmus.eui.eu/bitstream/handle/1814/2817/ECO2005-2.pdf;jsessionid=DAD1000534EA3EE699EA879301EFB981?sequence=1)
+Lutkepohl, H. 2007. Econometric Analysis with Vector Autoregressive Models. Documento de
+Trabajo del European Economic Institute No. 2007/11
+(http://cadmus.eui.eu/bitstream/handle/1814/6918/ECO-2007-11.pdf?sequence=1)
+
+Críticas a los MES
+Complicado decidir qué variables son exógenas
+MES se proponen con muchas ecuaciones pero pocas observaciones
+Habían predicho muy mal los períodos de alto desempleo e inflación de 1970s
+Insuficientes retardos de las explicativas
+Modelos VAR: caso particular de MES
+No contienen exógenas puras y se expresan generalmente en FR
+Usan pocas endógenas: M normalmente menor que 6
+Predecían mucho mejor que los MES más complejos
+Seleccionan cuidadosamente el número de retardos
+Econometría III (4º GECO)
+Tema 2
+4
+1. Introducción
+
+•
+Resumen del análisis de los modelos VAR
+Especificación y estimación
+Chequeo del modelo
+Modelo rechazado
+Modelo aceptado
+“Causalidad”
+de Granger
+Predicción
+Especificación estructural
+Funciones de
+respuesta al
+impulso
+Descomposición
+varianza del error
+de predicción
+Econometría III (4º GECO)
+Tema 2
+5
+1. Introducción
+
+Econometría III (4º GECO)
+Tema 2
+6
+2.
+Modelos VAR
+2.1. FE, FR y FF del VAR
+•
+Forma estructural: las endógenas del modelo función de otras endógenas del
+modelo y predeterminadas
+•
+Forma reducida: las endógenas del modelo sólo función de predeterminadas
+•
+VMA (análogo a la Forma final del MES): las endógenas del modelo sólo función 
+de ruidos y sus retardos. Partimos de la FR                                                               
+o bien                           y despejamos
+0
+t
+1
+t 1
+p
+t p
+t
+A Y
+A Y
+...
+A Y
+−
+−
+= δ +
++
++
++ ε
+
+1
+1
+1
+1
+t
+0
+0
+1
+t 1
+0
+p
+t p
+0
+t
+Y
+A
+A A Y
+...
+A A Y
+A
+−
+−
+−
+−
+−
+−
+=
+δ +
++
++
++
+ε
+
+(
+)
+(
+)
+'
+'
+1
+1
+t
+t
+0
+0
+E U U
+A
+A
+−
+−
+= Ω=
+Σ
+(
+)
+p
+1
+p
+t
+t
+I
+C L
+...
+C L
+Y
+U
+−
+−
+−
+= δ +
+1
+t
+0
+t
+U
+A−
+=
+ε
+1
+i
+0
+i
+C
+A A
+−
+=
+t
+1
+t 1
+p
+t p
+t
+Y
+C Y
+...
+C Y
+U
+−
+−
+= δ +
++
++
++
+( )
+1
+t
+t
+t
+1
+t 1
+2
+t 2
+Y
+C L
+U
+U
+U
+U
+...
+−
+−
+−
+= µ +
+= µ +
++ ψ
++ ψ
++
+(
+)
+t ~ iid 0,
+ε
+Σ
+( )
+t
+t
+C L Y
+U
+= δ +
+
+Econometría III (4º GECO)
+Tema 2
+7
+Nos centramos en la FR (válida para predecir)
+FR para la variable endógena  j 
+En t:
+Para todas las observaciones:
+1
+1
+p
+p
+1t
+1
+11
+1M
+1t 1
+11
+1M
+1t p
+1t
+1
+1
+p
+p
+Mt
+M
+M1
+MM
+Mt 1
+M1
+MM
+Mt p
+Mt
+y
+c
+c
+y
+c
+c
+y
+u
+...
+y
+c
+c
+y
+c
+c
+y
+u
+−
+−
+−
+−
+
+
+
+
+
+δ
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+=
++
++
++
++
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+δ
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2.
+Modelos VAR
+2.1. FE, FR y FF del VAR
+j
+j
+j
+y
+X
+u
+=
+π +
+1
+1
+p
+p
+jt
+j
+j1
+1t 1
+jM
+Mt 1
+j1
+1t p
+jM
+Mt p
+jt
+y
+c y
+...
+c
+y
+...
+c y
+...
+c
+y
+u
+−
+−
+−
+−
+= δ +
++
++
++
++
++
++
++
+'
+2
+jt
+t
+j
+jt
+jt
+j
+y
+X
+u
+, u
+~ iid(0,
+)
+=
+π +
+ω
+2
+j
+j T
+u ~ (0,
+I )
+ω
+t
+1
+t 1
+p
+t p
+t
+Y
+C Y
+...
+C Y
+U
+−
+−
+= δ +
++
++
++
+
+Econometría III (4º GECO)
+Tema 2
+8
+FR para el modelo completo para todas las observaciones
+2.
+Modelos VAR
+2.1. FE, FR y FF del VAR
+1
+1
+1
+M
+M
+M
+y
+X
+0
+0
+u
+0
+0
+y
+0
+0
+X
+u
+π
+
+
+
+
+
+
+
+
+
+
+
+
+=
+⋅
++
+
+
+
+
+
+
+
+
+
+π
+
+
+
+
+
+
+
+
+
+
+
+
+2
+1 T
+12 T
+1M T
+2
+12 T
+2 T
+2M T
+2
+1M T
+2M T
+M T
+I
+I
+I
+I
+I
+I
+I
+I
+I
+
+
+ω
+ω
+ω
+
+
+ω
+ω
+ω
+
+
+Ω= 
+
+
+
+
+
+ω
+ω
+ω
+
+
+
+
+
+
+
+
+u ~ (0,
+)
+Ω
+
+con
+donde
+y
+X
+u
+=
+π +
+
+
+
+o bien
+
+Econometría III (4º GECO)
+Tema 2
+9
+Usaremos el ejemplo de Gali (1999)
+Modelo de tasa de crecimiento de la productividad (y1=X) y de las horas
+trabajadas (y2=H) para EE.UU. en la muestra 1947.1-2018.2
+Galí usa p=4 pero nosotros en las especificaciones de teoría veremos p=1
+2.
+Modelos VAR
+2.1. FE, FR y FF del VAR
+t
+t 1
+1t
+1
+11
+12
+t
+t 1
+2t
+2
+21
+22
+X
+X
+u
+c
+c
+H
+H
+u
+c
+c
+−
+−
+δ
+
+
+
+
+
+
+
+
+
+
+=
++
++
+
+
+
+
+
+
+
+
+
+
+δ
+
+
+
+
+
+
+
+
+
+
+11
+12
+12
+22
+ω
+ω
+
+
+Ω= 
+
+ω
+ω
+
+
+t
+1
+11
+t 1
+12
+t 1
+1t
+t
+2
+21
+t 1
+22
+t 1
+2t
+X
+c X
+c H
+u
+H
+c X
+c H
+u
+−
+−
+−
+−
+= δ +
++
++
+= δ +
++
++
+
+Econometría III (4º GECO)
+Tema 2
+10
+2.
+Modelos VAR
+2.2. Estimación y contrastes
+MCO ecuación por ecuación                                 es
+Consistente: las explicativas son todas predeterminadas
+MCG no más eficiente: las explicativas son las mismas para todas las ecuaciones
+(
+)
+1
+j,MCO
+j
+ˆ
+X' X
+X'y
+−
+π
+=
+(
+)
+1
+'
+'
+11
+12
+11
+12
+1
+1
+1
+1
+MCG
+21
+22
+21
+22
+2
+1
+11
+12
+11
+12
+1
+21
+22
+21
+22
+2
+y
+X
+0
+X
+0
+X
+0
+w I
+w I
+w I
+w I
+ˆ
+X'
+X
+X'
+y
+y
+0
+X
+0
+X
+0
+X
+w I
+w I
+w I
+w I
+X'y
+X'X
+0
+w I
+w I
+w I
+w I
+X'y
+0
+X'X
+w I
+w I
+w I
+w I
+−
+−
+−
+−
+−
+
+
+
+
+
+
+
+
+
+
+
+
+
+π
+=
+Ω
+Ω
+=
+=
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+= 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(
+)
+(
+)
+(
+)
+(
+)
+(
+)
+(
+)
+1
+1
+1
+11
+12
+11
+12
+1
+1
+21
+22
+21
+22
+1
+1
+2
+2
+1
+1,MCO
+1
+1
+2,MCO
+2
+X'X
+0
+X'X
+0
+X'y
+X'y
+w I
+w I
+w I
+w I
+X'y
+X'y
+w I
+w I
+w I
+w I
+0
+X'X
+0
+X'X
+ˆ
+X'X
+X'y
+ˆ
+X'X
+X'y
+−
+−
+−
+−
+−
+−
+−
+=
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+=
+=
+=
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+π
+
+
+
+= 
+
+
+
+π
+
+
+
+
+11
+12
+1
+21
+22
+w I
+w I
+llamemos 
+w I
+w I
+−
+
+
+Ω
+= 
+
+
+
+
+
+Econometría III (4º GECO)
+Tema 2
+11
+2.
+Modelos VAR
+2.2. Estimación y contrastes
+La estimación MCO es válida ⇒aplicaremos la inferencia estudiada el curso anterior
+Contraste del ratio de la verosimilitud
+Se usa mucho en el análisis de modelos VAR
+Supongamos que queremos comparar dos modelos que estiman k0 y ka parámetros 
+respectivamente ⇒Nos planteamos el contraste
+H0: Modelo con k0 parámetros
+Ha: modelo con ka parámetros
+Estimamos ambos modelos y calculamos el logaritmo de la función de verosimilitud (bajo 
+normalidad es equivalente a usar las matrices de covarianzas)
+(
+)
+(
+)
+(
+)
+a
+0
+2
+a
+0
+0
+a
+k
+k
+2 ln L
+ln L
+T ln
+ln
+~
+−
+
+
+−
+=
+Ω−
+Ω
+χ
+
+
+
+
+
+
+
+
+
+Econometría III (4º GECO)
+Tema 2
+12
+2.
+Modelos VAR
+2.3. Análisis de la estacionariedad
+Recuerda: un AR(1)                                        no tiene raíz unitaria cuando
+Un AR (p)
+no tiene raíz unitaria si
+Un VAR
+no tiene raíz unitaria si el determinante
+tiene las raíces
+Si las series no son estacionarias por raíces unitarias
+Generalmente se estacionarizan tramando las diferencias ⇒modelo en diferencias
+En caso de cointegración (al final del Tema) se usan modelos VECM     
+t
+0
+1
+t 1
+t
+y
+c
+c y −
+=
++
++ ε
+1
+1
+c L
+0
+−
+=
+1
+1
+L
+1
+c
+=
+>
+p
+1
+p
+I
+C L
+...
+C L
+0
+−
+−
+−
+=
+i
+L
+1, i
+>
+∀
+t
+1
+t 1
+p
+t p
+t
+Y
+C Y
+...
+C Y
+U
+−
+−
+= δ +
++
++
++
+t
+0
+1
+t 1
+p
+t p
+t
+y
+c
+c y
+...
+c y
+−
+−
+=
++
++
++
++ ε
+i
+L
+1, i
+>
+∀
+
+Econometría III (4º GECO)
+Tema 2
+13
+2.
+Modelos VAR
+2.3. Análisis de la estacionariedad
+
+Es fácil de comprobar en Eviews: nos muestra la inversa de las raíces ⇒todas deben ser < 1 
+(“estar dentro del círculo unidad”)
+
+Ej: Modelo de Gali (1999): ¿Qué ocurre si no nos damos cuenta de que son I(1) usando ADF? 
+Logaritmo de productividad                                    Si estimamos en niveles (p=4)
+Hay una inversa de una raíz
+que
+está
+fuera
+del
+círculo
+unidad ⇒no estacionario
+Logaritmo de horas trabajadas
+3.9
+4.0
+4.1
+4.2
+4.3
+4.4
+4.5
+4.6
+4.7
+4.8
+50
+55
+60
+65
+70
+75
+80
+85
+90
+95
+00
+05
+10
+15
+3.4
+3.6
+3.8
+4.0
+4.2
+4.4
+4.6
+4.8
+5.0
+5.2
+50
+55
+60
+65
+70
+75
+80
+85
+90
+95
+00
+05
+10
+15
+
+Econometría III (4º GECO)
+Tema 2
+14
+2.
+Modelos VAR
+2.3. Análisis de la estacionariedad
+
+Ej: Modelo de Gali (1999): debemos usar ADF para comprobar que son I(1) y estacionarizarlas
+Crecimiento de productividad                        Si estimamos en diferencias (p=4)
+Ahora todas las inversas de las
+raíces están dentro del círculo
+unidad ⇒estacionario
+Crecimiento de horas trabajadas
+-2
+-1
+0
+1
+2
+3
+4
+50
+55
+60
+65
+70
+75
+80
+85
+90
+95
+00
+05
+10
+15
+-4
+-3
+-2
+-1
+0
+1
+2
+3
+50
+55
+60
+65
+70
+75
+80
+85
+90
+95
+00
+05
+10
+15
+
+Econometría III (4º GECO)
+Tema 2
+15
+2.
+Modelos VAR
+2.4. Elección del número máximo de retardos
+(1) Contrastes secuenciales
+Elegir pmax grande y eliminar hasta el último significativo en los contrastes
+Problemas
+Si pmax es demasiado alto podemos encontrar p demasiado grande porque
+siempre existe posibilidad de cometer errores de tipo 1 (RH0 cuando es cierta)
+Si pmax es demasiado pequeño podemos no llegar al retardo óptimo porque el p
+verdadero fuese mayor que el pmax elegido
+0
+0
+pmax
+H : C
+=
+0
+1
+0
+pmax
+H : C
+−=
+
+
+Econometría III (4º GECO)
+Tema 2
+16
+2.
+Modelos VAR
+2.4. Elección del número máximo de retardos
+(2) Criterios de selección Bayesianos
+Basados en elegir el modelo con menor valor del criterio
+Observaciones
+Para un determinado p
+AIC tiende a sobreestimar p
+HQ y BIC son consistentes ⇒funcionan mejor en muestras grandes
+En muestras pequeñas no está claro cuál funciona mejor
+2
+2
+AIC(p)
+log
+pM
+T
+=
+Ω+
+( )
+(
+)
+2
+2log log T
+BIC(p)
+log
+pM
+T
+=
+Ω+
+( )
+2
+log T
+HQ(p)
+log
+pM
+T
+=
+Ω+
+BIC(p)
+HQ(p)
+AIC(p)
+≥
+≥
+
+Econometría III (4º GECO)
+Tema 2
+17
+2.
+Modelos VAR
+2.4. Elección del número máximo de retardos
+(3) Criterios de selección basados en capacidad predictiva
+FPE (Final Prediction Error)
+Se basa en la predicción de horizonte 1
+Elegimos el modelo con menor FPE
+En muestras grandes funciona peor que BIC y HQ
+En muestras pequeñas no está claro cuál funciona mejor
+1
+1
+M
+T
+pM
+FPE(p)
+T
+pM
+
+
++
++
+= Ω
+
+−
+−
+
+
+
+Econometría III (4º GECO)
+Tema 2
+18
+2.
+Modelos VAR
+2.4. Elección del número máximo de retardos
+El Eviews muestra un cuadro de comparación. En nuestro ejemplo
+Decidimos un máximo de 8 retardos (SC=BIC)
+Conclusión:
+Según FPE, AIC, SC y HQ ⇒p=2
+Según contrastes secuenciales ⇒p=8
+
+Econometría III (4º GECO)
+Tema 2
+19
+2.
+Modelos VAR
+2.5. Chequeo de los residuos del modelo
+(1) Funciones de correlación
+Son un gráfico de corr(eh,t,ej,t-i) para todo h,j=1,…,M con i=1,…,imax
+Se presentan con las bandas de confianza⇒Si la correlación muestral está dentro 
+de las bandas no podemos rechazar la nula de que la poblacional sea cero
+En nuestro ejemplo (imax=12) están dentro de las bandas (no riesgo de correlación)
+
+Econometría III (4º GECO)
+Tema 2
+20
+2.
+Modelos VAR
+2.5. Chequeo de los residuos del modelo
+(2) Contraste de Portmanteau
+Sean las covarianzas (matrices MxM) de los ruidos 
+Sean las estimaciones
+El contraste se basa en que las autorrelaciones hasta orden h sean cero
+Para muestras pequeñas
+Sólo tiene sentido para valores de h>p: es una deficiencia grave porque los retardos 
+h pequeños son los más importantes
+(
+)
+'
+j
+t
+t
+j
+V
+E U U −
+=
+T
+'
+j
+t
+t
+j
+t
+j 1
+1
+ˆ
+ˆ ˆ
+V
+U U
+T
+−
+= +
+=
+∑
+t
+1
+t 1
+p
+t p
+t
+Y
+C Y
+...
+C Y
+U
+−
+−
+= δ +
++
++
++
+0
+1
+h
+a
+0
+H : V
+V
+0
+H : no H
+=
+=
+=
+
+(
+)
+(
+)
+2
+0
+h
+'
+1
+1
+2
+0
+h
+j
+0
+j
+0
+M
+h p
+H
+j 1
+ˆ ˆ
+ˆ ˆ
+RH
+Q
+T
+tr V V V V
+~
+−
+−
+−
+=
+⇔
+=
+χ
+∑
+(
+)
+h
+2
+'
+1
+1
+h
+j
+0
+j
+0
+j 1
+1
+ˆ ˆ
+ˆ ˆ
+Q
+T
+tr V V V V
+T
+j
+−
+−
+=
+=
+−
+∑
+
+Econometría III (4º GECO)
+Tema 2
+21
+2.
+Modelos VAR
+2.5. Chequeo de los residuos del modelo
+(2) Contraste de Portmanteau
+En nuestro ejemplo para un h de hasta 12 y p=4
+Conclusión: Al 1% no parece que hay correlación serial (salvo h=8 y h=9). Al 5% habría 
+problemas ⇒comparar con el resultado de otros contrastes
+
+Econometría III (4º GECO)
+Tema 2
+22
+2.
+Modelos VAR
+2.5. Chequeo de los residuos del modelo
+(3) Contraste de Breuch-Godfrey
+Sean        los residuos y      la VARCOV estimada de 
+Queremos contrastar
+Para un h realizamos la siguiente regresión auxiliar y obtenemos VARCOV estimada
+El contraste se puede plantear
+El estadístico y su distribución son
+Tiene sentido para valores h≤p
+tˆU
+t
+1
+t 1
+p
+t p
+t
+Y
+C Y
+...
+C Y
+U
+−
+−
+= δ +
++
++
++
+0
+0
+t
+a
+H :U  no autocorrelacionados hasta orden h
+H :no H
+t
+1
+t 1
+p
+t p
+1
+t 1
+h
+t h
+t
+ˆ
+ˆ
+ˆ
+ˆ
+U
+C Y
+C Y
+B U
+B U
+−
+−
+−
+−
+ε
+=
++
++
++
++
++
++ ε ⇒Σ
+
+
+0
+1
+2
+0
+0
+h
+a
+H :B
+B
+...
+B
+H :noH
+=
+=
+=
+=
+(
+)
+2
+0
+1
+2
+LM
+hM
+H
+ˆ
+ˆ
+Q
+T M
+tr
+~
+−
+ε
+
+
+=
+−
+ΩΣ
+χ
+
+
+ˆΩ
+
+Econometría III (4º GECO)
+Tema 2
+23
+2.
+Modelos VAR
+2.5. Chequeo de los residuos del modelo
+(3) Contraste de Breuch-Godfrey
+En nuestro ejemplo para un h de hasta 12 y p=4
+Conclusión: Al 1% no hay correlación serial. Al 5% habría problemas sólo en h=5
+
+Una variable yi no causa a otra variable yj en el sentido de Granger si los 
+retardos de la primera no ayudan a predecir la segunda
+Si una variable causa en sentido de Granger a otra esto no quiere decir que la 
+segunda sea el resultado de la primera
+Ejemplo: observar que la gente abre los paraguas ayuda a predecir una tormenta, 
+pero no la causa en ningún otro sentido
+Cómo contrastar la causalidad de Granger en un VAR
+⇒es un contraste de significatividad conjunta de       ⇒se hace de manera habitual
+p
+p
+p
+h
+h
+h
+jt
+j
+j1
+1t h
+ji
+it h
+jM
+Mt h
+jt
+h 1
+h 1
+h 1
+y
+c y
+...
+c y
+...
+c
+y
+u
+−
+−
+−
+=
+=
+=
+= δ +
++
++
++
++
++
+∑
+∑
+∑
+G
+h
+0
+i
+j
+ji
+G
+h
+a
+i
+j
+ji
+H : y
+y
+c
+0 h
+1,...,p
+H : y
+y
+algún c
+0 
+→
+⇔
+=
+∀=
+→
+⇔
+≠
+Econometría III (4º GECO)
+Tema 2
+24
+2.
+Modelos VAR
+2.6. “Causalidad” de Granger
+h
+ji
+c
+
+En nuestro ejemplo (p=4)
+G
+0
+1
+2
+3
+4
+12
+12
+12
+12
+G
+a
+H : H
+X
+      c
+c
+c
+c
+0
+H : H
+X
+→
+=
+=
+=
+=
+→
+1
+2
+3
+4
+1
+2
+3
+4
+t
+1
+11
+t 1
+11
+t 2
+11
+t 3
+11
+t 4
+12
+t 1
+12
+t 2
+12
+t 3
+12
+t 4
+1t
+1
+2
+3
+4
+1
+2
+3
+4
+t
+2
+21
+t 1
+21
+t 2
+21
+t 3
+21
+t 4
+22
+t 1
+22
+t 2
+22
+t 3
+22
+t 4
+2t
+X
+c X
+c X
+c X
+c X
+c H
+c H
+c H
+c H
+u
+H
+c X
+c X
+c X
+c X
+c H
+c H
+c H
+c H
+u
+−
+−
+−
+−
+−
+−
+−
+−
+−
+−
+−
+−
+−
+−
+−
+−
+= δ +
++
++
++
++
++
++
++
++
+= δ +
++
++
++
++
++
++
++
++
+Econometría III (4º GECO)
+Tema 2
+25
+G
+0
+1
+2
+3
+4
+21
+21
+21
+21
+G
+a
+H : X
+H
+      c
+c
+c
+c
+0
+H : X
+H
+→
+=
+=
+=
+=
+→
+2.
+Modelos VAR
+2.6. “Causalidad” de Granger
+
+Para predecir usamos siempre la FR 
+Para simplificar supongamos que no hay constantes. Estimamos               en
+Queremos predecir las variables h períodos hasta T+h
+Se puede demostrar que la predicción óptima (ECM mínimo) estimada es 
+Se obtiene con predicción recursiva: usamos
+Podemos definir error de predicción
+t
+1
+t 1
+p
+t p
+t
+Y
+C Y
+...
+C Y
+U
+−
+−
+=
++
++
++
+T h
+1
+T h 1
+p
+T h p
+T h
+Y
+C Y
+...
+C Y
+U
++
++ −
++ −
++
+=
++
++
++
+(
+)
+T h/T
+T h
+T h 1
+T h 2
+1
+T h 1/T
+p
+T h p/T
+ˆ
+ˆ
+ˆ
+ˆ
+Y
+E Y
+Y
+,Y
+,
+C Y
+...
+C Y
++
++
++ −
++ −
++ −
++ −
+=
+=
++
++
+
+T h j/T
+T h j
+Y
+Y
+  si  h
+j
++ −
++ −
+=
+≤
+T h j/T
+T h j/T
+ˆ
+Y
+Y
+  si  h
+j
++ −
++ −
+=
+>
+T h
+T h/T
+Y
+Y
++
++
+−
+Econometría III (4º GECO)
+Tema 2
+26
+2.
+Modelos VAR
+2.7. Predicción
+1
+p
+ˆ
+ˆ
+C ,...,C
+y
+
+¿Para qué queremos la especificación estructural?
+Como hemos visto, si sólo queremos predecir, podemos usar FR 
+Pero necesitamos la FE si queremos dotar de intuición económica a los resultados
+Herramientas para el análisis económico
+Funciones de Respuesta al Impulso: miden la reacción de las variables
+endógenas ante un shock (impulso) inesperado en alguna de las endógenas (en
+uno de los ruidos estructurales), manteniendo el resto de ruidos estructurales
+constantes
+Descomposición de la Varianza del Error de Predicción: miden la proporción
+de la varianza del error de predicción que se explica por un impulso inesperado
+en alguna de las endógenas (en los ruidos estructurales), manteniendo el resto
+de ruidos estructurales constates
+Econometría III (4º GECO)
+Tema 2
+27
+2.
+Modelos VAR
+2.7. Especificación estructural
+2.7.1. Introducción
+
+¿Cómo sería la respuesta a un impulso en un ruido de la VMA?
+La FR es
+La VMA es                                                         donde 
+Supongamos que en t aumentamos 1 cada ruido (    es un vector de M unos) 
+La respuesta de impacto es
+Transcurrido 1 periodo, la respuesta es
+Así, podemos calcular la respuesta tras h periodos: 
+Econometría III (4º GECO)
+Tema 2
+28
+2.
+Modelos VAR
+2.7. Especificación estructural
+2.7.2. Funciones de Respuesta a un Impulso
+t
+t
+1
+t 1
+2
+t 2
+Y
+U
+U
+U
+...
+−
+−
+=
++ ψ
++ ψ
++
+(
+)
+( )
+p
+1
+p
+t
+t
+t
+I
+C L
+...
+C L
+Y
+C L Y
+U
+−
+−
+−
+=
+=
+(
+)
+i
+1
+p
+f C ,...,C
+ψ =
+(
+)
+(
+)
+*
+t
+0
+t
+1
+t 1
+2
+t 2
+*
+t
+t
+0
+t
+0
+t
+1
+t 1
+2
+t 2
+Y
+U
+1
+U
+U
+E Y
+Y
+Y
+U
+U
+U
+−
+−
+−
+−
+
+= ψ
++
++ ψ
++ ψ
++
+⇒
+−
+= ψ
+
+= ψ
++ ψ
++ ψ
++
+
+
+
+
+1
+(
+)
+(
+)
+*
+t 1
+0
+t 1
+1
+t
+2
+t 1
+*
+t 1
+t 1
+1
+t 1
+0
+t 1
+1
+t
+2
+t 1
+Y
+U
+U
+1
+U
+E Y
+Y
+Y
+U
+U
+U
++
++
+−
++
++
++
++
+−
+
+= ψ
++ ψ
++
++ ψ
++
+⇒
+−
+= ψ
+
+= ψ
++ ψ
++ ψ
++
+
+
+
+
+(
+)
+*
+t h
+t h
+h
+E Y
+Y
++
++
+−
+= ψ
+
+¿Cómo sería la respuesta a un impulso en un ruido de la VMA?
+Los ψj se pueden calcular fácilmente de dos maneras
+Encontrando la relación que existe entre ellos y C1,…,Cp.
+Por simulación como cuando vimos las FRI en MES siguiendo los pasos
+(1) Calculamos la evolución de la endógena i tras un shock inesperado en j
+(2) Calculamos la evolución de la endógena i sin el shock
+(3) La diferencia es la respuesta de i a un shock inesperado en j
+(4) Repetimos (1) a (3) para i,j,=1,2,…,M
+Econometría III (4º GECO)
+Tema 2
+29
+2.
+Modelos VAR
+2.7. Especificación estructural
+2.7.2. Funciones de Respuesta a un Impulso
+( )
+( )
+( )
+*
+*
+*
+i,t
+i,t 1
+i,t h
+Y
+j ,Y
+j ,
+,Y
+j ,
++
++
+
+
+i,t
+i,t 1
+i,t h
+Y ,Y
+,
+,Y
+,
++
++
+
+
+(
+)
+( )
+*
+h
+i,t h
+i,t h
+i, j
+Y
+j
+Y
++
++
+ψ
+=
+−
+
+Problema de identificación en modelos VAR: 
+(1) Los ψh NO son FRI: son respuestas a shocks de la FR (Ut) y no de la FE (εt)
+Recordemos la relación entre shocks de las FE y FR
+FE:
+FR:
+VMA:
+Solución: usamos la relación
+Dado A0 podemos encontrar Rh a partir de 
+(2) Los Rh no representan FRI que buscamos como economistas: no podemos 
+generar un shock en εjt manteniendo constantes los demás εit ya que σij≠0
+0
+t
+1
+t 1
+p
+t p
+t
+A Y
+A Y
+...
+A Y
+−
+−
+=
++
++
++ ε
+(
+)
+'
+t
+t
+E ε ε
+= Σ
+(
+)
+(
+)
+'
+'
+1
+1
+t
+t
+0
+0
+E U U
+A
+A
+−
+−
+= Ω=
+Σ
+1
+0
+t
+t
+U
+A−
+=
+ε
+t
+1
+t 1
+p
+t p
+t
+Y
+C Y
+...
+C Y
+U
+−
+−
+=
++
++
++
+t
+t
+1
+t 1
+2
+t 2
+Y
+U
+U
+U
+−
+−
+=
++ ψ
++ ψ
++
+1
+1
+1
+t
+0
+t
+1
+0
+t 1
+2
+0
+t 2
+0
+t
+1
+t 1
+2
+t 2
+Y
+A
+A
+A
+R
+R
+R
+−
+−
+−
+−
+−
+−
+−
+=
+ε + ψ
+ε
++ ψ
+ε
++
+=
+ε +
+ε
++
+ε
++
+
+
+1
+h
+h
+0
+R
+A−
+= ψ
+Econometría III (4º GECO)
+Tema 2
+30
+2.
+Modelos VAR
+2.7. Especificación estructural
+2.7.2. Funciones de Respuesta a un Impulso
+1
+t
+0
+t
+U
+A−
+=
+ε
+
+¿Cómo resolvemos el problema de la identificación?
+Suponemos σij=0 ∀i≠j ⇒Ahora Rh si representan FRI porque aíslan los shocks
+Buscamos A0 a partir de los parámetros de la FR ⇒
+¿Podemos hacerlo?
+o FR hay M2p parámetros en Cj y                     en Ω
+o Hay M2 parámetros en A0, M2p en Ai, i=1,…,p y M parámetros en Σ
+o Necesitamos imponer                         restricciones adicionales
+¿Cómo imponemos las restricciones adicionales? Usando teoría económica
+o Restricciones de corto plazo
+o Restricciones de largo plazo
+1
+h
+h
+0
+R
+A−
+= ψ
+Econometría III (4º GECO)
+Tema 2
+31
+2.
+Modelos VAR
+2.7. Especificación estructural
+2.7.2. Funciones de Respuesta a un Impulso
+(
+)
+1 M M
+1
+2
++
+(
+)
+1 M M
+1
+2
++
+
+Restricciones de corto plazo
+Se pueden imponer M restricciones σi
+2=1 ∀i ⇒las otras                restricciones se 
+imponen en las respuestas de impacto
+Las más conocidas son las restricciones de Cholesky 
+A0
+-1 se supone triangular inferior
+A0 también será triangular inferior ⇒modelo recursivo
+Implican que las variables ordenadas más arriba en el VAR no responden de 
+impacto a shocks no esperados de las variables más abajo
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+α
+α
+α
+α
+α
+α
+α
+α
+α
+α
+=
+−
+MM
+3
+M
+2
+M
+1
+M
+33
+32
+31
+22
+21
+11
+1
+0
+0
+0
+0
+0
+0
+0
+A
+
+
+
+
+
+
+
+
+
+Econometría III (4º GECO)
+Tema 2
+32
+2.
+Modelos VAR
+2.7. Especificación estructural
+2.7.2. Funciones de Respuesta a un Impulso
+1
+1
+0
+0
+0
+0
+R
+A
+A
+−
+−
+= ψ
+=
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+=
+=
+Σ
+1
+0
+0
+0
+0
+1
+0
+0
+0
+0
+1
+0
+0
+0
+0
+1
+I
+
+
+
+
+
+
+
+
+
+(
+)
+nes
+restriccio
+ 
+1
+M
+M
+2
+1
+−
+nes
+restriccio
+ 
+M
+(
+)1
+M
+M
+2
+1
+−
+
+Restricciones de corto plazo
+¿En qué consiste la descomposición de Cholesky?
+o Una vez estimado       sabemos que es simétrica e invertible
+o La descomposición de Cholesky asegura que siempre existe una matriz 
+triangular inferior, que llamaremos A0
+-1, que cumple
+En nuestro ejemplo
+Tenemos
+Podemos resolver el sistema de 3 ecuaciones y 3 incógnitas
+(
+)
+'
+1
+1
+0
+0
+ˆ
+A
+A
+−
+−
+Ω=
+Econometría III (4º GECO)
+Tema 2
+33
+2.
+Modelos VAR
+2.7. Especificación estructural
+2.7.2. Funciones de Respuesta a un Impulso
+ˆΩ
+
+
+
+
+
+
+α
+α
+α
+
+
+
+
+
+
+α
+α
+α
+=
+
+
+
+
+
+
+ω
+ω
+ω
+ω
+22
+21
+11
+22
+21
+11
+22
+12
+12
+11
+0
+0
+ˆ
+ˆ
+ˆ
+ˆ
+(
+)
+'
+1
+1
+0
+0
+ˆ
+A
+A
+−
+−
+Ω=
+22
+2
+22
+2
+21
+12
+11
+21
+11
+2
+11
+ˆ
+ˆ
+ˆ
+ω
+=
+α
++
+α
+ω
+=
+α
+α
+ω
+=
+α
+
+Restricciones de largo plazo
+Se pueden imponer M restricciones σi
+2=1 ∀i ⇒las otras                restricciones se 
+imponen en las respuestas de largo plazo
+Si las variables del VAR son estacionarias ⇒R∞=0
+Por eso las restricciones se imponen sobre 
+Demostremos que si las variables del VAR son las diferencias de variables no 
+estacionarias ⇒
+son las respuestas en los niveles
+Sean las variables no estacionarias Xt y sus diferencias Yt= ∆Xt = Xt- Xt-1
+Las respuestas de impacto de los niveles a un shock en t
+Las respuestas pasado un periodo
+Y pasados h periodos
+Econometría III (4º GECO)
+Tema 2
+34
+2.
+Modelos VAR
+2.7. Especificación estructural
+2.7.2. Funciones de Respuesta a un Impulso
+i
+i 1
+R
+R
+∞
+∞
+=
+=∑
+
+h
+h
+i
+i 1
+R
+R
+=
+=∑
+
+(
+) (
+)
+*
+*
+*
+*
+0
+t
+t
+t
+t 1
+t
+t 1
+t
+t
+t
+t
+0
+R
+X
+X
+X
+X
+X
+X
+X
+X
+Y
+Y
+R
+−
+−
+=
+−
+=
+−
+−
+−
+= ∆
+−∆
+=
+−
+=
+
+(
+) (
+) (
+) (
+) (
+)
+*
+*
+*
+*
+*
+*
+*
+1
+t 1
+t 1
+t 1
+t
+t
+t 1
+t
+t
+t 1
+t
+t 1
+t
+t
+t
+1
+0
+R
+X
+X
+X
+X
+X
+X
+X
+X
+X
+X
+X
+X
+X
+X
+R
+R
++
++
++
++
++
++
+=
+−
+=
+−
++
++ −
+−
++
+=
+−
+−
+−
++
+−
+=
++
+
+h
+h
+i
+i 1
+R
+R
+=
+=∑
+
+(
+)1
+M
+M
+2
+1
+−
+
+Restricciones de largo plazo
+Por tanto, las                   restricciones se imponen en las respuestas de largo plazo del 
+nivel de las variables no estacionarias
+En nuestro ejemplo: la restricción permite identificar los shocks es 
+ε1 son shocks tecnológicos: son los únicos que afectan al nivel de la productividad 
+en el largo plazo
+ε2 son shocks de demanda: no pueden afectar al nivel de productividad en el largo 
+plazo
+Econometría III (4º GECO)
+Tema 2
+35
+2.
+Modelos VAR
+2.7. Especificación estructural
+2.7.2. Funciones de Respuesta a un Impulso
+j
+j
+j
+11
+12
+11
+11
+12
+j
+j
+j
+j
+21
+22
+21
+22
+21
+22
+R
+R
+R
+0
+R
+R
+R
+R
+R
+R
+R
+R
+R
+∞
+∞
+∞
+∞
+∞
+
+
+
+
+
+
+=
+=
+=
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+∑
+∑
+∑
+∑
+∑
+∑
+∑
+
+
+
+
+
+(
+)1
+M
+M
+2
+1
+−
+12
+0
+0
+j
+j
+R
+∞
+=
+=
+∑
+
+En nuestro ejemplo
+Restricciones de corto plazo: respuestas de las tasas de crecimiento
+Econometría III (4º GECO)
+Tema 2
+36
+2.
+Modelos VAR
+2.7. Especificación estructural
+2.7.2. Funciones de Respuesta a un Impulso
+
+En nuestro ejemplo
+Restricciones de corto plazo: respuestas de los niveles
+Econometría III (4º GECO)
+Tema 2
+37
+2.
+Modelos VAR
+2.7. Especificación estructural
+2.7.2. Funciones de Respuesta a un Impulso
+
+En nuestro ejemplo
+Restricciones de largo plazo: respuestas de las tasas de crecimiento
+Econometría III (4º GECO)
+Tema 2
+38
+2.
+Modelos VAR
+2.7. Especificación estructural
+2.7.2. Funciones de Respuesta a un Impulso
+
+En nuestro ejemplo
+Restricciones de largo plazo: respuestas de los niveles
+Econometría III (4º GECO)
+Tema 2
+39
+2.
+Modelos VAR
+2.7. Especificación estructural
+2.7.2. Funciones de Respuesta a un Impulso
+La respuesta contracíclica 
+del empleo a un shock en 
+productividad llevó a Galí 
+a cuestionar los modelos 
+de ciclos económicos 
+reales
+
+Error de predicción y su varianza
+Recordemos el error de predicción de h periodos
+La varianza del error de predicción de h periodos (suponiendo Σ=I) 
+Econometría III (4º GECO)
+Tema 2
+40
+2.
+Modelos VAR
+2.8. Descomposición de la varianza del error de predicción
+t
+0
+t
+1
+t 1
+2
+t 2
+Y
+R
+R
+R
+−
+−
+=
+ε +
+ε
++
+ε
++
+t h
+0
+t h
+1
+t h 1
+2
+t h 2
+h 1
+t 1
+h
+t
+h 1
+t 1
+h 2
+t 2
+Y
+R
+R
+R
+R
+R
+R
+R
++
++
++ −
++ −
+−
++
++
+−
++
+−
+=
+ε
++
+ε
++
+ε
++
++
+ε
++
+ε +
+ε
++
+ε
++
+
+
+t h/t
+h
+t
+h 1
+t 1
+h 2
+t 2
+Y
+R
+R
+R
++
++
+−
++
+−
+=
+ε +
+ε
++
+ε
++
+h
+t h
+t h/t
+0
+t h
+1
+t h 1
+h 1
+t 1
+Y
+Y
+R
+R
+R
++
++
++
++ −
+−
++
+ξ =
+−
+=
+ε
++
+ε
++
++
+ε
+
+(
+)
+(
+)
+'
+'
+'
+'
+h
+h
+h
+0
+0
+1
+1
+h 1
+h 1
+var
+E
+R R
+R R
+R
+R
+−
+−
+ξ
+=
+ξ ξ
+=
++
++
++
+
+(
+)
+h 1
+h 1
+j 2
+j
+2
+ih
+i1
+iM
+j 0
+j 0
+var
+R
+R
+−
+−
+=
+=
+ξ
+=
++
++
+∑
+∑
+
+Contribución de Y1
+Contribución de YM
+Error de predicción que se atribuye a ε futuros
+
+En el ejemplo de Gali
+(
+)
+'
+'
+'
+0
+0
+0
+0
+1
+1
+1
+1
+h 1
+h 1
+h 1
+h 1
+11
+12
+11
+12
+11
+12
+11
+12
+11
+12
+11
+12
+h
+0
+0
+0
+0
+1
+1
+1
+1
+h 1
+h 1
+h 1
+h 1
+21
+22
+21
+22
+21
+22
+21
+22
+21
+22
+21
+22
+R
+R
+R
+R
+R
+R
+R
+R
+R
+R
+R
+R
+var
+R
+R
+R
+R
+R
+R
+R
+R
+R
+R
+R
+R
+−
+−
+−
+−
+−
+−
+−
+−
+
+
+
+
+
+
+
+
+
+ξ
+=
++
++
++
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+t h
+t h/t
+h
+t h
+t h/t
+X
+X
+H
+H
++
++
++
++
+−
+
+
+ξ = 
+
+−
+
+
+(
+)
+(
+) (
+)
+(
+)
+h 1
+h 1
+0 2
+0 2
+1 2
+1 2
+h 12
+h 12
+j 2
+j 2
+t h
+t h/t
+11
+12
+11
+12
+11
+12
+11
+12
+j 0
+j 0
+var X
+X
+R
+R
+R
+R
+R
+R
+R
+R
+−
+−
+−
+−
++
++
+=
+=
+−
+=
++
++
++
++
++
++
+=
++
+∑
+∑
+
+(
+)
+(
+) (
+)
+(
+)
+h 1
+h 1
+0 2
+0 2
+1 2
+1 2
+h 12
+h 12
+j 2
+j 2
+t h
+t h/t
+22
+21
+22
+21
+22
+21
+22
+21
+j 0
+j 0
+var H
+H
+R
+R
+R
+R
+R
+R
+R
+R
+−
+−
+−
+−
++
++
+=
+=
+−
+=
++
++
++
++
++
++
+=
++
+∑
+∑
+
+Contribución de X
+Contribución de H
+Contribución de H Contribución de X
+h
+t h
+t h/t
+0
+t h
+1
+t h 1
+h 1
+t 1
+Y
+Y
+R
+R
+R
++
++
++
++ −
+−
++
+ξ =
+−
+=
+ε
++
+ε
++
++
+ε
+
+Econometría III (4º GECO)
+Tema 2
+41
+2.
+Modelos VAR
+2.8. Descomposición de la varianza del error de predicción
+
+En el ejemplo de Gali: la descomposición del error de predicción de x
+Econometría III (4º GECO)
+Tema 2
+42
+2.
+Modelos VAR
+2.8. Descomposición de la varianza del error de predicción
+Identificación por Cholesky
+Identificación de largo plazo
+
+
+Otra utilidad: medición del grado de conectividad
+
+Llamemos      a la proporción del error de la varianza de predicción de la variable i transcurridos 
+h periodos desde que se produjo un shock en la variable j. 
+
+Definamos la matriz de conectividad
+Econometría III (4º GECO)
+Tema 2
+43
+2.
+Modelos VAR
+2.8. Descomposición de la varianza del error de predicción
+h
+ij
+d
+ 
+y1 
+y2 
+… 
+yM 
+De otros 
+y1 
+d4h11 
+d4h12 
+… 
+d4h1M 
+ 
+j
+M
+h
+j
+d , j
+=
+≠
+∑
+1
+1
+1 
+y2 
+d4h21 
+d4h22 
+… 
+d4h2M 
+ 
+j
+M
+h
+j
+d
+, j
+=
+≠
+∑
+2
+1
+2  
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+yM 
+d4hM1 
+d4hM2 
+… 
+d4hMM 
+ 
+Mj
+M
+h
+j
+d
+, j
+M
+=
+≠
+∑
+1
+ 
+Hacia otros 
+ 
+i
+M
+h
+i
+d
+i
+=
+≠
+∑
+1
+1
+1
+ 
+ 
+i
+M
+h
+i
+d
+i
+=
+≠
+∑
+2
+1
+2
+ 
+ 
+ 
+iM
+M
+h
+i
+d
+i
+M
+=
+≠
+∑
+1
+ 
+ 
+ij
+M
+h
+i, j
+d
+i
+j
+=
+≠
+∑
+1
+ 
+
+Regresión espuria
+
+Regresar variables no estacionarias en niveles ⇒riesgo de regresión espuria
+R2 sistemáticamente alto
+Estimaciones estadísticamente significativas ⇒Granger y Newbold (1974)
+Aunque no exista relación de causalidad entre las variables
+Ejemplo: IPI de EE.UU. Y de España
+(
+)
+(
+)
+(
+)
+2
+EE.UUt
+ESPt
+(0.19)
+0.04
+ˆ
+log IPI
+2.43 1.48log IPI
+R
+0.71
+= −
++
+⇒
+=
+3.
+Modelos de Corrección del Error
+3.1. Introducción
+Econometría III (4º GECO)
+Tema 2
+44
+3.6
+3.8
+4.0
+4.2
+4.4
+4.6
+4.8
+1975
+1980
+1985
+1990
+1995
+2000
+2005
+2010
+2015
+LOG(IPI_US)
+4.2
+4.3
+4.4
+4.5
+4.6
+4.7
+4.8
+4.9
+1975
+1980
+1985
+1990
+1995
+2000
+2005
+2010
+2015
+LOG(IPI_ESP_TREND)
+
+¿Por qué parece buena la regresión de los niveles?
+
+alto porque la varianza de Y es alta
+Cuando hay tendencia lineal el coeficiente es significativo porque la endógena tiene
+tendencia propia y la tendencia de la explicativa actúa de “variable proxy”
+Incluso cuando no hay tendencia lineal los estadísticos no tienen la distribución
+habitual ⇒los contrastes de significatividad habituales no son válidos
+¿Cómo hemos estimado la relación entre dos series no estacionarias?
+Hasta ahora transformamos las series en estacionarias diferenciándolas 
+Evitamos riesgos de regresión espuria 
+Pero perdemos la información del nivel de las series: eliminamos la tendencia de las 
+series y nos centramos en analizar cómo se relacionan “a corto plazo” 
+3.
+Modelos de Corrección del Error
+3.1. Introducción
+Econometría III (4º GECO)
+Tema 2
+45
+2
+2
+e
+2
+Y
+ˆ
+R
+1
+ˆ
+σ
+= −σ
+
+Pero existen variables que pueden tener relación no espuria a largo plazo por:
+Medidas de política económica: ejemplo de producción y consumo
+Fuerzas del mercado: estructura temporal de los tipos de interés
+Decimos que esas variables cointegran
+No se separan mucho entre ellas en su dinámica en niveles ⇒se dice que tienen 
+una tendencia estocástica común
+Si lo hacen actúan las fuerzas que reducen los errores de equilibrio
+3.
+Modelos de Corrección del Error
+3.2. Cointegración
+Econometría III (4º GECO)
+Tema 2
+46
+7.0
+7.5
+8.0
+8.5
+9.0
+9.5
+10.0
+50
+55
+60
+65
+70
+75
+80
+85
+90
+95
+00
+05
+10
+15
+LPIB
+LCONS
+-4
+0
+4
+8
+12
+16
+20
+55
+60
+65
+70
+75
+80
+85
+90
+95
+00
+05
+10
+15
+i12
+i3
+i12-i3
+
+
+Definición de cointegración (adaptada de Engle-Granger)
+M variables I(d) están cointegradas si existe una combinación lineal no nula de todas 
+ellas que sea I(d-1)
+En economía es de especial interés series I(1) cuya combinación es I(0)
+
+Contraste de cointegración de Engle y Granger
+Para simplificar, supongamos que tenemos dos variables y1t y y2t que son I(1)
+Podría existir una (o varias) combinación lineal estacionaria                                   y si 
+normalizamos
+¿Como saber si existe tal relación lineal?
+(1) A veces la teoría económica nos dice lo que valen
+como en el caso de
+los tipos de interés
+(2) Otras veces tendremos que estimarla regresando las series en niveles y
+obtenemos los residuos (regresión de cointegración)
+3.
+Modelos de Corrección del Error
+3.2. Cointegración
+Econometría III (4º GECO)
+Tema 2
+47
+*
+1
+1t
+2
+2t
+t
+y
+y
+~ I(0)
+β
++β
+= ε
+1t
+2
+2t
+t
+y
+y
+~ I(0)
++β
+= ε
+
+2
+1,β
+β
+1
+2
+1t
+2t
+t
+1,
+1
+y
+y
+β =
+β = −⇒
+−
+= ε
+1t
+2t
+t
+t
+y
+a
+by
+e
+=
++
++ ε ⇒
+
+Ahora debemos comprobar si la combinación lineal es estacionaria
+(1) Si los parámetros los da la teoría económica ⇒aplicamos ADF a εt
+(2) A veces se estima porque queremos comprobar la teoría económica y otras veces
+porque no hay una teoría económica que nos indique cómo es la combinación lineal
+Aplicamos ADF a et pero sin cte ni tendencia si hay cte en regresión de
+cointegración
+Los valores críticos que aparecen en Eviews no son válidos porque ADF se
+realiza sobre una serie que proviene de una estimación (el residuo de la
+regresión de cointegración)
+Los valores críticos debemos buscarlos en las tablas de Phillips y Ouliaris
+3.
+Modelos de Corrección del Error
+3.2. Cointegración
+Econometría III (4º GECO)
+Tema 2
+48
+
+Tablas de Phillips y Oulliaris 
+Constante en
+Cointegración
+No
+No
+Si
+No
+Si
+Si
+Tendencia
+en series
+t
+t
+t
+y
+a
+bx
+=
++
++ ε
+Econometría III (4º GECO)
+Tema 2
+49
+3.
+Modelos de Corrección del Error
+3.2. Cointegración
+
+Modelos de corrección del error de Engle y Granger
+Supongamos que hay r relaciones de cointegración tales que
+Engle y Granger demostraron que el MCE para variables que cointegran es
+11
+1t
+1M
+Mt
+1t
+r1
+1t
+rM
+Mt
+rt
+Y
+...
+Y
+~ I(0)
+Y
+...
+Y
+~ I(0)
+β
++
++β
+= ε
+β
++
++β
+= ε
+
+
+
+
+
+
+
+
+
+
+
+β
+β
+β
+β
+=
+β
+1
+r
+1
+r
+m
+1
+11
+'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ε
+ε
+=
+ε
+rt
+t
+1
+t
+
+( )
+t
+t 1
+t 1
+t
+Y
+'Y
+C L
+Y
+U
+−
+−
+∆
+= δ + αβ
++
+∆
++
+Modeliza el CP
+Mecanismo de corrección del error
+1
+t−
+αε
+NOTA: β por la teoría o estimado
+Econometría III (4º GECO)
+Tema 2
+50
+3.
+Modelos de Corrección del Error
+3.3. Estimación de MCE
+
+Ejemplo tipos a corto y a largo plazo
+Supongamos que no nos fiamos de que                        y queremos estimar la 
+relación: realizamos la regresión de cointegración
+Estimamos corto y largo plazo de las relaciones entre las series
+La dinámica de corto plazo se obtiene de a(L), b(L), c(L), d(L)
+¿Cómo afecta el ajuste a largo plazo en la dinámica del corto?
+Errores de equilibrio en t-1 se ajustan en t
+Se producirá un ajuste al equilibrio que actúa como atractor de las series
+t
+0
+t 1
+t 1
+1
+t 1
+1t
+t
+0
+t 1
+t 1
+2
+t 1
+2t
+y
+a
+a(L) y
+b(L) x
+e
+u
+x
+b
+c(L) y
+d(L) x
+e
+u
+−
+−
+−
+−
+−
+−
+∆
+=
++
+∆
++
+∆
++ α
++
+∆
+=
++
+∆
++
+∆
++ α
++
+t
+t
+t
+t
+t
+ˆ
+y
+a
+bx
+ i12
+0.26 1.06i3
+=
++
++ ε ⇒
+=
++
+Econometría III (4º GECO)
+Tema 2
+51
+3.
+Modelos de Corrección del Error
+3.3. Estimación de MCE
+1
+2
+1
+1
+,
+β =
+β = −
+(
+)
+t
+t
+t
+ˆ
+e
+i12
+0.26 1.06i3
+=
+−
++
+
+Ejemplo tipos a corto y a largo plazo
+Estimamos corto y largo plazo de la serie
+¿Cómo afecta el ajuste a largo plazo en la dinámica del corto?
+Imaginemos que en t se produce un error de equilibrio positivo: i12t >> i3t
+i12 caerá el periodo siguiente (coeficiente -0.04)
+i3 subirá el periodo siguiente (coeficiente +0.12)
+Se producirá un ajuste al equilibrio que actúa como atractor de las series
+Especificación y diagnóstico como en los VAR
+(
+)
+t
+t 1
+t 1
+t 1
+t 1
+ˆi3
+0.01 0.05 i3
+0.44 12
+0.12 i12
+1.06i3
+0.26
+−
+−
+−
+−
+∆
+=
+−
+∆
++
+∆
++
+−
+−
+t
+t
+ˆi12
+0.26 1.06i3
+=
++
+(
+)
+t
+t 1
+t 1
+t 1
+t 1
+ˆi12
+0.01 0.59 i12
+0.24 3
+0.04 i12
+1.06i3
+0.26
+−
+−
+−
+−
+∆
+=
++
+∆
+−
+∆
+−
+−
+−
+Econometría III (4º GECO)
+Tema 2
+52
+3.
+Modelos de Corrección del Error
+3.3. Estimación de MCE
+
+Lo que hemos aprendido:
+Los modelos VAR
+Se usan principalmente para la predicción de variables económicas
+Se suelen estimar en su FR (por MCO en cada ecuación)
+No están tan directamente basados en la teoría económica como los MES
+Para estimar un VAR debemos tener en cuenta
+Análisis de la estacionariedad: usamos variables estacionarias
+Elección del número máximo de retardos
+Chequear que los residuos del modelo son blancos
+Podemos usar el VAR para analizar la causalidad en el sentido de Granger, que
+hace referencia a la capacidad de los retardos de una variable para predecir otra.
+Las Funciones de Respuesta al Impulso y la Descomposición de la Varianza del
+Error
+de
+Predicción
+son
+las
+herramientas
+fundamentales
+para
+analizar
+económicamente las relaciones entre las variables del VAR
+Cuando un conjunto de variables no estacionarias están cointegradas
+Existen relaciones lineales entre ellas que son estacionarias y podemos
+encontrar “atractores de sus dinámicas”
+Los modelos más adecuados para estas variables son los MCE que
+capturan tanto la dinámica del corto plazo como la del largo plazo
+Econometría III (4º GECO)
+Tema 2
+53
+
+
+=== Teoria_3.pdf (41 paginas) ===
+TEMA 3: MODELOS DE DATOS 
+FUSIONADOS Y MODELOS ESTÁTICOS 
+PARA DATOS DE PANEL
+M. Camacho 
+con la colaboración de A. Beyaert, M. González, A. Quesada
+Departamento de Métodos Cuantitativos para la Economía y la Empresa 
+
+Econometría III (4º GECO)
+Tema 3
+2
+Lo que estudiaremos en este tema:
+1.
+Introducción
+2.
+Datos fusionados
+2.1  Descripción de los datos
+2.2  El modelo de regresión 
+2.3  Estimación
+3.
+Datos de panel
+3.1  Descripción de los datos
+3.2  El modelo de regresión 
+3.3  El control de la heterogeneidad inobservable constante
+3.4 El modelo de efectos fijos
+3.5 El modelo de efectos aleatorios
+3.6. Contraste de Hausman de especificación del modelo
+Bibliografía básica:
+Wooldridge, J. 2007. Introducción a la econometría: un enfoque moderno. Ed. Thomson,cap.13 y 14
+
+3
+1. Introducción 
+Econometría III (4º GECO)
+Tema 3
+3
+
+Hasta ahora, análisis de regresión con:
+•
+Datos de corte transversal
+•
+Datos de serie temporal
+
+En este tema, análisis de regresión con datos que combinan 
+información de corte transversal y de serie temporal:
+•
+Datos fusionados de secciones cruzadas independientes
+•
+Datos de panel o longitudinales estáticos
+
+Tema 3
+4
+1. Introducción
+Econometría III (4º GECO)
+4
+Datos fusionados: estudio de efectos temporales 
+•    Modelo de Fertilidad de las mujeres 
+i
+0
+0
+i
+1
+i
+2
+i
+3
+i
+4
+i
+5
+i
+6
+i
+i
+i
+*
+y
+F74
+F76
+F78
+F78
+F80
+F82
+F84
+X
+,    
+i
+1,
+,1129        t=1972,1974,1976,1978,1980,1982,1984
+N
+1129 observaciones
+′
+= β + δ
++ δ
++ δ
++ δ
++ δ
++ δ
++ δ
++ α
++ ε
+=
+=
+
+y: número total de niños que ha tenido una mujer
+F74,…, F84: variables ficticias temporales
+X: vector de variables explicativas que incluye factores observados que 
+afectan a la fertilidad (educación, edad, raza, región, entorno)
+•  Permite contestar a: una vez descontado el efecto de otros factores observables, 
+¿han cambiado los índices de fertilidad en el tiempo?
+Nota: también se pueden incluir términos de interacción entre las ficticias anuales y 
+alguna de las explicativas
+
+Tema 3
+5
+1. Introducción
+Econometría III (4º GECO)
+5
+Datos de panel
+•    Modelo de crecimiento de Solow
+it
+0
+1
+1,it
+2
+2,it
+3
+3,it
+i
+it
+y
+x
+x
+x
+,    i
+1,
+,86   t
+60´s,70´s,80´s
+= β +β
++β
++β
++ η + ε
+=
+=
+
+yit :  tasa de crecimiento de la renta del país i en la década t
+x1: log. renta inicial per cápita  (β1: tasa de convergencia)
+x2: tasa de crecimiento de la población
+x3: porcentaje del PIB destinado a inversión
+ηi: características inobservables propias del país i, probablemente   
+correlacionadas con su renta inicial, su inversión y su población
+         
+
+Tema 3
+6
+1. Introducción
+Econometría III (4º GECO)
+6
+Ventajas respecto de sección cruzada:
+•
+Tamaño muestral más elevado (estimación más precisa)
+•
+Permite estudiar efectos temporales: cambios en el tiempo del término constante 
+o de los efectos de alguna de las explicativas 
+Disminución de la tasa de fertilidad en España
+Mejora la nota de los universitarios en cursos más elevados
+•
+Permite realizar estudio de acontecimientos: efectos causales de un determinado 
+suceso o medida de política económica
+Carnet por puntos => reducción de accidentes
+Subida salario mínimo => aumento del desempleo
+Programas de formación de trabajadores => mejora de la productividad
+Apertura de discoteca => precio de vivienda (medición de efectos externos)
+Estudios universitarios => mejoran el salario
+
+Tema 3
+7
+2. Datos fusionados 
+2.1 Descripción de los datos
+Econometría III (4º GECO)
+7
+•
+Datos fusionados: se obtienen realizando muestreo aleatorio de una 
+población en diferentes momentos del tiempo
+•
+En t se dispone de Nt observaciones de una población, donde 
+t=1,2,…,T y T≥ 2
+•
+Provienen de observaciones muestrales independientes 
+1
+1
+1
+1
+2
+*
+i
+*
+1
+2
+T
+*
+1
+2
+N
+N
+1
+N
+2
+N
+N
+1
+2
+t 1
+t 2
+y      i=1,
+,N   
+el número total de observaciones es N
+N
+N
+N
+Si T=2, el vector de observaciones es:
+y
+y
+y
+y
+y
+y
+N
+N
+N
++
++
++
+=
+=
+=
++
++
++
+
+
+
+⇒
+=
++
+
+
+
+
+
+
+
+
+
+
+
+Tema 3
+8
+2. Datos fusionados 
+2.2 El modelo de regresión
+Econometría III (4º GECO)
+8
+•
+                  son (T-1) ficticias aditivas temporales (podrían haber multiplicativas)
+•
+En notación matricial
+•
+En notación semimatricial
+{
+}
+i
+0
+0
+i
+T 2
+i
+1
+1i
+k
+ki
+i
+y
+F2
+FT
+x
+x
+,   i
+1,
+,N    i
+t
+1,...,t
+T  
+−
+= β + δ
++
+δ
++β
++
++β
++ ε
+=
+∈
+=
+=
+
+
+
+i
+i
+F2 ,
+FT
+
+Y
+X
+=
+β + ε
+i
+i
+i
+y
+X
+ 
+′
+=
+β + ε
+(
+)
+i
+i
+1
+i
+i
+                                               
+i=1,
+,N  donde  X = 1
+F2
+FT x
+x
+′
+∀
+
+
+
+1
+1
+1
+1
+1
+*
+*
+*
+*
+*
+T
+T
+T
+T
+T
+*
+*
+*
+*
+*
+1
+1
+1
+11
+k1
+N
+N
+N
+1N
+kN
+N
+N
+1
+N
+N
+1
+N
+N
+1
+1(N
+N
+1)
+k(N
+N
+1)
+N
+N
+N
+1N
+kN
+Y
+X
+y
+1
+F2
+FT
+x
+x
+y
+1
+F2
+FT
+x
+x
+y
+1
+F2
+FT
+x
+x
+y
+1
+F2
+FT
+x
+x
+−
++
+−
++
+−
++
+−
++
+−
++
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+=
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1
+*
+T
+*
+1
+0
+0
+N
+T 2
+N
+N
+1
+1
+k
+N
+−
+−
++
+β
+ε
+ε
+
+
+β
+
+
+
+
+
+
+δ
+
+
+
+
+
+
+ε
+
+
+
+
+
+
+δ
+⋅
++ 
+
+
+
+
+
+
+
+ε
+β
+
+
+
+
+
+
+
+
+
+
+
+
+β
+ε
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Tema 3
+9
+2. Datos fusionados 
+2.3 Estimación 
+Econometría III (4º GECO)
+9
+El modelo de datos fusionados
+•
+Si el modelo cumple los supuestos de Gauss-Markov:
+ MCO es ELIO
+ Son válidos los procedimientos de inferencia habituales
+•
+Si hay heteroscedasticidad la tratamos como en sección cruzada
+ 
+*
+i
+i
+i
+1
+1
+1
+2
+y
+X
+        i
+1,
+,N , N
+1,
+,N
+N ,
+,N    
+′
+=
+β + ε
+=
++
++
+
+
+
+
+Tema 3
+10
+2. Datos fusionados 
+2.4 Utilidad de estos modelos
+Econometría III (4º GECO)
+10
+Normalmente el modelo 
+incluye ficticias temporales para:
+ 
+• Ficticias aditivas: La fertilidad empeora con el tiempo
+• Ficticias multiplicativas: fertilidad empeora a través de una explicativa como 
+puede ser la renta
+• Estudios de acontecimiento: análisis de causalidad (ejemplo siguiente)
+ 
+i
+i
+i
+y
+X′
+=
+β + ε
+(
+)
+i
+i
+1
+i
+i
+                                               
+i=1,
+,N  donde  X = 1
+F2
+FT x
+x
+′
+∀
+
+
+
+
+Tema 3
+11
+2. Datos fusionados 
+2.4 Utilidad de estos modelos
+      Estudio de acontecimiento
+Econometría III (4º GECO)
+11
+Efecto causal
+1.
+Si toda las observaciones fueran iguales y reaccionaran igual
+•
+T=1 cuando ocurre el acontecimiento y T=0 cuando no ocurre
+•
+Problema: las observaciones nunca son iguales
+2.
+Solución: muestreos en experimentos
+•
+Experimentos aleatorios: aleatoriamente se asigna 
+o Grupo Tratamiento (T=1) 
+o Grupo de Control (T=0)
+•
+Estimador en diferencias: Efecto causal medio
+•
+Problema: Son costosos y no siempre viables
+0
+1
+1
+y
+T
+EC
+(y / T
+1)
+(y / T
+0)
+= β +β
+⇒
+=
+=
+−
+=
+= β
+i
+0
+1
+i
+i
+y
+T
+= β +β
++ ε
+T
+C
+1
+ECM
+E(y / T
+1)
+E(y / T
+0)
+y
+y
+=
+=
+−
+=
+=
+−
+= β
+0
+C
+y
+β
+=
+T
+0
+1
+y = β +β
+0
+( / control)
+C
+y
+E y
+β
+=
+=
+0
+1
+( / tratamiento)
+Ty
+E y
+β
+β
+=
+=
++
+
+Tema 3
+12
+2. Datos fusionados 
+2.4 Utilidad de estos modelos
+       Estudio de acontecimiento
+Econometría III (4º GECO)
+12
+3.
+Solución: experimento natural o cuasi experimento
+•
+Acontecimiento (incinerador) genera GT y GC como si hubiese sido un experimento aleatorio
+•
+Problema: parte de  
+ya estaba antes del acontecimiento (no es aleatorio)
+•
+Solución: estimador de la diferencia en las diferencias con datos fusionados
+•
+Ejemplo: Efecto causal de un incinerador sobre el precio de la vivienda
+i
+0
+0
+i
+1
+i
+1
+i
+i
+i
+i
+1978
+1981
+y
+F81
+cerca
+F81 cerca
+X
+,    
+i=1,...,321    t
+1978,1981     N
+=179    N
+=142    
+′
+= β + δ
++β
++ δ
+⋅
++ α
++ ε
+=
+y: precio de la vivienda en términos reales
+F81: variable ficticia temporal que toma valor 1 si t=1981
+T = cerca: ficticia que toma valor uno si la casa está cerca del incinerador
+X: variables explicativas de las características observables de las viviendas  (años, superficie, nº 
+habitaciones….)
+•       es el coeficiente que interesa. Indica el efecto causal del incinerador en la caída del precio 
+de la vivienda. Su valor estimado se obtendrá usando el estimador de la diferencia en las 
+diferencias
+1δ
+
+Tema 3
+13
+2. Datos fusionados 
+2.4 Utilidad de estos modelos
+      Estudio de acontecimiento
+Econometría III (4º GECO)
+13
+Datos fusionados: estudio de acontecimientos
+•        y el estimador de la diferencia en las diferencias
+ Sin perder generalidad, supongamos Xi=0
+ Llamemos
+1δ
+i
+i
+i
+i
+i
+i
+cerca
+F
+cerca
+F
+y
+ε
++
+⋅
+δ
++
+β
++
+δ
++
+β
+=
+81
+81
+1
+1
+0
+0
+0
+T
+y
+1
+T
+y
+1
+C
+y
+0
+78
+0
+( /
+)
+C
+y
+E y control
+=
+= β
+0
+78
+0
+1
+( /
+)
+T
+y
+E y tratamiento
+=
+=
++
+β
+β
+1
+81
+0
+0
+( /
+)
+C
+y
+E y control
+=
+=
++
+β
+δ
+1
+81
+0
+0
+1
+1
+( /
+)
+T
+y
+E y tratamiento
+=
+=
++
++
++
+β
+δ
+β
+δ
+0
+C
+y
+1978
+1981
+
+Tema 3
+14
+2. Datos fusionados 
+2.4 Utilidad de estos modelos
+Econometría III (4º GECO)
+14
+•
+Tres formas de encontrar δ1
+tratamiento
+78
+81
+control
+0
+0
+1
+T
+y
+=
++
+β
+β
+1
+0
+0
+C
+y
+=
++
+β
+δ
+1
+0
+0
+1
+1
+T
+y
+=
++
++
++
+β
+δ
+β
+δ
+1
+0
+0
+C
+C
+y
+y
+−
+= δ
+1
+0
+0
+1
+T
+T
+y
+y
+−
+=
++
+δ
+δ
+1
+0
+1
+0
+1
+(
+)
+(
+)
+T
+T
+C
+C
+y
+y
+y
+y
+−
+−
+−
+= δ
+0
+0
+1
+T
+C
+y
+y
+−
+= β
+1
+1
+1
+1
+T
+C
+y
+y
+−
+=
++
+β
+δ
+(
+) (
+)
+1
+1
+0
+0
+1
+T
+C
+T
+C
+y
+y
+y
+y
+−
+−
+−
+= δ
+1
+0
+1
+0
+0
+0
+1
+1
+0
+1
+0
+0
+0
+1
+[
+(
+)]
+(
+)
+[
+(
+)]
+T
+T
+C
+C
+y
+y
+y
+y
+−
++
+−
+=
++
++
++
+−
++
++
++
+−
+=
+β
+δ
+β
+δ
+β
+β
+β
+δ
+β
+δ
+contrafactual
+1
+2
+3
+cf
+y
+=
+0
+0
+C
+y
+= β
+i
+i
+i
+i
+i
+i
+cerca
+F
+cerca
+F
+y
+ε
++
+⋅
+δ
++
+β
++
+δ
++
+β
+=
+81
+81
+1
+1
+0
+0
+
+Tema 3
+15
+2. Datos fusionados 
+2.4 Utilidad de estos modelos
+Econometría III (4º GECO)
+15
+•
+Gráficamente
+0
+t =
+1
+t =
+0
+0
+C
+y
+= β
+0
+0
+1
+T
+y
+=
++
+β
+β
+1
+0
+0
+1
+1
+T
+y
+=
++
++
++
+β
+δ
+β
+δ
+1
+0
+0
+C
+y
+=
++
+β
+δ
+1
+0
+0
+C
+C
+y
+y
+−
+= δ
+1
+0
+0
+1
+T
+T
+y
+y
+−
+=
++
+δ
+δ
+1
+0
+0
+C
+C
+y
+y
+−
+= δ
+0
+1
+0
+(
+)
+cf
+T
+C
+C
+y
+y
+y
+y
+=
++
+−
+y
+t
+
+Tema 3
+16
+2. Datos fusionados 
+2.4 Utilidad de estos modelos
+Econometría III (4º GECO)
+16
+•
+El supuesto de tendencias paralelas
+–
+En los cálculos anteriores hemos supuesto 
+•
+La diferencia entre T y C, medida por      , se mantiene en el tiempo ⇒ aceptable
+•
+El incremento temporal, medido por      , afecta igual a T y C ⇒ dudoso
+–
+Genera inconsistencia 
+•
+Supongamos 
+– Incremento temporal de C es 
+– Incremento temporal de T es   
+•
+En este caso el dif-dif queda
+–
+Econométricamente ocurre cuando 
+1
+β
+0 + ∆
+δ
+1
+0
+1
+0
+0
+1
+0
+1
+(
+)
+(
+)
+(
+)
+T
+T
+C
+C
+y
+y
+y
+y
+−
+−
+−
+=
++ ∆+
+−
+=
++ ∆
+δ
+δ
+δ
+δ
+cov( ,
+81
+)
+0
+i
+i
+i
+F
+cerca
+≠
+ε
+0
+δ
+i
+i
+i
+i
+i
+i
+cerca
+F
+cerca
+F
+y
+ε
++
+⋅
+δ
++
+β
++
+δ
++
+β
+=
+81
+81
+1
+1
+0
+0
+0
+δ
+
+Tema 3
+17
+3. Datos de panel 
+3.1 Descripción de los datos
+Econometría III (4º GECO)
+17
+•
+Datos de panel (o longitudinales): observaciones repetidas en el 
+tiempo para una muestra de sección cruzada (individuos, familias, 
+empresas, regiones, países, etc.)
+•
+Son las mismas unidades de sección cruzada las que son 
+observadas a través del tiempo
+•
+Las observaciones no se distribuyen de forma independiente a lo largo 
+del tiempo
+it
+11
+21
+1N
+12
+22
+2N
+t 1
+t 2
+y ; i=1,
+,N   t=1,
+T
+el número total de observaciones  es NT
+Si T=2, el vector de observaciones es:
+y
+y
+y
+y
+y
+y
+NT
+2N
+=
+=
+⇒
+
+
+⇒
+=
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Tema 3
+18
+3. Datos de panel 
+3.1 Descripción de los datos
+Econometría III (4º GECO)
+18
+t\i 
+1 
+2 
+3 
+... 
+N 
+1 
+y11 
+y21 
+y31 
+... 
+yN1 
+2 
+y12 
+y22 
+y32 
+... 
+yN2 
+∶ 
+∶ 
+∶ 
+∶ 
+ 
+∶ 
+T 
+y1T 
+y2T 
+y3T 
+... 
+yNT 
+ 
+•   Resulta útil visualizar los datos de la siguiente manera:
+Serie temporal 
+individuo 2
+Sección 
+cruzada año 2
+
+Tema 3
+19
+3. Datos de panel 
+3.1 Descripción de los datos
+Econometría III (4º GECO)
+19
+Dimensiones del panel de datos
+•    N grande y T pequeño: micropaneles o paneles cortos 
+“Datos micro” observados en distintos momentos del tiempo (ej. datos de 
+encuestas familiares o del balance de las empresas):
+PSID (Panel Study of Income Dynamics)
+ECHP (European Community Household Income and Wealth)
+EPA (Encuesta de Población Activa)
+ESEE (Encuesta sobre Estrategias Empresariales)
+ECPF (Encuesta Continua de Presupuestos Familiares)
+•     N pequeño y T grande: paneles largos 
+“Datos macro” observados a lo largo del tiempo (ej. bases de datos 
+internacionales):
+Estadísticas de la OCDE, Eurostat, FMI, etc.
+Penn World Table
+
+Tema 3
+20
+3. Datos de panel 
+3.1 Descripción de los datos
+Econometría III (4º GECO)
+20
+
+Los paneles de datos pueden ser:
+•
+Completos o equilibrados: 
+      No falta ninguna observación temporal para ninguna unidad de 
+sección cruzada
+•
+Incompletos: 
+      Falta alguna observación temporal para alguna unidad
+iT
+T  i
+=
+∀
+iT
+T  para algún i
+≠
+
+En este tema consideramos: 
+•
+Modelos lineales y sin endógena retardada
+•
+Paneles completos 
+•
+“Datos micro”: N grande y T pequeño
+              Para las aproximaciones asintóticas suponemos T fijo y N→∞
+
+Tema 3
+21
+3. Datos de panel 
+3.2 El modelo de regresión
+Econometría III (4º GECO)
+21
+•
+Hay una única ecuación para las N unidades de sección cruzada
+•
+                : son (T-1) variables ficticias aditivas temporales (también 
+podría haber multiplicativas) 
+•
+     es el “efecto individual” o “efecto inobservable” o “efecto 
+permanente”: refleja diferencias inobservables constantes en el 
+tiempo entre las unidades de sección cruzada
+ 
+it
+0
+0
+t
+T 2
+t
+1
+1,it
+k
+k,it
+i
+it
+y
+F2
+FT
+x
+x
+,  
+ i
+1,
+,N    t
+1,
+,T    
+−
+= β + δ
++
+δ
++β
++
++β
++ η + ε
+=
+=
+
+
+
+
+t
+t
+F2 ,
+FT
+
+iη
+
+Tema 3
+22
+3. Datos de panel 
+3.2 El modelo de regresión
+Econometría III (4º GECO)
+22
+•
+Normalmente los datos se organizan mediante unidades de sección 
+cruzada
+ 
+
+1
+1
+1,11
+2,11
+k,11
+0
+11
+0
+T
+T
+1,1T
+2,1T
+k,1T
+1T
+T 2
+1
+1
+1,N1
+2,N1
+k,N1
+N1
+T
+T
+1,NT
+2,NT
+k,NT
+NT
+Y
+X
+1
+F2
+FT x
+x
+x
+y
+1
+F2
+FT x
+x
+x
+y
+1
+F2
+FT x
+x
+x
+y
+1
+F2
+FT x
+x
+x
+y
+−
+β
+
+
+
+
+
+
+
+
+δ
+
+
+
+
+
+
+
+
+
+
+
+
+δ
+=
+⋅
+
+
+
+
+
+
+
+
+β
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1
+11
+1
+1T
+N
+N1
+1
+N
+NT
+k
+it
+it
+i
+it
+notación   matricial: Y
+X
+notación   semimatricial:   y
+X
+        i=1,
+,N   t=
+η
+ε
+β
+η
+ε
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+η 
+ε
+
+
+
+
+
+
+
++
++
+
+
+
+
+
+
+
+
+
+
+
+
+η
+ε
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+η
+ε
+β
+
+
+
+
+
+
+⇒
+=
+β + η+ ε
+′
+⇒
+=
+β + η + ε
+
+
+
+
+
+
+
+
+
+(
+)
+it
+t
+t
+1,it
+k,it
+                                               
+1,
+,T
+                                                donde  X = 1
+F2
+FT x
+x
+′
+
+
+
+
+Tema 3
+23
+3. Datos de panel 
+3.2 El modelo de regresión
+Econometría III (4º GECO)
+23
+Características adicionales de datos de panel:
+• Permite modelizar respuestas dinámicas en las poblaciones de 
+sección cruzada (introduciendo variables retardadas).
+• Permite controlar las diferencias inobservables entre las 
+unidades de sección cruzada.
+
+Tema 3
+24
+3. Datos de panel 
+3.3 El control de la heterogeneidad inobservable constante 
+Econometría III (4º GECO)
+24
+• Tenemos el siguiente modelo con efectos individuales
+• Objetivo: estimar β para cuantificar las relaciones causales entre las 
+variables
+• Problema: ηi no se observa
+     omisión de variables relevantes
+it
+it
+i
+it
+y
+X
+        i=1,
+,N   t=1,
+,T
+′
+=
+β + η + ε
+
+
+
+Tema 3
+25
+3. Datos de panel 
+3.3 El control de la heterogeneidad inobservable constante 
+Econometría III (4º GECO)
+25
+• Si Corr(Xit ,ηi)=0 la estimación MCO es consistente pero no óptima
+ 
+Con datos de panel la estimación más adecuada es el estimador de 
+efectos aleatorios          Modelo de efectos aleatorios
+• Si Corr(Xit ,ηi) ≠0 la estimación MCO no es consistente
+Con datos de panel la estimación más adecuada es el estimador de 
+efectos fijos          Modelo de efectos fijos
+it
+it
+i
+it
+y
+X
+        i=1,
+,N   t=1,
+,T
+′
+=
+β + η + ε
+
+
+
+Tema 3
+26
+3. Datos de panel 
+3.3 El control de la heterogeneidad inobservable constante 
+Econometría III (4º GECO)
+26
+Datos de panel: el control de la heterogeneidad inobservable constante 
+•    Modelo de crecimiento de Solow
+it
+0
+1
+1,it
+2
+2,it
+3
+3,it
+i
+it
+y
+x
+x
+x
+,    i
+1,
+,86   t
+60´s,70´s,80´s
+= β +β
++β
++β
++ η + ε
+=
+=
+
+yit :  tasa de crecimiento de la renta del país i en la década t
+x1: log. renta inicial per cápita  (β1: tasa de convergencia)
+x2: tasa de crecimiento de la población
+x3: porcentaje del PIB destinado a inversión
+ηi: 
+características 
+inobservables 
+propias 
+del 
+país 
+i, 
+probablemente   
+correlacionadas con su renta inicial, su inversión y su población
+             La estimación MCO (y sobre  x1, x2 y x3) será sesgada e inconsistente 
+•    Incluso cuando no hay datos sobre ηi, los datos de panel permiten la estimación 
+consistente de β1, β2 y β3
+
+Tema 3
+27
+3. Datos de panel
+3.4 El modelo de efectos fijos 
+Econometría III (4º GECO)
+27
+ 
+it
+it
+it
+i
+it
+u
+y
+X
+        i=1,
+,N   t=1,
+,T
+′
+=
+β + η + ε
+
+
+
+•    Supuestos, además de Corr(Xit ,ηi) ≠0 
+S.1. Variables explicativas estrictamente exógenas: en todos los 
+períodos, el término de error     está incorrelacionado con los 
+valores presentes pasados y futuros de las explicativas
+           Excluye modelos con variables endógenas retardadas
+S.2. Perturbaciones clásicas: Los errores son condicionalmente 
+homocedásticos y no serialmente correlacionados 
+it
+E(
+X)
+0,   t
+ε
+=
+∀
+2
+i
+T
+i
+i1
+iT
+V(
+X)
+I     con 
+(
+,
+,
+)′
+ε
+= σ
+ε = ε
+ε
+
+itε
+
+Tema 3
+28
+3. Datos de panel
+3.4 El modelo de efectos fijos 
+Econometría III (4º GECO)
+28
+El estimador de efectos fijos 
+• Resulta de restar a cada observación su media individual
+• Se obtiene:
+         - 1º Calculando la ecuación para la media de cada grupo
+         - 2º Restando a la ecuación original la ecuación de la media
+• El modelo en desviaciones de la media:
+T
+it
+t 1
+i
+i
+i
+i
+i
+y
+X
+,   i
+1,
+,N     con  
+T
+= ε
+′
+=
+β + η + ε
+=
+ε = ∑
+
+it
+i
+it
+i
+it
+i
+y
+y
+(X
+X )
+,    i
+1,
+,N      t
+1,
+,T
+′
+−
+=
+−
+β + ε −ε
+=
+=
+
+
+it
+it
+it
+y
+X
+,    i
+1,
+,N      t
+1,
+,T
+′
+=
+β + ε
+=
+=
+
+
+
+
+
+(
+)
+it
+it
+i
+y
+y
+y
+=
+−
+
+(
+)
+it
+it
+i
+X
+X
+X
+=
+−
+
+(
+)
+it
+it
+i
+ε = ε −ε
+
+it
+it
+it
+i
+it
+u
+y
+X′
+=
+β + η + ε
+
+
+Tema 3
+29
+3. Datos de panel
+3.4  El modelo de efectos fijos
+Econometría III (4º GECO)
+29
+El estimador del modelo en desviaciones de la media
+• El estimador MCO del modelo en desviaciones de la media es el 
+estimador de efectos fijos o estimador intra-grupos
+• Se denomina también estimador intra-grupos porque sólo utiliza la 
+variación temporal dentro de cada sección cruzada
+• Bajo S.1 y S.2,       es insesgado y óptimo. También es consistente 
+cuando N→∞.
+1
+EF
+ˆ
+(X X) X Y
+−
+′
+′
+β
+= 
+
+EF
+ˆβ
+
+Tema 3
+30
+3. Datos de panel
+3.4 El modelo de efectos fijos
+Econometría III (4º GECO)
+30
+• Podemos obtener el efecto inobservable:                                           , 
+pero esta estimación no es consistente cuando N→∞, para T fijo.
+• Si alguno de los regresores es constante en el tiempo, no se podrá 
+distinguir su efecto del de  
+iη
+i
+i
+i
+EF
+ˆ
+ˆ
+y
+X
+,    i
+1,...,N
+′
+η =
+−
+β
+=
+
+Tema 3
+31
+3. Datos de panel
+3.4  El modelo de efectos fijos 
+Econometría III (4º GECO)
+31
+Limitación del modelo de efectos fijos 
+• El modelo de efectos fijos deja parte de la regresión sin modelizar (la 
+que sólo tiene variación de sección cruzada). Si esta parte explica 
+mucha variabilidad de la variable dependiente, el modelo estimado 
+tendrá muy poca capacidad predictiva
+• La posibilidad de controlar la heterogeneidad inobservable solo es 
+una ventaja cuando el objetivo del análisis econométrico es la 
+medición de relaciones estructurales, no la predicción.
+• El coste del modelo de efectos fijos es que excluimos los efectos de 
+cualquier variable observada constante en el tiempo.
+
+Tema 3
+32
+3. Datos de panel
+3.5  El modelo de efectos aleatorios 
+Econometría III (4º GECO)
+32
+• En el modelo de efectos aleatorios ηi es una variable aleatoria 
+inobservable no correlacionada con las variables explicativas de 
+modelo, Corr(Xit, ηi)=0, t= 1,2,…,T :
+• Ahora el error del modelo es un término de error compuesto     
+no correlacionado con las variables explicativas del modelo
+it
+it
+i
+it
+y
+X
+,       i
+1,
+,N   t
+1,
+,T
+′
+=
+β + η + ε
+=
+=
+
+
+it
+it
+it
+i
+it
+u
+it
+it
+it
+y
+X
+,       i
+1,
+,N   t
+1,
+,T
+y
+X
+u ,    i
+1,
+,N   t
+1,
+,T
+′
+=
+β + η + ε
+=
+=
+′
+=
+β +
+=
+=
+
+
+
+
+
+
+Tema 3
+33
+3. Datos de panel
+3.5  El modelo de efectos aleatorios 
+Econometría III (4º GECO)
+33
+• Bajo los supuestos:
+• El modelo de efectos aleatorios presenta:
+  Exogeneidad estricta:
+  Autocorrelación:
+         El estimador MCO es insesgado y consistente, pero no óptimo
+it
+it
+it
+it
+i
+it
+it
+i
+y
+X
+u ,    i
+1,
+,N   t
+1,
+,T
+u
+,         Corr(X ,
+)
+0
+′
+=
+β +
+=
+=
+= η + ε
+η
+=
+
+
+2
+i
+i
+2
+it
+i
+i
+it
+S.1.  
+X ~ iid(0,
+)                
+S.2 .   
+X ~ iid(0,
+)               
+S.3 .  
+ y 
+ son independientes
+η
+′
+
+η
+σ
+
+′
+ε
+σ
+
+
+′ η
+ε
+
+(
+)
+it
+E u X
+0,  t
+=
+∀
+(
+)
+2
+2
+it
+is
+2
+,  t
+s
+E u u
+,          t
+s
+η
+η
+σ + σ
+=
+
+= σ
+≠
+
+
+Tema 3
+34
+3. Datos de panel
+3.5  El modelo de efectos aleatorios 
+Econometría III (4º GECO)
+34
+La autocorrelación en el modelo de efectos aleatorios
+• La matriz de covarianzas de los T valores correspondientes al 
+individuo i-ésimo es:
+     
+    
+     La correlación entre dos observaciones provenientes de un mismo 
+individuo es constante y no desaparece en el tiempo
+(
+)
+(
+)
+(
+)
+(
+)
+2
+2
+2
+2
+i1
+2
+2
+2
+i2
+i
+T T
+i
+i
+2
+2
+2
+2
+2
+iT
+u
+u
+V(u )
+E u u
+V
+v
+u
+η
+η
+η
+η
+η
+×
+η
+η
+η
+η
+
+
+σ + σ
+σ
+σ
+
+
+
+
+
+
+
+
+σ
+σ + σ
+
+
+′
+=
+=
+=
+=
+
+
+
+
+σ
+
+
+
+
+
+
+
+
+σ
+σ
+σ + σ
+
+
+
+
+
+
+
+
+
+
+
+
+
+Tema 3
+35
+3. Datos de panel
+3.5  El modelo de efectos aleatorios
+Econometría III (4º GECO)
+35
+• La matriz de covarianzas para toda la muestra es diagonal por bloques:
+     
+• La matriz de covarianzas no es una matriz diagonal 
+                para buscar optimalidad hay que estimar por MCG
+(
+)
+T T
+T T
+TN TN
+T T
+v
+0
+0
+0
+v
+0
+V(u)
+E uu
+V
+0
+0
+v
+×
+×
+×
+×
+
+
+
+
+
+
+′
+=
+=
+=
+
+
+
+
+
+
+
+
+
+
+
+
+Tema 3
+36
+3. Datos de panel
+3.5  El modelo de efectos aleatorios
+Econometría III (4º GECO)
+36
+• El estimador óptimo del modelo de efectos aleatorios sería el 
+estimador MCG:
+   
+    pero V depende de                  que son desconocidos
+           hay que hallar el estimador MCG factible 
+• MCG factible es el estimador de efectos aleatorios 
+(
+)
+1
+1
+1
+MCG
+ˆ
+X V X
+X V Y
+−
+−
+−
+′
+′
+β
+=
+2
+2
+ y 
+η
+σ
+σ
+(
+)
+1
+1
+1
+EA
+ˆ
+ˆ
+ˆ
+X V X
+X V Y
+−
+−
+−
+′
+′
+β
+=
+
+Tema 3
+37
+3. Datos de panel
+3.5  El modelo de efectos aleatorios
+Econometría III (4º GECO)
+37
+• Para calcular      necesitamos estimaciones consistentes de               :
+    donde        es el “estimador entre-grupos” resultante de la estimación 
+MCO de:
+2
+2
+ y 
+η
+σ
+σ
+(
+)
+(
+)
+2
+N
+T
+2
+it
+it
+EF
+i 1 t 1
+2
+2
+N
+2
+i
+i
+EG
+i 1
+1
+ˆ
+ˆ
+y
+X
+N(T
+1)
+k
+ˆ
+1
+ˆ
+ˆ
+y
+X
+N
+T
+=
+=
+η
+=
+′
+σ =
+−
+β
+−
+−
+σ
+σ =
+−
+β
+−
+∑∑
+∑
+
+
+EG
+ˆβ
+i
+i
+i
+i
+y
+X
+,   i
+1,
+,N     
+′
+=
+β + η + ε
+= 
+1
+EG
+ˆ
+(X X) X Y
+−
+′
+′
+β
+=
+ˆV
+
+Tema 3
+38
+3. Datos de panel
+3.5  El modelo de efectos aleatorios
+Econometría III (4º GECO)
+38
+Conclusión 
+• Bajo el supuesto de efectos individuales incorrelacionados con las 
+explicativas, el estimador de efectos aleatorios es consistente y 
+asintóticamente óptimo.
+• Ojo!! 
+sería 
+inconsistente 
+si 
+los 
+efectos 
+individuales 
+están 
+correlacionados con las explicativas.
+
+Tema 3
+39
+Econometría III (4º GECO)
+39
+Recordemos:
+•           es:
+ consistente y asintóticamente óptimo si 
+ inconsistente si 
+•             es siempre consistente
+         Si                             ambas estimaciones serían muy similares
+•  Necesitamos elegir entre         y  
+EA
+ˆβ
+it
+i
+Corr(X ,
+)
+0
+η
+=
+it
+i
+Corr(X ,
+)
+0
+η
+≠
+EF
+ˆβ
+it
+i
+Corr(X ,
+)
+0
+η
+=
+EA
+ˆβ
+EF
+ˆβ
+3. Datos de panel
+3.6  El contraste de Hausman
+
+Tema 3
+40
+Econometría III (4º GECO)
+40
+• El contraste de Hausman (1978) contrasta la correlación entre los 
+efectos individuales y las explicativas comparando           y 
+• El estadístico para el contraste es:
+       donde k es el número de parámetros del modelo 
+(
+) (
+) (
+)
+0
+a
+1
+2
+EA
+EF
+EF
+EA
+EA
+EF
+k
+H
+ˆ
+ˆ
+ˆ
+ˆ
+ˆ
+ˆ
+ˆ
+ˆ
+H
+V(
+)
+V(
+)
+~
+−
+′
+= β
+−β
+β
+−
+β
+β
+−β
+χ
+EF
+ˆβ
+EA
+ˆβ
+0
+i
+i
+EF
+EA
+A
+i
+i
+ˆ
+ˆ
+H :
+ y X  no correlacionados (
+)
+H :
+ y X  correlacionados
+η
+β
+≈β
+η
+3. Datos de panel
+3.6  El contraste de Hausman
+
+Tema 3
+41
+Lo que hemos aprendido:
+Econometría III (4º GECO)
+41
+ Qué son datos fusionados y qué son datos de panel
+ Estimación con datos fusionados: bajo los supuestos clásicos MCO es ELIO
+ Estimación con datos de panel:
+ Si el efecto individual está correlacionado con las explicativas:
+MCO sesgado e inconsistente
+El estimador de efectos fijos es insesgado y óptimo
+ Si el efecto individual no está correlacionado con las explicativas:
+MCO insesgado pero no óptimo
+El estimador de efectos aleatorios es insesgado y asintóticamente 
+óptimo
+ Contraste de Hausman para elegir entre el estimador de efectos fijos y el 
+estimador de efectos aleatorios
+
+
