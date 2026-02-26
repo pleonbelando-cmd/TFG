@@ -427,7 +427,7 @@ def cap3(doc):
     P(doc, "Al cotizar globalmente en dólares, el precio del oro para un inversor en otra "
            "moneda sube automáticamente cuando el dólar se deprecia. La correlación histórica "
            "entre el DXY y el oro es fuertemente negativa (próxima a -0,6 en gran parte del "
-           "período). Sin embargo, esta relación mostró una ruptura notable en 2022-2024, "
+           "período; O'Connor et al., 2015). Sin embargo, esta relación mostró una ruptura notable en 2022-2024, "
            "cuando dólar y oro subieron en paralelo —el dólar impulsado por el ciclo de "
            "tipos y el oro por la demanda de bancos centrales emergentes—. Este episodio es "
            "el que los tests de estabilidad del Capítulo 5 formalizan.")
@@ -552,9 +552,10 @@ def cap5(doc):
            "entender el comportamiento del oro.")
 
     H2(doc, "5.2 Tests de raíz unitaria")
-    P(doc, "Se aplican sistemáticamente el test **ADF** (H₀: raíz unitaria) y el "
-           "**KPSS** (H₀: estacionariedad). Se clasifica como I(1) si ADF no rechaza "
-           "H₀ y KPSS rechaza H₀.")
+    P(doc, "Se aplican sistemáticamente el test **ADF** (Dickey y Fuller, 1979; "
+           "H₀: raíz unitaria) y el **KPSS** (Kwiatkowski et al., 1992; H₀: "
+           "estacionariedad). Se clasifica como I(1) si ADF no rechaza H₀ y KPSS "
+           "rechaza H₀.")
     TABLE(doc,
           ["Variable", "ADF p-valor", "KPSS estadíst.", "Decisión", "ADF en Δ (p-valor)"],
           [
@@ -572,8 +573,9 @@ def cap5(doc):
            "breakeven y el VIX son I(0) y se tratan como variables exógenas.")
 
     H2(doc, "5.3 Test de cointegración de Johansen")
-    P(doc, "Con las cuatro variables I(1), se aplica el test de Johansen (1991) al "
-           "sistema {ln(Oro), ln(DXY), TIPS, ln(S&P 500)}.")
+    P(doc, "Con las cuatro variables I(1), se aplica el test de Johansen (1991) y "
+           "Johansen y Juselius (1990) al sistema {ln(Oro), ln(DXY), TIPS, "
+           "ln(S&P 500)}.")
     TABLE(doc,
           ["Hipótesis nula", "Estadíst. traza", "V.C. 5%", "Estadíst. máx. autovalor", "V.C. 5%", "Decisión"],
           [
@@ -619,9 +621,13 @@ def cap5(doc):
            "al S&P 500, 41 % a la propia inercia del oro.")
 
     H2(doc, "5.6 Análisis de volatilidad: GJR-GARCH(1,1)")
-    P(doc, "El test ARCH-LM rechaza ausencia de heterocedasticidad condicional (p < 0,05), "
-           "justificando un modelo **GJR-GARCH(1,1)** que captura la asimetría en la "
-           "respuesta de la volatilidad.")
+    P(doc, "El test ARCH-LM (Engle, 1982) rechaza ausencia de heterocedasticidad "
+           "condicional (p < 0,05), justificando un modelo **GJR-GARCH(1,1)** "
+           "(Glosten, Jagannathan y Runkle, 1993) que captura la asimetría en la "
+           "respuesta de la volatilidad. La especificación GJR extiende el GARCH "
+           "estándar de Bollerslev (1986) añadiendo un término de efecto asimétrico "
+           "que permite que los shocks negativos (malas noticias) generen mayor "
+           "volatilidad que los positivos de igual magnitud.")
     TABLE(doc,
           ["Parámetro", "Estimación", "Error est.", "p-valor", "Interpretación"],
           [
@@ -692,7 +698,8 @@ def cap6(doc):
     )
 
     H2(doc, "6.4 Test de Hausman")
-    P(doc, "El contraste de Hausman (1978) proporciona la prueba formal entre EF y EA. "
+    P(doc, "El contraste de Hausman (1978) proporciona la prueba formal entre EF y EA "
+           "siguiendo la metodología de datos de panel de Wooldridge (2007). "
            "H₀: EA consistente y eficiente (η_i no correlacionado con regresores).")
     TABLE(doc,
           ["Estadístico H", "Grados de libertad", "p-valor", "Decisión"],
@@ -703,8 +710,9 @@ def cap6(doc):
            "variables explicativas, lo que viola el supuesto del estimador EA.")
 
     H2(doc, "6.5 Resultados e interpretación cross-country")
-    P(doc, "Los resultados del modelo de EF con errores de **Driscoll-Kraay** —robustos "
-           "a heterocedasticidad, autocorrelación serial y correlación transversal— "
+    P(doc, "Los resultados del modelo de EF con errores de **Driscoll-Kraay** "
+           "(Driscoll y Kraay, 1998) —robustos a heterocedasticidad, autocorrelación "
+           "serial y correlación transversal— "
            "confirman la universalidad de los mecanismos del Capítulo 5. El **coeficiente "
            "de inflación** (β₁ = +0,42, p < 0,05) es positivo y significativo en las "
            "cuatro economías. El **coeficiente del tipo real** (β₂ = -0,61, p < 0,001) "
@@ -964,6 +972,9 @@ REFERENCES_APA = [
     ("Christie-David, R., Chaudhry, M., & Koch, T. W. (2000). Do macroeconomics news "
      "releases affect gold and silver prices? Journal of Economics and Business, "
      "52(5), 405-421."),
+    ("Dickey, D. A., & Fuller, W. A. (1979). Distribution of the estimators for "
+     "autoregressive time series with a unit root. Journal of the American Statistical "
+     "Association, 74(366), 427-431."),
     ("Dornbusch, R. (1976). Expectations and exchange rate dynamics. "
      "Journal of Political Economy, 84(6), 1161-1176."),
     ("Driscoll, J. C., & Kraay, A. C. (1998). Consistent covariance matrix estimation "
@@ -986,6 +997,9 @@ REFERENCES_APA = [
      "in Gaussian vector autoregressive models. Econometrica, 59(6), 1551-1580."),
     ("Johansen, S., & Juselius, K. (1990). Maximum likelihood estimation and inference "
      "on cointegration. Oxford Bulletin of Economics and Statistics, 52(2), 169-210."),
+    ("Kwiatkowski, D., Phillips, P. C. B., Schmidt, P., & Shin, Y. (1992). Testing "
+     "the null hypothesis of stationarity against the alternative of a unit root. "
+     "Journal of Econometrics, 54(1-3), 159-178."),
     ("Liang, C., Li, Y., Ma, F., & Wei, Y. (2023). Forecasting gold price using machine "
      "learning methodologies. Chaos, Solitons & Fractals, 173, 113589."),
     ("López de Prado, M. (2018). Advances in Financial Machine Learning. Wiley."),
