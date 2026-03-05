@@ -305,33 +305,33 @@ def cap1(doc):
            "convertibilidad del dólar en oro, poniendo fin al sistema de Bretton Woods. "
            "Ese día, la onza troy se cotizaba a 35 dólares. En 2025, el precio superó "
            "los 4.500 dólares —más de ciento treinta veces el nivel de 1971 en términos "
-           "nominales— estableciendo 53 nuevos máximos históricos a lo largo del año. "
-           "Este activo singular, que no genera flujos de caja ni paga dividendos, "
-           "concentra algunos de los episodios macroeconómicos más extraordinarios de "
-           "la historia reciente y su comportamiento desafía las categorías convencionales "
-           "de la teoría financiera.")
-    P(doc, "El período 2000-2025 engloba cinco episodios de mercado excepcionales: la "
-           "Crisis Financiera Global de 2008, los máximos históricos post-QE de 2011, "
-           "la pandemia de COVID-19 en 2020, el ciclo de subidas de tipos más agresivo "
-           "en cuatro décadas (2022-2024), y la espectacular subida de 2025 impulsada "
-           "por la guerra arancelaria de la administración Trump y la aceleración del "
-           "proceso de de-dolarización global. En cada episodio, el oro se comportó de "
-           "forma diferente, lo que lo convierte en un laboratorio ideal para aplicar "
-           "herramientas econométricas y de machine learning.")
+           "nominales— y el metal estableció 53 nuevos máximos históricos a lo largo del "
+           "año (World Gold Council, 2025). Un activo que no genera flujos de caja ni "
+           "paga dividendos, y que aun así alcanza esas cifras, difícilmente encaja en "
+           "las categorías convencionales de la teoría financiera.")
+    P(doc, "El período 2000-2025 concentra cinco episodios que pusieron a prueba al oro "
+           "de formas radicalmente distintas: la Crisis Financiera Global de 2008, los "
+           "máximos históricos post-QE de 2011, la pandemia de COVID-19 en 2020, el "
+           "ciclo de subidas de tipos más agresivo en cuatro décadas (2022-2024) y la "
+           "subida de 2025 impulsada por la guerra arancelaria de la administración "
+           "Trump y la de-dolarización global. En cada uno, el oro reaccionó de forma "
+           "distinta —a veces como refugio, a veces resistiendo contra toda lógica de "
+           "valoración— y esa variabilidad es lo que hace del período un caso de estudio "
+           "de primer orden para las herramientas econométricas y de machine learning.")
 
     H2(doc, "1.2 Motivación académica y práctica")
-    P(doc, "La motivación es doble. Académicamente, la literatura ha experimentado una "
-           "expansión significativa desde 2008. Baur y Lucey (2010) y Baur y McDermott "
-           "(2010) establecieron las definiciones formales de *hedge* y *safe haven*. "
-           "Erb y Harvey (2013) cuestionaron empíricamente la idea de que el oro sea un "
-           "buen protector contra la inflación a horizontes prácticos. O'Connor, Lucey, "
-           "Batten y Baur (2015) sistematizaron toda la economía financiera del oro. Sin "
-           "embargo, la aplicación sistemática de machine learning interpretable —en "
-           "particular SHAP values— para identificar qué variables dominan en distintos "
-           "regímenes es todavía un área incipiente. Prácticamente, los bancos centrales "
-           "han comprado oro a un ritmo sin precedentes desde 2022 (más de 1.000 toneladas "
-           "netas anuales según el World Gold Council, 2023, 2024), con implicaciones de "
-           "largo alcance para el sistema financiero internacional.")
+    P(doc, "Detrás de este trabajo hay dos tipos de motivación. La académica: la literatura "
+           "sobre determinantes del oro creció de forma notable tras 2008. Baur y Lucey "
+           "(2010) y Baur y McDermott (2010) formalizaron las definiciones de *hedge* y "
+           "*safe haven*; Erb y Harvey (2013) cuestionaron empíricamente la narrativa del "
+           "oro como protector contra la inflación; O'Connor et al. (2015) produjeron el "
+           "survey más exhaustivo disponible sobre economía financiera del metal. Lo que "
+           "sigue siendo escaso es la aplicación de machine learning interpretable —SHAP "
+           "values en particular— para rastrear qué variables dominan en distintos "
+           "regímenes de mercado. La motivación práctica no es menor: desde 2022 los "
+           "bancos centrales compran oro a más de 1.000 toneladas netas anuales (World "
+           "Gold Council, 2023, 2024), un proceso de de-dolarización con consecuencias "
+           "que van más allá del precio del metal.")
 
     H2(doc, "1.3 Preguntas de investigación")
     P(doc, "**Pregunta 1:** ¿Qué variables macroeconómicas y financieras determinan el "
@@ -386,15 +386,16 @@ def cap2(doc):
            "décadas; a horizontes de 1-10 años, la correlación es baja e inestable.")
 
     H2(doc, "2.3 Literatura empírica sobre determinantes del precio del oro")
-    P(doc, "La literatura empírica puede organizarse en tres generaciones. La **primera** "
-           "(1980-2000) utilizaba modelos de regresión estáticos para establecer "
-           "correlaciones. La **segunda** (2000-2015), impulsada por la GFC, incorporó "
-           "cointegración, VECM y GARCH. El Chicago Fed Letter (2021) es uno de los "
-           "estudios más completos, documentando la primacía de los tipos reales sobre el "
-           "dólar y la inflación. La **tercera** (desde 2018) incorpora machine learning "
-           "—gradient boosting, redes neuronales, SHAP— encontrando mejoras modestas "
-           "pero consistentes respecto al benchmark econométrico (Liang et al., 2023; "
-           "Plakandaras et al., 2022).")
+    P(doc, "La evolución de la literatura sigue una trayectoria reconocible. Los trabajos "
+           "anteriores a 2000 establecían correlaciones con regresiones estáticas, sin "
+           "tratar la no estacionariedad de las series. Tras la GFC, el foco se desplazó "
+           "hacia la cointegración, el VECM y la modelización GARCH de la volatilidad; "
+           "el Chicago Fed Letter (2021) es quizás el ejemplo más completo, documentando "
+           "la primacía de los tipos reales sobre el dólar y la inflación como "
+           "determinantes del metal. Más recientemente, desde 2018, el machine learning "
+           "—gradient boosting, redes neuronales, análisis SHAP— ofrece mejoras "
+           "predictivas modestas pero replicables sobre los benchmarks econométricos "
+           "(Liang et al., 2023; Plakandaras et al., 2022).")
 
     H2(doc, "2.4 Del MES al VAR: motivación metodológica")
     P(doc, "La elección del VAR/VECM responde a la crítica de Sims (1980) a los Modelos "
@@ -780,12 +781,16 @@ def cap7(doc):
                "2025 (109 meses). La línea discontinua marca el benchmark naive. "
                "Fuente: elaboración propia.",
                width_cm=13.5)
-    P(doc, "Tres conclusiones destacan. **Primera**: la LSTM obtiene el mejor rendimiento "
-           "en RMSE (-24,5 % vs. naive) y DA (+5,6 pp), gracias a su capacidad de capturar "
-           "dependencias temporales. **Segunda**: el Random Forest supera al XGBoost en "
-           "todas las métricas —resultado frecuente en series financieras cortas donde "
-           "el bagging es más robusto—. **Tercera**: el XGBoost tiene DA inferior al naive "
-           "(52,3 % vs. 55,9 %), introduciendo ruido en la dirección del movimiento.")
+    P(doc, "Los resultados merecen lectura atenta más allá del dato de portada. La LSTM "
+           "es el modelo más preciso: reduce el RMSE un 24,5 % y mejora la precisión "
+           "direccional en 5,6 pp sobre el naive, gracias a su capacidad de capturar "
+           "secuencias temporales. El Random Forest supera al XGBoost en todas las "
+           "métricas —lo habitual en series financieras cortas donde el bagging resulta "
+           "más estable que el boosting secuencial—. El caso del XGBoost merece atención "
+           "específica: su DA (52,3 %) queda por debajo incluso del naive (55,9 %), lo "
+           "que indica que optimiza la magnitud del error a costa de introducir ruido en "
+           "la dirección del movimiento. Para decisiones de inversión, esa dirección "
+           "importa más que la magnitud.")
 
     H2(doc, "7.5 Interpretabilidad: análisis SHAP")
     P(doc, "Los valores **SHAP** descomponen cada predicción del XGBoost en la "
@@ -833,13 +838,16 @@ def cap8(doc):
               ["S&P 500",      "#3 — 12 % varianza",   "β₄=-0,19, p<0,01",  "#6 — |φ̄|=0,397"],
           ]
     )
-    P(doc, "Cuatro conclusiones son especialmente robustas. **Primera**: la relación "
-           "negativa entre tipos reales y precio del oro es consistente en las tres "
-           "aproximaciones. **Segunda**: la inflación domina el corto plazo (primera "
-           "posición SHAP) pero no es la variable de cointegración de largo plazo. "
-           "**Tercera**: el safe haven es universal (VIX positivo y significativo en "
-           "el panel cross-country). **Cuarta**: la inestabilidad estructural es una "
-           "característica permanente del activo.")
+    P(doc, "Hay cuatro resultados que resisten a cualquier metodología. La relación "
+           "negativa entre tipos reales y precio del oro se confirma en el VECM, en el "
+           "panel y en el ranking SHAP: tres enfoques con supuestos completamente "
+           "distintos convergen en el mismo signo y la misma jerarquía relativa. "
+           "Dicho esto, la inflación domina la predicción mensual de corto plazo —lidera "
+           "el ranking SHAP— aunque no es la variable de cointegración que ancla el "
+           "equilibrio de largo plazo; ese papel lo desempeñan los tipos reales. El "
+           "safe haven del oro no es un fenómeno exclusivamente anglosajón: el VIX tiene "
+           "coeficiente positivo y significativo en las cuatro economías del panel. Y la "
+           "inestabilidad estructural no es la excepción en el oro, sino la norma.")
 
     H2(doc, "8.2 Respuesta a las preguntas de investigación")
     P(doc, "**Pregunta 1 — Determinantes:** Los tipos de interés reales y el DXY son "
@@ -914,12 +922,18 @@ def cap9(doc):
            "econométrica**: convergencia entre jerarquías del VECM y del ML.")
 
     H2(doc, "9.2 Aportaciones originales")
-    P(doc, "**Primera**: validación cross-country del mecanismo de coste de oportunidad "
-           "en cuatro economías avanzadas, actualizando la evidencia de Baur y McDermott "
-           "(2010). **Segunda**: cuantificación formal de la inestabilidad estructural "
-           "mediante Chow y CUSUM en puntos de quiebre económicamente motivados. "
-           "**Tercera**: validación cruzada VECM-SHAP en determinantes dominantes. "
-           "**Cuarta**: análisis integrador del episodio 2022-2024.")
+    P(doc, "La primera aportación es la validación cross-country del mecanismo de "
+           "coste de oportunidad en cuatro economías avanzadas, actualizando la evidencia "
+           "de Baur y McDermott (2010) con quince años adicionales de datos que incluyen "
+           "los episodios post-GFC más relevantes. La segunda es la cuantificación formal "
+           "de la inestabilidad estructural mediante tests de Chow y análisis CUSUM en "
+           "puntos de quiebre económicamente motivados —no identificados a posteriori—. "
+           "La tercera, quizás la más metodológicamente interesante, es la convergencia "
+           "entre la jerarquía de variables del VECM y el ranking SHAP: cuando dos "
+           "enfoques con supuestos tan diferentes coinciden, la evidencia es difícil de "
+           "atribuir a artefactos del modelo. La cuarta es el análisis integrador del "
+           "episodio 2022-2024, conectando la ruptura econométrica con la explicación "
+           "económica de la de-dolarización.")
 
     H2(doc, "9.3 Limitaciones y cautelas")
     P(doc, "(i) Panel con N = 4 economías: inferencia sobre heterogeneidad entre países "
@@ -1021,6 +1035,8 @@ REFERENCES_APA = [
     ("World Gold Council. (2023). Gold Demand Trends: Full Year 2023. "
      "World Gold Council."),
     ("World Gold Council. (2024). Gold Demand Trends: Full Year 2024. "
+     "World Gold Council."),
+    ("World Gold Council. (2025). Gold Demand Trends: Full Year 2025. "
      "World Gold Council."),
 ]
 
