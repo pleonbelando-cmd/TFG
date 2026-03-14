@@ -1,0 +1,52 @@
+name: Paper Trading Semanal
+
+on:
+  # Cada lunes a las 09:00 UTC (11:00 hora España)
+  schedule:
+    - cron: "0 9 * * 1"
+
+  # También se puede lanzar manualmente desde GitHub → Actions → Run workflow
+  workflow_dispatch:
+
+jobs:
+  paper-trading:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    permissions:
+      contents: write    # necesario para hacer commit de resultados
+
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Instalar dependencias
+        run: |
+          pip install --upgrade pip
+          pip install yfinance xgboost lightgbm joblib pandas numpy schedule
+
+      - name: Ejecutar paper trading
+        run: |
+          python bot_trading/run.py --mode paper
+        env:
+          PYTHONIOENCODING: utf-8
+
+      - name: Commit y push de resultados
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add bot_trading/output/paper_trades.csv \
+                  bot_trading/output/paper_state.json \
+                  bot_trading/output/scheduler.log    \
+                  bot_trading/output/xgb_model.pkl    \
+                  bot_trading/output/lgbm_model.pkl
+          # Solo hacer commit si hay cambios
+          git diff --cached --quiet || git commit -m \
+            "chore: paper trading semanal $(date +'%Y-%m-%d')"
+          git push
