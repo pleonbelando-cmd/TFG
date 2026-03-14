@@ -163,6 +163,49 @@ st.divider()
 
 st.subheader("📊 Métricas del Backtest Walk-Forward (2018–2026)")
 
+# ── Rentabilidad acumulada destacada ─────────────────────────────────────────
+from config import INITIAL_CAPITAL
+
+ret_cons  = (port_df["port_cons"].iloc[-1] / INITIAL_CAPITAL - 1) * 100
+ret_bin   = (port_df["port_bin"].iloc[-1]  / INITIAL_CAPITAL - 1) * 100
+ret_bnh   = (port_df["port_bnh"].iloc[-1]  / INITIAL_CAPITAL - 1) * 100
+years     = len(port_df) / 52
+
+st.markdown("**Rentabilidad acumulada total (2018 → hoy)**")
+kc1, kc2, kc3 = st.columns(3)
+kc1.metric("🔵 Conservadora L/C",  f"{ret_cons:+.1f}%",
+           delta=f"CAGR {ret_cons/years:.1f}% anual")
+kc2.metric("🟢 Binaria L/C",        f"{ret_bin:+.1f}%",
+           delta=f"CAGR {ret_bin/years:.1f}% anual")
+kc3.metric("🟡 Buy-and-Hold Oro",   f"{ret_bnh:+.1f}%",
+           delta=f"CAGR {ret_bnh/years:.1f}% anual")
+
+# ── Gráfico de rentabilidad acumulada (%) ─────────────────────────────────────
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import matplotlib.ticker as mtick
+
+fig_ret, ax_ret = plt.subplots(figsize=(11, 3.5))
+ax_ret.plot(port_df.index,
+            (port_df["port_bnh"]  / INITIAL_CAPITAL - 1) * 100,
+            label="Buy-and-Hold Oro", color="#C9A84C", linewidth=1.5, alpha=0.8)
+ax_ret.plot(port_df.index,
+            (port_df["port_bin"]  / INITIAL_CAPITAL - 1) * 100,
+            label="Binaria L/C",      color="#3BB273", linewidth=2)
+ax_ret.plot(port_df.index,
+            (port_df["port_cons"] / INITIAL_CAPITAL - 1) * 100,
+            label="Conservadora L/C", color="#2E86AB", linewidth=2)
+ax_ret.axhline(0, color="black", linewidth=0.6, linestyle="--")
+ax_ret.set_title("Rentabilidad Acumulada (%) — Walk-Forward 2018–2026", fontsize=11)
+ax_ret.set_ylabel("Retorno (%)")
+ax_ret.yaxis.set_major_formatter(mtick.FuncFormatter(lambda x, _: f"{x:+.0f}%"))
+ax_ret.legend(fontsize=9)
+plt.tight_layout()
+st.pyplot(fig_ret)
+plt.close(fig_ret)
+
+# ── DA y tabla de métricas ────────────────────────────────────────────────────
 col_da, col_table = st.columns([1, 2])
 
 with col_da:
@@ -179,7 +222,19 @@ with col_da:
 
 with col_table:
     st.markdown("**Métricas de rendimiento**")
+    # Añadir columna de retorno total acumulado
+    ret_totales = {
+        "Conservadora L/C (thr=0.55)": ret_cons,
+        "Binaria L/C (thr=0.50)":      ret_bin,
+        "Buy-and-Hold Oro":            ret_bnh,
+    }
     display_metrics = metrics[["Estrategia", "CAGR", "Sharpe", "Max Drawdown", "Win Rate"]].copy()
+    display_metrics.insert(
+        2, "Retorno Total",
+        display_metrics["Estrategia"].map(
+            lambda s: f"{ret_totales.get(s, 0):+.1f}%"
+        )
+    )
     st.dataframe(display_metrics, hide_index=True, width="stretch")
 
 st.divider()
