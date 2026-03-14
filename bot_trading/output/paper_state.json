@@ -1,0 +1,10 @@
+{
+  "open": false,
+  "signal": 0,
+  "signal_str": "FLAT",
+  "entry_date": null,
+  "entry_price": null,
+  "entry_capital": 10000.0,
+  "prob_ensemble": null,
+  "virtual_capital": 10000.0
+}

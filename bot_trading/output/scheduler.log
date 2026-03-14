@@ -1,0 +1,11 @@
+2026-03-14 18:52:48  INFO      ==================================================
+2026-03-14 18:52:48  INFO      BOT DE ORO — SCHEDULER INICIADO
+2026-03-14 18:52:48  INFO      Inicio: 2026-03-14 18:52:48
+2026-03-14 18:52:48  INFO      ==================================================
+2026-03-14 18:52:48  INFO      Scheduler configurado:
+2026-03-14 18:52:48  INFO        - Paper trading: lunes 09:00
+2026-03-14 18:52:48  INFO        - Re-entrenamiento: cada 4 semanas
+2026-03-14 18:52:48  INFO        - Health check: cada hora
+2026-03-14 18:52:48  INFO        - Log: C:\TFG\bot_trading\output\scheduler.log
+2026-03-14 18:52:48  INFO      [HEALTH] Scheduler activo. Proxima ejecucion: lunes 09:00
+2026-03-14 18:52:48  INFO      Esperando proxima tarea programada... (Ctrl+C para detener)
