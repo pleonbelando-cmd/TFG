@@ -29,7 +29,16 @@ jobs:
       - name: Instalar dependencias
         run: |
           pip install --upgrade pip
-          pip install yfinance xgboost lightgbm joblib pandas numpy matplotlib schedule
+          pip install \
+            yfinance \
+            xgboost \
+            lightgbm \
+            joblib \
+            pandas \
+            numpy \
+            matplotlib \
+            scikit-learn \
+            schedule
 
       - name: Ejecutar paper trading
         run: |
