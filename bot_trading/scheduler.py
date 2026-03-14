@@ -27,7 +27,8 @@ BOT_DIR = pathlib.Path(__file__).parent
 sys.path.insert(0, str(BOT_DIR))
 
 import schedule
-from config import OUTPUT_DIR
+from config   import OUTPUT_DIR
+from notifier import send_notification
 
 # ─── Logging ──────────────────────────────────────────────────────────────────
 
@@ -104,6 +105,9 @@ def job_paper_trading():
         if result["opened_trade"]:
             ot = result["opened_trade"]
             log.info(f"Abierta: {ot['signal_str']}  precio={ot['entry_price']:.2f}")
+
+        # Enviar notificacion por email
+        send_notification(result, state)
 
         log.info("FIN: paper trading OK")
 
