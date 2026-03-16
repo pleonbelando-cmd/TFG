@@ -1,10 +1,10 @@
 {
-  "open": false,
-  "signal": 0,
-  "signal_str": "FLAT",
-  "entry_date": null,
-  "entry_price": null,
+  "open": true,
+  "signal": -1,
+  "signal_str": "CASH",
+  "entry_date": "2026-03-16",
+  "entry_price": 5052.5,
   "entry_capital": 10000.0,
-  "prob_ensemble": null,
+  "prob_ensemble": 0.41426781634460363,
   "virtual_capital": 10000.0
 }
