@@ -1,10 +1,10 @@
 {
   "open": true,
-  "signal": -1,
-  "signal_str": "CASH",
-  "entry_date": "2026-03-16",
-  "entry_price": 5052.5,
+  "signal": 1,
+  "signal_str": "BUY",
+  "entry_date": "2026-03-23",
+  "entry_price": 4570.39990234375,
   "entry_capital": 10000.0,
-  "prob_ensemble": 0.41426781634460363,
+  "prob_ensemble": 0.6818434677181487,
   "virtual_capital": 10000.0
 }
