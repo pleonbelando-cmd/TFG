@@ -1,10 +1,10 @@
 {
-  "open": true,
+  "open": false,
   "signal": 1,
   "signal_str": "BUY",
   "entry_date": "2026-03-23",
   "entry_price": 4570.39990234375,
   "entry_capital": 10000.0,
   "prob_ensemble": 0.6818434677181487,
-  "virtual_capital": 10000.0
+  "virtual_capital": 9984.684053584873
 }
